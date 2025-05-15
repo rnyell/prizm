@@ -15,9 +15,9 @@ import {
   ThumbsUp,
   ThumbsDown,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { AutoResizeTextarea } from "./input-field";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { InputField } from "./input-field";
 
 type ActiveButton = "none" | "add" | "deepSearch" | "think";
 type MessageType = "user" | "system";
@@ -43,18 +43,15 @@ interface StreamingWord {
   text: string;
 }
 
-// Faster word delay for smoother streaming
 const WORD_DELAY = 40; // ms per word
 const CHUNK_SIZE = 2; // Number of words to add at once
 
 export default function ChatInterface() {
   const [inputValue, setInputValue] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
-  const newSectionRef = useRef<HTMLDivElement>(null);
   const [hasTyped, setHasTyped] = useState(false);
-  const [activeButton, setActiveButton] = useState<ActiveButton>("none");
   const [isMobile, setIsMobile] = useState(false);
+  const [activeButton, setActiveButton] = useState<ActiveButton>("none");
+  const [viewportHeight, setViewportHeight] = useState(0);
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageSections, setMessageSections] = useState<MessageSection[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -62,15 +59,19 @@ export default function ChatInterface() {
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
     null
   );
-  const [viewportHeight, setViewportHeight] = useState(0);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [completedMessages, setCompletedMessages] = useState<Set<string>>(
     new Set()
   );
+
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const newSectionRef = useRef<HTMLDivElement>(null);
   const inputContainerRef = useRef<HTMLDivElement>(null);
   const shouldFocusAfterStreamingRef = useRef(false);
   const mainContainerRef = useRef<HTMLDivElement>(null);
+
   // Store selection state
   const selectionStateRef = useRef<{
     start: number | null;
@@ -109,7 +110,6 @@ export default function ChatInterface() {
         : "100svh";
     }
 
-    // Update on resize
     window.addEventListener("resize", checkMobileAndViewport);
 
     return () => {
@@ -187,13 +187,6 @@ export default function ChatInterface() {
     }
   }, [messageSections]);
 
-  // Focus the textarea on component mount (only on desktop)
-  useEffect(() => {
-    if (textareaRef.current && !isMobile) {
-      textareaRef.current.focus();
-    }
-  }, [isMobile]);
-
   // Set focus back to textarea after streaming ends (only on desktop)
   useEffect(() => {
     if (!isStreaming && shouldFocusAfterStreamingRef.current && !isMobile) {
@@ -253,7 +246,6 @@ export default function ChatInterface() {
   };
 
   const simulateTextStreaming = async (text: string) => {
-    // Split text into words
     const words = text.split(" ");
     let currentIndex = 0;
     setStreamingWords([]);
@@ -283,7 +275,7 @@ export default function ChatInterface() {
     });
   };
 
-  const getAIResponse = (userMessage: string) => {
+  const getAIResponse = () => {
     const responses = [
       `That's an interesting perspective. Let me elaborate on that a bit further. When we consider the implications of what you've shared, several key points come to mind. First, it's important to understand the context and how it relates to broader concepts. This allows us to develop a more comprehensive understanding of the situation. Would you like me to explore any specific aspect of this in more detail?`,
 
@@ -297,8 +289,8 @@ export default function ChatInterface() {
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
-  const simulateAIResponse = async (userMessage: string) => {
-    const response = getAIResponse(userMessage);
+  const simulateAIResponse = async () => {
+    const response = getAIResponse();
 
     // Create a new message with empty content
     const messageId = Date.now().toString();
@@ -406,7 +398,7 @@ export default function ChatInterface() {
       }
 
       // Start AI response
-      simulateAIResponse(userMessage);
+      simulateAIResponse();
     }
   };
 
@@ -584,7 +576,7 @@ export default function ChatInterface() {
             onClick={handleInputContainerClick}
           >
             <div className="pb-9">
-              <AutoResizeTextarea
+              <InputField
                 ref={textareaRef}
                 placeholder={
                   isStreaming ? "Waiting for response..." : "Ask Anything"

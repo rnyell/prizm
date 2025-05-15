@@ -6,3 +6,12 @@ export type Model =
   | "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"
   | "mistralai/mistral-small-3.1-24b-instruct:free"
   | "deepseek/deepseek-chat-v3-0324:free";
+
+export type ModelName =
+  | "gemma"
+  | "gemini"
+  | "maverick"
+  | "scout"
+  | "nemotron"
+  | "mistral"
+  | "deepseek";

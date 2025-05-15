@@ -1,5 +1,5 @@
 import Markdown from "react-markdown";
-// import styles from "./chat-blob.module.css";
+// import styles from "@/styles/markdown.module.css";
 
 interface Props {
   role: "user" | "system";
@@ -10,8 +10,8 @@ function ChatBlob({ role, content }: Props) {
   switch (role) {
     case "system": {
       return (
-        <div className="px-2 pt-6 pb-16 max-w-chars">
-          <div className="prose text-pretty">
+        <div className="px-2 pt-6 pb-16 max-w-chars-75">
+          <div className="markdown prose text-pretty">
             <Markdown>{content}</Markdown>
           </div>
         </div>
@@ -20,7 +20,7 @@ function ChatBlob({ role, content }: Props) {
     case "user": {
       return (
         <div className="ml-auto p-2 max-w-[400px] rounded-xl bg-zinc-200">
-          <div className="text-pretty">
+          <div className="markdown text-pretty">
             <Markdown>{content}</Markdown>
           </div>
         </div>

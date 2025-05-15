@@ -44,10 +44,12 @@ export function InputField({
 
   return (
     <div
-      className={cn("p-2 w-full min-h-9", {
-        "flex items-center": value.length <= 25,
-        "grid grid-flow-row grid-rows-[1fr_auto]": value.length > 25,
-      })}
+      className={cn(
+        "p-2 w-full min-h-9",
+        value.length <= 25
+          ? "flex items-center"
+          : "grid grid-flow-row grid-rows-[1fr_auto]"
+      )}
     >
       <textarea
         className="resize-none pt-1 pl-2 w-full min-h-9 max-h-80 focus:outline-0"
@@ -60,12 +62,11 @@ export function InputField({
           resizeTextarea();
         }}
         spellCheck
+        required
         {...props}
       />
       <Button
-        className={cn("ml-auto rounded-xl", {
-          "row-start-2": value.length > 25,
-        })}
+        className={cn("ml-auto rounded-xl", value.length > 25 && "row-start-2")}
         size="icon"
         disabled={pending}
         onClick={onClick}

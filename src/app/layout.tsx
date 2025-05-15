@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import Sidemenu from "@/components/sidemenu";
 
 import "../styles/globals.css";
 
@@ -41,7 +43,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`relative bg-tertiary-950 ${fontVariables} antialiased`}>
-        <div className="h-full">{children}</div>
+        <SidebarProvider>
+          <div className="w-full h-full grid grid-cols-[auto_1fr]">
+            <Sidemenu />
+            <div>{children}</div>
+          </div>
+        </SidebarProvider>
       </body>
     </html>
   );
