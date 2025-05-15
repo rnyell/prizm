@@ -5,7 +5,6 @@ import type { Model } from "./types";
 const API_KEY = process.env.OPENROUTER_API_KEY;
 
 export type LLMResponse = {
-  input: string | null;
   response: string | null;
   error?: {
     message: string;
@@ -13,14 +12,8 @@ export type LLMResponse = {
   };
 };
 
-export async function llm(
-  _: LLMResponse,
-  formData: FormData
-): Promise<LLMResponse> {
-  const model = formData.get("model") as Model;
-  const input = formData.get("input") as string;
-  // const context = formData.get("context") as string;
-
+export async function llm(model: Model, input: string): Promise<LLMResponse> {
+  // TODO: add context for role: "system"
   const url = "https://openrouter.ai/api/v1/chat/completions";
   const headers = {
     Authorization: `Bearer ${API_KEY}`,
@@ -35,7 +28,6 @@ export async function llm(
     const res = await fetch(url, { method: "POST", headers, body });
     if (!res.ok) {
       return {
-        input: input,
         response: null,
         error: {
           message: "`res` was not ok!",
@@ -45,11 +37,10 @@ export async function llm(
     }
     const data = await res.json();
     const response = data.choices[0].message.content as string | null;
-    return { response, input };
+    return { response };
   } catch (error: unknown) {
     console.error(error);
     return {
-      input: input,
       response: null,
       error: {
         message: "Something went wrong!",

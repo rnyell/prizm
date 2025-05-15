@@ -16,7 +16,7 @@ import {
   ThumbsDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AutoResizeTextarea } from "./textarea";
+import { AutoResizeTextarea } from "./input-field";
 import { cn } from "@/lib/utils";
 
 type ActiveButton = "none" | "add" | "deepSearch" | "think";

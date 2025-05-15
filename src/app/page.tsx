@@ -1,11 +1,9 @@
-import ChatScreen from "@/components/chat-screen";
+import ChatsContainer from "@/components/chats-container";
 
 function Main() {
   return (
-    <div>
-      <div>
-        <ChatScreen model="google/gemma-3-27b-it:free" />
-      </div>
+    <div className="h-full">
+      <ChatsContainer />
     </div>
   );
 }

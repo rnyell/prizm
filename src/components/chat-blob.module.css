@@ -1,0 +1,44 @@
+.markdown {
+  h1 {
+    margin-block: calc(var(--spacing) * 6) calc(var(--spacing) * 2);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.25;
+  }
+
+  h3,
+  h4 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.375;
+  }
+
+  p {
+    margin-block: calc(var(--spacing));
+  }
+
+  ol,
+  ul {
+    padding-left: calc(var(--spacing) * 4);
+  }
+
+  strong {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  pre {
+    padding: calc(var(--spacing) * 4);
+    background-color: var(--color-zinc-200);
+    border-radius: var(--radius-md);
+
+    code {
+      white-space: break-spaces;
+    }
+  }
+}

@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  type KeyboardEvent,
-  startTransition,
-  useActionState,
-  useEffect,
-  useState,
-} from "react";
+import { type KeyboardEvent, useState, useReducer, useTransition } from "react";
 import type { Model } from "@/lib/types";
-import { llm, type LLMResponse } from "@/lib/actions";
-import { AutoResizeTextarea } from "./textarea";
+import { llm as action } from "@/lib/actions";
+import { ScrollArea } from "./ui/scroll-area";
+import { InputField } from "./input-field";
 import ChatBlob from "./chat-blob";
 
 interface Props {
@@ -21,69 +16,93 @@ type Message = {
   content: string;
 };
 
-const initialState: LLMResponse = {
-  input: null,
-  response: null,
-};
+type State = Message[];
+
+type Action =
+  | {
+      type: "add_input";
+      role: "user";
+      content: string;
+    }
+  | {
+      type: "add_response";
+      role: "system";
+      content: string;
+    };
+
+const initialState: State = [];
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "add_input": {
+      const { role, content } = action;
+      const entry: Message = { role, content };
+      return [...state, entry];
+    }
+    case "add_response": {
+      const { role, content } = action;
+      const entry: Message = { role, content };
+      return [...state, entry];
+    }
+  }
+}
 
 function ChatScreen({ model }: Props) {
-  const [state, action, pending] = useActionState(llm, initialState);
+  const [messages, dispatch] = useReducer(reducer, initialState);
+  const [pending, startTransition] = useTransition();
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Array<Message>>([]);
+  const isChatEmpty = messages.length < 1;
+
+  function appendInput() {
+    dispatch({ type: "add_input", role: "user", content: input });
+    setInput("");
+  }
+
+  function appendResponse() {
+    startTransition(async () => {
+      const result = await action(model, input);
+      if (result.response) {
+        dispatch({
+          type: "add_response",
+          role: "system",
+          content: result.response,
+        });
+      }
+    });
+  }
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      if (input.trim()) {
-        const formDate = new FormData();
-        formDate.append("model", model);
-        formDate.append("input", input);
-        startTransition(() => {
-          action(formDate);
-        });
-      }
-      setInput("");
+      appendInput();
+      appendResponse();
     }
   }
 
-  useEffect(() => {
-    if (state.input) {
-      const newMessage: Message = { role: "user", content: state.input };
-      setMessages((messages) => [...messages, newMessage]);
-    }
-  }, [state.input]);
-
-  useEffect(() => {
-    if (state.response) {
-      const newMessage: Message = { role: "system", content: state.response };
-      setMessages((messages) => [...messages, newMessage]);
-    }
-  }, [state.response]);
+  function handleClick() {
+    appendInput();
+    appendResponse();
+  }
 
   return (
-    <div className="p-2">
-      <div className="mt-10 flex flex-col gap-2">
-        {messages.length ? (
+    <div className="p-4 pb-10 h-svh relative">
+      <ScrollArea className="h-full scrollbar-thin flex flex-col gap-2">
+        {!isChatEmpty &&
           messages.map((message, i) => (
-            <div key={i}>
-              <ChatBlob role={message.role} content={message.content} />
-            </div>
-          ))
-        ) : (
-          <div>Yo!</div>
-        )}
-      </div>
-      <div className="mt-4">
-        <form action={action}>
-          <input hidden readOnly name="model" value={model} />
-          <AutoResizeTextarea
-            name="input"
-            value={input}
-            onChange={(v) => setInput(v)}
-            onKeyDown={handleKeyDown}
-            pending={pending}
-          />
-        </form>
+            <ChatBlob role={message.role} content={message.content} key={i} />
+          ))}
+      </ScrollArea>
+      <div
+        className="mt-4 w-3/5 max-w-2xl absolute z-10 left-1/2 -translate-x-1/2 rounded-xl border-[1.5px] border-zinc-500 bg-zinc-100"
+        style={{ bottom: isChatEmpty ? "50%" : "1rem" }}
+      >
+        <InputField
+          value={input}
+          onChange={(v) => setInput(v)}
+          onKeyDown={handleKeyDown}
+          onClick={handleClick}
+          pending={pending}
+        />
       </div>
     </div>
   );

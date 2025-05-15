@@ -21,11 +21,13 @@ export const metadata: Metadata = {
 
 const geistSans = Geist({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-geist-sans",
 });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-geist-mono",
 });
 
@@ -39,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`relative bg-tertiary-950 ${fontVariables} antialiased`}>
-        {children}
+        <div className="h-full">{children}</div>
       </body>
     </html>
   );
