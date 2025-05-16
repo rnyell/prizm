@@ -15,3 +15,17 @@ export type ModelName =
   | "nemotron"
   | "mistral"
   | "deepseek";
+
+export type ModelDetails = {
+  name: string;
+  context: number;
+  overview: string;
+};
+
+export type Role = "system" | "user";
+
+export type Message = {
+  model: Model;
+  role: Role;
+  content: string;
+};

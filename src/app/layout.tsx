@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { MessageProvider } from "@/providers/message";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Sidemenu from "@/components/sidemenu";
+import { Geist, Geist_Mono } from "next/font/google";
 
 import "../styles/globals.css";
 
@@ -38,17 +40,19 @@ const fontVariables = `${geistSans.variable} ${geistMono.variable}`;
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
       <body className={`relative bg-tertiary-950 ${fontVariables} antialiased`}>
-        <SidebarProvider>
-          <div className="w-full h-full grid grid-cols-[auto_1fr]">
-            <Sidemenu />
-            <div>{children}</div>
-          </div>
-        </SidebarProvider>
+        <MessageProvider>
+          <SidebarProvider>
+            <div className="w-full h-full grid grid-cols-[auto_1fr]">
+              <Sidemenu />
+              <div>{children}</div>
+            </div>
+          </SidebarProvider>
+        </MessageProvider>
       </body>
     </html>
   );

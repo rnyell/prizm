@@ -2,7 +2,9 @@
 
 import type { Model } from "./types";
 
-const API_KEY = process.env.OPENROUTER_API_KEY;
+type Options = {
+  apiKey: string;
+};
 
 export type LLMResponse = {
   response: string | null;
@@ -12,8 +14,13 @@ export type LLMResponse = {
   };
 };
 
-export async function llm(model: Model, input: string): Promise<LLMResponse> {
-  // TODO: add context for role: "system"
+export async function llm(
+  model: Model,
+  input: string,
+  options?: Options
+): Promise<LLMResponse> {
+  const API_KEY = process.env.OPENROUTER_API_KEY;
+  console.log(options);
   const url = "https://openrouter.ai/api/v1/chat/completions";
   const headers = {
     Authorization: `Bearer ${API_KEY}`,
@@ -36,6 +43,7 @@ export async function llm(model: Model, input: string): Promise<LLMResponse> {
       };
     }
     const data = await res.json();
+    console.log(data);
     const response = data.choices[0].message.content as string | null;
     return { response };
   } catch (error: unknown) {
