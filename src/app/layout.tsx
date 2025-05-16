@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { MessageProvider } from "@/providers/message";
+import { AppProvider } from "@/providers/app";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Sidemenu from "@/components/sidemenu";
+import { Toaster } from "@/components/ui/sonner";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "../styles/globals.css";
@@ -45,14 +46,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`relative bg-tertiary-950 ${fontVariables} antialiased`}>
-        <MessageProvider>
+        <AppProvider>
           <SidebarProvider>
             <div className="w-full h-full grid grid-cols-[auto_1fr]">
               <Sidemenu />
               <div>{children}</div>
+              <Toaster richColors />
             </div>
           </SidebarProvider>
-        </MessageProvider>
+        </AppProvider>
       </body>
     </html>
   );

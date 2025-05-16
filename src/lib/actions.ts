@@ -2,6 +2,8 @@
 
 import type { Model } from "./types";
 
+// const API_KEY = process.env.OPENROUTER_API_KEY;
+
 type Options = {
   apiKey: string;
 };
@@ -17,13 +19,11 @@ export type LLMResponse = {
 export async function llm(
   model: Model,
   input: string,
-  options?: Options
+  options: Options
 ): Promise<LLMResponse> {
-  const API_KEY = process.env.OPENROUTER_API_KEY;
-  console.log(options);
   const url = "https://openrouter.ai/api/v1/chat/completions";
   const headers = {
-    Authorization: `Bearer ${API_KEY}`,
+    Authorization: `Bearer ${options.apiKey}`,
     "Content-Type": "application/json",
   };
   const body = JSON.stringify({

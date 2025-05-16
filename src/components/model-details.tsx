@@ -28,7 +28,7 @@ function ModelDetails({ details }: Props) {
             <SheetDescription>Context: {details.context}</SheetDescription>
           </SheetHeader>
           <div className="px-4">
-            <ScrollArea className="h-[75svh] whitespace-pre-line">
+            <ScrollArea className="h-[75svh] whitespace-pre-line text-sm text-zinc-700">
               {details.overview}
             </ScrollArea>
           </div>

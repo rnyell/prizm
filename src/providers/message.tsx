@@ -29,7 +29,6 @@ interface Context {
   chatStore: ChatStore;
   chatDispatch: Dispatch<ChatAction>;
   // sections: SectionStore;
-  // setApi: Dispatch<SetStateAction<string>>;
 }
 
 interface ProviderProps {
@@ -59,30 +58,15 @@ function reducer(store: ChatStore, action: ChatAction): ChatStore {
   }
 }
 
-// function getApiKey() {
-//   try {
-//     const API_KEY = localStorage.getItem("api_key");
-//     if (API_KEY) {
-//       return API_KEY;
-//     }
-//   } catch (e) {
-//     console.warn(e);
-//   }
-// }
-
 const MessageContext = createContext<Context | null>(null);
 
 export function MessageProvider({ children }: ProviderProps) {
-  // const [api, setApi] = useState<string | undefined>(getApiKey);
   const [chatStore, chatDispatch] = useReducer(reducer, initialState);
 
-  console.warn("MessageProvider re-rendered");
+  console.log("MessageProvider re-rendered");
   console.log(chatStore);
 
-  const contextValue = {
-    chatStore,
-    chatDispatch,
-  };
+  const contextValue = { chatStore, chatDispatch };
 
   return (
     <MessageContext.Provider value={contextValue}>

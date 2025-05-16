@@ -1,18 +1,20 @@
 "use client";
 
 import { type KeyboardEvent, useState, useTransition } from "react";
-import { useMessages } from "@/providers/message";
-import type { Model } from "@/lib/types";
+import { useConfig, useMessages } from "@/providers";
+import { toast } from "sonner";
 import { llm as action } from "@/lib/actions";
 import { ScrollArea } from "./ui/scroll-area";
 import { InputField } from "./input-field";
 import ChatBlob from "./chat-blob";
+import type { Model } from "@/lib/types";
 
 interface Props {
   model: Model;
 }
 
 function ChatScreen({ model }: Props) {
+  const { apiKey } = useConfig();
   const { chatStore, chatDispatch } = useMessages();
   const [pending, startTransition] = useTransition();
   const [input, setInput] = useState("");
@@ -29,8 +31,13 @@ function ChatScreen({ model }: Props) {
   }
 
   function appendResponse() {
+    if (!apiKey) {
+      const msg = "You must provide your API_KEY in order to chat with models.";
+      toast.error(msg);
+      return;
+    }
     startTransition(async () => {
-      const result = await action(model, input);
+      const result = await action(model, input, { apiKey });
       if (result.response) {
         chatDispatch({
           type: "add_response",
@@ -59,6 +66,11 @@ function ChatScreen({ model }: Props) {
   }
 
   function handleClick() {
+    if (!apiKey) {
+      const msg = "You must provide your API_KEY in order to chat with models.";
+      toast.error(msg);
+      return;
+    }
     appendInput();
     appendResponse();
   }
@@ -66,7 +78,7 @@ function ChatScreen({ model }: Props) {
   return (
     <div className="p-4 pb-10 h-[calc(100svh-65px)] relative bg-zinc-50">
       <ScrollArea className="mx-auto max-w-4xl h-full scrollbar-thin flex flex-col gap-2">
-        {messages.length > 1 &&
+        {messages.length >= 1 &&
           messages.map((message, i) => (
             <ChatBlob role={message.role} content={message.content} key={i} />
           ))}

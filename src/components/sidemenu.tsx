@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useConfig } from "@/providers";
 import {
   Sidebar,
   SidebarContent,
@@ -13,7 +15,11 @@ import {
   SidebarTrigger,
   SidebarSeparator,
   SidebarHeader,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 import {
   GeminiIcon,
   MetaIcon,
@@ -21,7 +27,7 @@ import {
   NvidiaIcon,
   MistralIcon,
 } from "./icons";
-import { LayoutTemplateIcon } from "lucide-react";
+import { LayoutTemplateIcon, KeyRoundIcon } from "lucide-react";
 
 const items = [
   {
@@ -62,13 +68,27 @@ const items = [
 ];
 
 function Sidemenu() {
+  const { setApiKey } = useConfig();
+  const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const apiKey = formData.get("api-key");
+    if (typeof apiKey === "string") {
+      setApiKey(apiKey);
+    } else {
+      alert("failed to set api key. please try again!");
+    }
+    setOpen(false);
+  }
 
   return (
     <Sidebar collapsible="icon">
+      <SidebarHeader className="bg-zinc-100"></SidebarHeader>
+      <SidebarTrigger className="absolute z-10 right-6 top-2" />
       <SidebarContent className="bg-zinc-100">
-        <SidebarHeader></SidebarHeader>
-        <SidebarTrigger className="absolute right-6 top-2" />
         <SidebarGroup>
           {/* <SidebarGroupLabel>Chat w/ models Simultaneously</SidebarGroupLabel> */}
           <SidebarGroupContent className="mt-5">
@@ -113,6 +133,34 @@ function Sidemenu() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="bg-zinc-100">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger className="p-3 grid grid-cols-[auto_1fr] items-center group-data-[collapsible=icon]:grid-cols-1 group-data-[collapsible=icon]:justify-items-center gap-2 rounded-xl text-zinc-100 bg-zinc-900 hover:bg-zinc-800 cursor-pointer">
+            <KeyRoundIcon className="size-4" />
+            <div className="group-data-[collapsible=icon]:hidden">
+              Set your key
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-72">
+            <div className="leading-[1.2]">
+              To obtain an API key visit{" "}
+              <Link
+                className="underline"
+                href="https://www.openrouter.ai"
+                target="_blank"
+              >
+                openrouter.ai
+              </Link>
+            </div>
+            <form className="mt-3 flex flex-col gap-2" onSubmit={handleSubmit}>
+              <Input name="api-key" placeholder="Enter your API key" />
+              <Button className="ml-auto" size="sm" type="submit">
+                Submit
+              </Button>
+            </form>
+          </PopoverContent>
+        </Popover>
+      </SidebarFooter>
     </Sidebar>
   );
 }
