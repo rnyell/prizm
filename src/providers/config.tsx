@@ -41,9 +41,7 @@ export function ConfigProvider({ children }: ProviderProps) {
   };
 
   return (
-    <ConfigContext.Provider value={contextValue}>
-      {children}
-    </ConfigContext.Provider>
+    <ConfigContext.Provider value={contextValue}>{children}</ConfigContext.Provider>
   );
 }
 

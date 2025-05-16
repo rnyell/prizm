@@ -13,7 +13,7 @@ async function Page({ params }: Props) {
   const details = getModelDetails(slug);
 
   return (
-    <div className="h-svh grid transform-none bg-pink-100">
+    <div className="h-svh relative grid">
       <div className="p-2 h-[65px] sticky z-10 top-0 flex-center border-b bg-zinc-100">
         <ModelDetails details={details} />
       </div>

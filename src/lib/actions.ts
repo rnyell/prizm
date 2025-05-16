@@ -2,8 +2,6 @@
 
 import type { Model } from "./types";
 
-// const API_KEY = process.env.OPENROUTER_API_KEY;
-
 type Options = {
   apiKey: string;
 };
