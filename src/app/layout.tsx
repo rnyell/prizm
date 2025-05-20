@@ -12,13 +12,13 @@ export const metadata: Metadata = {
   title: { template: "%s", default: "" },
   description: "Chat with multiple LLMs simultaneously",
   icons: {
-    icon: "/seo/logo.png",
-    apple: "/seo/logo.png",
+    // icon: "/seo/logo.png",
+    // apple: "/seo/logo.png",
   },
   openGraph: {
     type: "website",
-    url: "stvts.vercel.app",
-    images: "/seo/og.png",
+    url: "mupt.vercel.app",
+    // images: "/seo/og.png",
     title: "",
     description: "Chat with multiple LLMs simultaneously",
   },
@@ -45,7 +45,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`relative bg-tertiary-950 ${fontVariables} antialiased`}>
+      <body className={`relative ${fontVariables} antialiased`}>
         <AppProvider>
           <SidebarProvider>
             <div className="w-full h-full grid grid-cols-[auto_1fr]">

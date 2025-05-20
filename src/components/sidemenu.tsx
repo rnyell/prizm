@@ -94,7 +94,7 @@ function Sidemenu() {
           <SidebarGroupContent className="mt-5">
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton size="lg" asChild>
+                <SidebarMenuButton className="rounded-xl" size="lg" asChild>
                   <Link href="/m">
                     <div className="p-2 size-8 flex-center rounded-full bg-zinc-800">
                       <LayoutTemplateIcon className="size-full stroke-zinc-100" />
@@ -112,10 +112,11 @@ function Sidemenu() {
         <SidebarGroup>
           {/* <SidebarGroupLabel className="mb-4">Chat Separately</SidebarGroupLabel> */}
           <SidebarGroupContent>
-            <SidebarMenu className="gap-2">
+            <SidebarMenu className="gap-1">
               {items.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton
+                    className="rounded-xl"
                     size="lg"
                     asChild
                     isActive={pathname === item.url}
@@ -135,13 +136,13 @@ function Sidemenu() {
       </SidebarContent>
       <SidebarFooter className="bg-zinc-100">
         <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger className="p-3 grid grid-cols-[auto_1fr] items-center group-data-[collapsible=icon]:grid-cols-1 group-data-[collapsible=icon]:justify-items-center gap-2 rounded-xl text-zinc-100 bg-zinc-900 hover:bg-zinc-800 cursor-pointer">
+          <PopoverTrigger className="p-3 flex items-center gap-4 group-data-[collapsible=icon]:justify-center rounded-xl text-zinc-100 bg-zinc-900 hover:bg-zinc-800 cursor-pointer">
             <KeyRoundIcon className="size-4" />
             <div className="group-data-[collapsible=icon]:hidden">
               Set your key
             </div>
           </PopoverTrigger>
-          <PopoverContent className="w-72">
+          <PopoverContent className="min-w-72" side="right" align="end">
             <div className="leading-[1.2]">
               To obtain an API key visit{" "}
               <Link

@@ -6,7 +6,7 @@ interface Props {
   content: string;
 }
 
-function ChatBlob({ role, content }: Props) {
+function MessageBlob({ role, content }: Props) {
   switch (role) {
     case "system": {
       return (
@@ -29,4 +29,4 @@ function ChatBlob({ role, content }: Props) {
   }
 }
 
-export default ChatBlob;
+export default MessageBlob;

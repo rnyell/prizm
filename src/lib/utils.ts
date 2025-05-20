@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const models = {
+const models1 = {
   gemini: "google/gemini-2.0-flash-exp:free",
   gemma: "google/gemma-3-27b-it:free",
   maverick: "meta-llama/llama-4-maverick:free",
@@ -16,8 +16,24 @@ const models = {
   deepseek: "deepseek/deepseek-chat-v3-0324:free",
 } as const;
 
+const models2 = {
+  "google/gemini-2.0-flash-exp:free": "gemini-2.0-flash-exp",
+  "google/gemma-3-27b-it:free": "gemma-3-27b-it",
+  "meta-llama/llama-4-maverick:free": "llama-4-maverick",
+  "meta-llama/llama-4-scout:free": "llama-4-scout",
+  "nvidia/llama-3.1-nemotron-ultra-253b-v1:free":
+    "llama-3.1-nemotron-ultra-253b-v1",
+  "mistralai/mistral-small-3.1-24b-instruct:free":
+    "mistral-small-3.1-24b-instruct",
+  "deepseek/deepseek-chat-v3-0324:free": "deepseek-chat-v3",
+} as const;
+
 export function getModelByName(key: ModelName): Model {
-  return models[key];
+  return models1[key];
+}
+
+export function getModelByFullName(key: Model) {
+  return models2[key];
 }
 
 const modelDetails = {
@@ -58,7 +74,7 @@ const modelDetails = {
       "Llama-3.1-Nemotron-Ultra-253B-v1 is a large language model (LLM) optimized for advanced reasoning, human-interactive chat, retrieval-augmented generation (RAG), and tool-calling tasks. Derived from Meta’s Llama-3.1-405B-Instruct, it has been significantly customized using Neural Architecture Search (NAS), resulting in enhanced efficiency, reduced memory usage, and improved inference latency. The model supports a context length of up to 128K tokens and can operate efficiently on an 8x NVIDIA H100 node.",
   },
   deepseek: {
-    name: "deepseek-chat-v3-0324",
+    name: "deepseek-chat-v3",
     context: 163840,
     overview:
       "DeepSeek V3, a 685B-parameter, mixture-of-experts model, is the latest iteration of the flagship chat model family from the DeepSeek team.\n\nIt succeeds the DeepSeek V3 model and performs really well on a variety of tasks.",

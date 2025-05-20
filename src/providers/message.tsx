@@ -4,14 +4,9 @@ import { createContext, useContext, useReducer } from "react";
 import type { ReactNode, Dispatch } from "react";
 import type { Model, Message } from "@/lib/types";
 
-type SectionStore = {
-  sections: Model[];
-  messages: Message[];
-};
+type Store = Map<Model, Message[]>;
 
-type SectionAction =
-  | { type: "add_model"; model: Model }
-  | { type: "remove_model"; model: Model }
+type Action =
   | {
       type: "add_input";
       model: Model;
@@ -25,57 +20,9 @@ type SectionAction =
       content: string;
     };
 
-type ChatStore = Map<Model, Message[]>;
+const initialStore: Store = new Map();
 
-type ChatAction =
-  | {
-      type: "add_input";
-      model: Model;
-      role: "user";
-      content: string;
-    }
-  | {
-      type: "add_response";
-      model: Model;
-      role: "system";
-      content: string;
-    };
-
-const initialSection: SectionStore = {
-  sections: [],
-  messages: [],
-};
-
-function sectionReducer(
-  store: SectionStore,
-  action: SectionAction,
-): SectionStore {
-  switch (action.type) {
-    case "add_model": {
-      const sections = [...store.sections, action.model];
-      return { ...store, sections };
-    }
-    case "remove_model": {
-      const model = action.model;
-      const sections = store.sections.filter((sect) => sect !== model);
-      return { ...store, sections };
-    }
-    case "add_input": {
-      const { model, role, content } = action;
-      const messages = [...store.messages, { model, role, content }];
-      return { ...store, messages };
-    }
-    case "add_response": {
-      const { model, role, content } = action;
-      const messages = [...store.messages, { model, role, content }];
-      return { ...store, messages };
-    }
-  }
-}
-
-const initialChat: ChatStore = new Map();
-
-function chatReducer(store: ChatStore, action: ChatAction): ChatStore {
+function reducer(store: Store, action: Action): Store {
   switch (action.type) {
     case "add_input": {
       const state = new Map(store);
@@ -97,10 +44,8 @@ function chatReducer(store: ChatStore, action: ChatAction): ChatStore {
 }
 
 interface Context {
-  sectionStore: SectionStore;
-  sectionDispatch: Dispatch<SectionAction>;
-  chatStore: ChatStore;
-  chatDispatch: Dispatch<ChatAction>;
+  chatStore: Store;
+  chatDispatch: Dispatch<Action>;
 }
 
 interface ProviderProps {
@@ -110,21 +55,12 @@ interface ProviderProps {
 const MessageContext = createContext<Context | null>(null);
 
 export function MessageProvider({ children }: ProviderProps) {
-  const [sectionStore, sectionDispatch] = useReducer(
-    sectionReducer,
-    initialSection,
-  );
-  const [chatStore, chatDispatch] = useReducer(chatReducer, initialChat);
+  const [chatStore, chatDispatch] = useReducer(reducer, initialStore);
 
   console.log("MessageProvider re-rendered");
   console.log(chatStore);
 
-  const contextValue = {
-    sectionStore,
-    sectionDispatch,
-    chatStore,
-    chatDispatch,
-  };
+  const contextValue = { chatStore, chatDispatch };
 
   return (
     <MessageContext.Provider value={contextValue}>

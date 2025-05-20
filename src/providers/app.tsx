@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { ConfigProvider } from "./config";
+import { SectionProvider } from "./section";
 import { MessageProvider } from "./message";
 
 interface Props {
@@ -11,7 +12,9 @@ interface Props {
 export function AppProvider({ children }: Props) {
   return (
     <ConfigProvider>
-      <MessageProvider>{children}</MessageProvider>
+      <MessageProvider>
+        <SectionProvider>{children}</SectionProvider>
+      </MessageProvider>
     </ConfigProvider>
   );
 }

@@ -7,6 +7,7 @@ export type Model =
   | "mistralai/mistral-small-3.1-24b-instruct:free"
   | "deepseek/deepseek-chat-v3-0324:free";
 
+// ModelShortName ??
 export type ModelName =
   | "gemma"
   | "gemini"

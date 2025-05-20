@@ -1,19 +1,31 @@
-import ChatScreen from "@/components/chat-screen";
+"use client";
+
+import { type CSSProperties } from "react";
+import ChatSection from "./chat-section";
+import Toolbar from "./toolbar";
+import { useSections } from "@/providers";
 
 function Page() {
+  const { sectionStore } = useSections();
+  const count = sectionStore.models.length;
+
+  const styles: CSSProperties = {
+    gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))`,
+    gridTemplateRows: `repeat(1, minmax(0, 1fr))`,
+  };
+
   return (
-    <div className="@container/chats h-full grid grid-cols-3 gap-px bg-zinc-200">
-      <div className="bg-zinc-50">
-        <ChatScreen model="meta-llama/llama-4-scout:free" />
-      </div>
-      <div className="bg-zinc-50">
-        <ChatScreen model="deepseek/deepseek-chat-v3-0324:free" />
-      </div>
-      <div className="bg-zinc-50">
-        <ChatScreen model="mistralai/mistral-small-3.1-24b-instruct:free" />
+    <div className="h-svh grid grid-rows-[auto_calc(100svh-60px)]">
+      <Toolbar />
+      <div className="h-full relative">
+        <div className="h-full grid gap-x-1 bg-border" style={styles}>
+          {sectionStore.models.map((model) => {
+            return <ChatSection model={model} key={model} />;
+          })}
+        </div>
       </div>
     </div>
   );
 }
-// "w-full @md/chats:w-4/5 @lg/chats:w-3/5"
+
 export default Page;

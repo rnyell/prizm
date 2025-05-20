@@ -1,12 +1,11 @@
 "use client";
 
-import { type KeyboardEvent, useState, useTransition } from "react";
-import { useConfig, useMessages } from "@/providers";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { useConfig, useMessages } from "@/providers";
 import { llm as action } from "@/lib/actions";
-import { ScrollArea } from "./ui/scroll-area";
-import { InputField } from "./input-field";
-import ChatBlob from "./chat-blob";
+import { InputField } from "@/components/input-field";
+import MessagesArea from "@/components/messages-area";
 import type { Model } from "@/lib/types";
 
 interface Props {
@@ -21,6 +20,11 @@ function ChatScreen({ model }: Props) {
   const messages = chatStore.get(model) ?? [];
 
   function appendInput() {
+    if (input.trim().length < 2) {
+      const msg = "Your input should have at least 2 characters.";
+      toast.warning(msg);
+      return;
+    }
     chatDispatch({
       type: "add_input",
       model: model,
@@ -31,13 +35,8 @@ function ChatScreen({ model }: Props) {
   }
 
   function appendResponse() {
-    if (!apiKey) {
-      const msg = "You must provide your API_KEY in order to chat with models.";
-      toast.error(msg);
-      return;
-    }
     startTransition(async () => {
-      const result = await action(model, input, { apiKey });
+      const result = await action(model, input, { apiKey: apiKey! });
       if (result.response) {
         chatDispatch({
           type: "add_response",
@@ -57,15 +56,7 @@ function ChatScreen({ model }: Props) {
     });
   }
 
-  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      appendInput();
-      appendResponse();
-    }
-  }
-
-  function handleClick() {
+  function appendMessage() {
     if (!apiKey) {
       const msg = "You must provide your API_KEY in order to chat with models.";
       toast.error(msg);
@@ -76,22 +67,16 @@ function ChatScreen({ model }: Props) {
   }
 
   return (
-    <div className="p-4 pb-10 h-[calc(100svh-65px)] relative bg-zinc-50">
-      <ScrollArea className="mx-auto max-w-4xl h-full scrollbar-thin flex flex-col gap-2">
-        {messages.length >= 1 &&
-          messages.map((message, i) => (
-            <ChatBlob role={message.role} content={message.content} key={i} />
-          ))}
-      </ScrollArea>
+    <div className="pb-10 h-full relative bg-zinc-50">
+      <MessagesArea messages={messages} />
       <div
-        className="mt-4 w-3/5 max-w-2xl absolute z-10 left-1/2 -translate-x-1/2 rounded-xl border-[1.5px] border-zinc-500 bg-zinc-100"
+        className="mt-4 w-3/5 absolute z-10 left-1/2 -translate-x-1/2"
         style={{ bottom: messages.length < 1 ? "50%" : "1rem" }}
       >
         <InputField
           value={input}
           onChange={(v) => setInput(v)}
-          onKeyDown={handleKeyDown}
-          onClick={handleClick}
+          appendMessage={appendMessage}
           pending={pending}
         />
       </div>
