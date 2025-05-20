@@ -7,6 +7,7 @@ import type { Model, Message } from "@/lib/types";
 type Store = {
   models: Model[];
   messages: Message[];
+  layout: "col" | "grid";
 };
 
 type Action =
@@ -23,11 +24,16 @@ type Action =
       model: Model;
       role: "system";
       content: string;
+    }
+  | {
+      type: "set_layout";
+      layout: "col" | "grid";
     };
 
 const initialStore: Store = {
   models: [],
   messages: [],
+  layout: "col",
 };
 
 function reducer(store: Store, action: Action): Store {
@@ -50,6 +56,9 @@ function reducer(store: Store, action: Action): Store {
       const { model, role, content } = action;
       const messages = [...store.messages, { model, role, content }];
       return { ...store, messages };
+    }
+    case "set_layout": {
+      return { ...store, layout: action.layout };
     }
   }
 }

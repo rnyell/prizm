@@ -84,7 +84,7 @@ function ChatSection({ model }: Props) {
       </div>
       <MessagesArea messages={messages} />
       <div
-        className="mt-4 w-3/5 absolute z-10 left-1/2 -translate-x-1/2"
+        className="mt-4 w-3/5 absolute z-10 left-1/2 -translate-x-1/2 flex justify-center"
         style={{ bottom: messages.length < 1 ? "50%" : "1rem" }}
       >
         <InputField

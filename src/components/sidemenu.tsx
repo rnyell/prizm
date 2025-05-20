@@ -16,7 +16,7 @@ import {
   SidebarSeparator,
   SidebarHeader,
   SidebarFooter,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -79,7 +79,7 @@ function Sidemenu() {
     if (typeof apiKey === "string") {
       setApiKey(apiKey);
     } else {
-      alert("failed to set api key. please try again!");
+      alert("failed to set api key for unknown reason. please try again!");
     }
     setOpen(false);
   }
@@ -147,7 +147,7 @@ function Sidemenu() {
               To obtain an API key visit{" "}
               <Link
                 className="underline"
-                href="https://www.openrouter.ai"
+                href="https://openrouter.ai/settings/keys"
                 target="_blank"
               >
                 openrouter.ai

@@ -1,11 +1,14 @@
 "use client";
 
+import { toast } from "sonner";
 import { useSections } from "@/providers";
+import { cn, getModelByName } from "@/lib/utils";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import {
   GeminiIcon,
   MetaIcon,
@@ -13,10 +16,8 @@ import {
   NvidiaIcon,
   MistralIcon,
 } from "@/components/icons";
-import { PlusIcon } from "lucide-react";
-import { getModelByName } from "@/lib/utils";
-import { ModelName } from "@/lib/types";
-import { Button } from "@/components/ui/button";
+import { Columns3Icon, Grid2x2Icon, PlusIcon } from "lucide-react";
+import type { Model, ModelName } from "@/lib/types";
 
 const items = [
   { name: "Gemini", icon: GeminiIcon },
@@ -31,6 +32,21 @@ const items = [
 function Toolbar() {
   const { sectionStore, sectionDispatch } = useSections();
   const models = sectionStore.models;
+  const layout = sectionStore.layout;
+
+  function modelHandler(model: Model) {
+    if (models.length < 4) {
+      sectionDispatch({ type: "add_model", model });
+    } else {
+      toast.warning("You can chat with only four models at once.", {
+        position: "top-center",
+      });
+    }
+  }
+
+  function layoutHandler(layout: "col" | "grid") {
+    sectionDispatch({ type: "set_layout", layout });
+  }
 
   return (
     <div className="px-4 py-2 h-[60px] flex items-center text-[0.8rem] sticky z-10 top-0 border-b bg-zinc-100">
@@ -50,7 +66,7 @@ function Toolbar() {
                 return (
                   <Button
                     className="px-2 py-1.5 h-[unset] gap-1 border rounded-full text-xs text-zinc-900 bg-zinc-100 hover:bg-zinc-200 cursor-pointer"
-                    onClick={() => sectionDispatch({ type: "add_model", model })}
+                    onClick={() => modelHandler(model)}
                     disabled={Boolean(isSelected)}
                     key={item.name}
                   >
@@ -62,6 +78,30 @@ function Toolbar() {
             </div>
           </PopoverContent>
         </Popover>
+      </div>
+      <div className="ml-auto overflow-hidden flex items-center gap-px rounded-md border bg-border">
+        <div
+          className={cn(
+            "py-1.5 px-2",
+            layout === "col"
+              ? "bg-zinc-700 stroke-zinc-200"
+              : "bg-zinc-200 stroke-zinc-600 cursor-pointer",
+          )}
+          onClick={() => layoutHandler("col")}
+        >
+          <Columns3Icon className="size-4 stroke-inherit" />
+        </div>
+        <div
+          className={cn(
+            "py-1.5 px-2",
+            layout === "grid"
+              ? "bg-zinc-700 stroke-zinc-200"
+              : "bg-zinc-200 stroke-zinc-600 cursor-pointer",
+          )}
+          onClick={() => layoutHandler("grid")}
+        >
+          <Grid2x2Icon className="size-4 stroke-inherit" />
+        </div>
       </div>
     </div>
   );
