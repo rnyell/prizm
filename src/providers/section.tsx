@@ -77,9 +77,6 @@ const SectionContext = createContext<Context | null>(null);
 export function SectionProvider({ children }: ProviderProps) {
   const [sectionStore, sectionDispatch] = useReducer(reducer, initialStore);
 
-  console.log("SectionProvider re-rendered");
-  console.log(sectionStore);
-
   const contextValue = { sectionStore, sectionDispatch };
 
   return (

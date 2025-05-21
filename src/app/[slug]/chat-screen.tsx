@@ -44,14 +44,14 @@ function ChatScreen({ model }: Props) {
           role: "system",
           content: result.response,
         });
-        if (result.error) {
-          chatDispatch({
-            type: "add_response",
-            model: model,
-            role: "system",
-            content: `Error occurred while generating response. Please try again.`,
-          });
-        }
+      }
+      if (result.error) {
+        chatDispatch({
+          type: "add_response",
+          model: model,
+          role: "system",
+          content: `Error occurred while generating response. Please try again.`,
+        });
       }
     });
   }

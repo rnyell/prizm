@@ -3,12 +3,13 @@
 import { toast } from "sonner";
 import { useSections } from "@/providers";
 import { cn, getModelByName } from "@/lib/utils";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
 import {
   GeminiIcon,
   MetaIcon,
@@ -49,7 +50,8 @@ function Toolbar() {
   }
 
   return (
-    <div className="px-4 py-2 h-[60px] flex items-center text-[0.8rem] sticky z-10 top-0 border-b bg-zinc-100">
+    <div className="px-4 py-2 h-[60px] flex items-center gap-5 text-[0.8rem] sticky z-10 top-0 border-b bg-zinc-100">
+      <SidebarTrigger className="cursor-pointer" />
       <div>
         <Popover>
           <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 rounded-full border hover:bg-zinc-200 cursor-pointer">
@@ -65,7 +67,7 @@ function Toolbar() {
 
                 return (
                   <Button
-                    className="px-2 py-1.5 h-[unset] gap-1 border rounded-full text-xs text-zinc-900 bg-zinc-100 hover:bg-zinc-200 cursor-pointer"
+                    className="px-2 py-1.5 h-[unset] gap-1 border rounded-full text-xs text-zinc-900 bg-zinc-100 hover:bg-zinc-200 cursor-cell disabled:pointer-events-auto disabled:cursor-not-allowed"
                     onClick={() => modelHandler(model)}
                     disabled={Boolean(isSelected)}
                     key={item.name}
@@ -79,7 +81,7 @@ function Toolbar() {
           </PopoverContent>
         </Popover>
       </div>
-      <div className="ml-auto overflow-hidden flex items-center gap-px rounded-md border bg-border">
+      <div className="overflow-hidden flex items-center gap-px rounded-md border bg-border">
         <div
           className={cn(
             "py-1.5 px-2",

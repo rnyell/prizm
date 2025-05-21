@@ -57,9 +57,6 @@ const MessageContext = createContext<Context | null>(null);
 export function MessageProvider({ children }: ProviderProps) {
   const [chatStore, chatDispatch] = useReducer(reducer, initialStore);
 
-  console.log("MessageProvider re-rendered");
-  console.log(chatStore);
-
   const contextValue = { chatStore, chatDispatch };
 
   return (

@@ -47,14 +47,14 @@ function ChatSection({ model }: Props) {
           role: "system",
           content: result.response,
         });
-        if (result.error) {
-          sectionDispatch({
-            type: "add_response",
-            model: model,
-            role: "system",
-            content: `Error occurred while generating response. Please try again.`,
-          });
-        }
+      }
+      if (result.error) {
+        sectionDispatch({
+          type: "add_response",
+          model: model,
+          role: "system",
+          content: `Error occurred while generating response. Please try again.`,
+        });
       }
     });
   }
@@ -70,7 +70,7 @@ function ChatSection({ model }: Props) {
   }
 
   return (
-    <div className="pb-10 h-full relative bg-zinc-50">
+    <div className="pb-10 h-full relative bg-background">
       <div className="p-1 flex items-center border-b">
         <div className="grow text-center text-sm font-medium">{name}</div>
         <div className="ml-auto">
@@ -78,7 +78,7 @@ function ChatSection({ model }: Props) {
             className="p-1 bg-zinc-100 cursor-pointer"
             onClick={() => sectionDispatch({ type: "remove_model", model })}
           >
-            <XIcon className="size-3" />
+            <XIcon className="size-3 stroke-[2.25]" />
           </div>
         </div>
       </div>

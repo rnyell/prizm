@@ -12,9 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   SidebarSeparator,
-  SidebarHeader,
   SidebarFooter,
 } from "./ui/sidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -86,20 +84,15 @@ function Sidemenu() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="bg-zinc-100"></SidebarHeader>
-      <SidebarTrigger className="absolute z-10 right-6 top-2" />
       <SidebarContent className="bg-zinc-100">
         <SidebarGroup>
-          {/* <SidebarGroupLabel>Chat w/ models Simultaneously</SidebarGroupLabel> */}
-          <SidebarGroupContent className="mt-5">
+          <SidebarGroupContent className="mt-8">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton className="rounded-xl" size="lg" asChild>
                   <Link href="/m">
-                    <div className="p-2 size-8 flex-center rounded-full bg-zinc-800">
-                      <LayoutTemplateIcon className="size-full stroke-zinc-100" />
-                    </div>
-                    <div className="font-medium group-data-[collapsible=icon]:hidden">
+                    <LayoutTemplateIcon className="size-7 fill-zinc-800" />
+                    <div className="group-data-[collapsible=icon]:hidden">
                       Simultaneous Chat
                     </div>
                   </Link>
@@ -108,9 +101,8 @@ function Sidemenu() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarSeparator className="my-8 bg-zinc-400" />
+        <SidebarSeparator className="my-6 bg-zinc-400" />
         <SidebarGroup>
-          {/* <SidebarGroupLabel className="mb-4">Chat Separately</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu className="gap-1">
               {items.map((item) => (
@@ -122,7 +114,7 @@ function Sidemenu() {
                     isActive={pathname === item.url}
                   >
                     <Link className="flex items-center gap-4" href={item.url}>
-                      <item.icon className="size-8 fill-zinc-800" />
+                      <item.icon className="size-7 fill-zinc-800" />
                       <div className="group-data-[collapsible=icon]:hidden">
                         {item.title}
                       </div>
@@ -136,13 +128,13 @@ function Sidemenu() {
       </SidebarContent>
       <SidebarFooter className="bg-zinc-100">
         <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger className="p-3 flex items-center gap-4 group-data-[collapsible=icon]:justify-center rounded-xl text-zinc-100 bg-zinc-900 hover:bg-zinc-800 cursor-pointer">
-            <KeyRoundIcon className="size-4" />
-            <div className="group-data-[collapsible=icon]:hidden">
+          <PopoverTrigger className="p-3 flex items-center gap-4 rounded-xl border transition-[background-color] hover:bg-zinc-300 cursor-pointer group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-zinc-100 group-data-[collapsible=icon]:bg-zinc-900 group-data-[collapsible=icon]:hover:bg-zinc-800">
+            <KeyRoundIcon className="size-5" />
+            <div className="text-sm group-data-[collapsible=icon]:hidden">
               Set your key
             </div>
           </PopoverTrigger>
-          <PopoverContent className="min-w-72" side="right" align="end">
+          <PopoverContent className="min-w-72 text-sm" side="right" align="end">
             <div className="leading-[1.2]">
               To obtain an API key visit{" "}
               <Link
@@ -152,8 +144,9 @@ function Sidemenu() {
               >
                 openrouter.ai
               </Link>
+              .
             </div>
-            <form className="mt-3 flex flex-col gap-2" onSubmit={handleSubmit}>
+            <form className="mt-4 flex flex-col gap-2" onSubmit={handleSubmit}>
               <Input name="api-key" placeholder="Enter your API key" />
               <Button className="ml-auto" size="sm" type="submit">
                 Submit

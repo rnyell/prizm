@@ -32,6 +32,7 @@ export function ConfigProvider({ children }: ProviderProps) {
     apiKey,
     setApiKey: (key: string) => {
       try {
+        localStorage.removeItem("api-key");
         localStorage.setItem("api-key", key);
       } catch (e) {
         console.warn(e);
