@@ -5,7 +5,7 @@ import { useConfig, useSections } from "@/providers";
 import { toast } from "sonner";
 import { llm as action } from "@/lib/actions";
 import { getModelByFullName } from "@/lib/utils";
-import { InputField } from "@/components/input-field";
+import { InputField, InputWrapper } from "@/components/input-field";
 import MessagesArea from "@/components/messages-area";
 import { XIcon } from "lucide-react";
 import type { Model } from "@/lib/types";
@@ -75,7 +75,7 @@ function ChatSection({ model }: Props) {
         <div className="grow text-center text-sm font-medium">{name}</div>
         <div className="ml-auto">
           <div
-            className="p-1 bg-zinc-100 cursor-pointer"
+            className="p-1 rounded bg-zinc-100 cursor-pointer"
             onClick={() => sectionDispatch({ type: "remove_model", model })}
           >
             <XIcon className="size-3 stroke-[2.25]" />
@@ -83,17 +83,14 @@ function ChatSection({ model }: Props) {
         </div>
       </div>
       <MessagesArea messages={messages} />
-      <div
-        className="mt-4 w-3/5 absolute z-10 left-1/2 -translate-x-1/2 flex justify-center"
-        style={{ bottom: messages.length < 1 ? "50%" : "1rem" }}
-      >
+      <InputWrapper style={{ bottom: messages.length < 1 ? "50%" : "1rem" }}>
         <InputField
           value={input}
           onChange={(v) => setInput(v)}
           appendMessage={appendMessage}
           pending={pending}
         />
-      </div>
+      </InputWrapper>
     </div>
   );
 }

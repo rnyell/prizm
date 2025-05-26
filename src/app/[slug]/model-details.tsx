@@ -6,8 +6,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "./ui/sheet";
-import { ScrollArea } from "./ui/scroll-area";
+} from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface Props {
   details: ModelDetails;
@@ -16,6 +17,7 @@ interface Props {
 function ModelDetails({ details }: Props) {
   return (
     <div className="p-2">
+      <SidebarTrigger className="absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer" />
       <Sheet>
         <SheetTrigger asChild>
           <div className="p-3 text-center text-lg font-semibold cursor-pointer">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSections } from "@/providers";
+import { AddModelPopover } from "./toolbar";
 import ChatSection from "./chat-section";
 
 function ChatsContainer() {
@@ -8,6 +9,7 @@ function ChatsContainer() {
   const layout = sectionStore.layout;
   const models = sectionStore.models;
   const count = models.length;
+
   const colStyles = {
     gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))`,
     gridTemplateRows: `repeat(1, minmax(0, 1fr))`,
@@ -21,8 +23,11 @@ function ChatsContainer() {
   if (count === 0) {
     return (
       <div className="h-full grid place-content-center">
-        <div className="text-xl">
-          Add a model by selecting it from the toolbar.
+        <div className="p-4 text-xl">
+          Add models by selecting them from the toolbar or the button bellow.
+          <div className="mt-4 mx-auto w-max text-[0.9rem]">
+            <AddModelPopover />
+          </div>
         </div>
       </div>
     );

@@ -29,15 +29,6 @@ export async function llm(
     stream: false,
     messages: [{ role: "user", content: input }],
   });
-  if (input.trim().length < 2) {
-    return {
-      response: null,
-      error: {
-        message: "Your input should have at least 2 characters.",
-        cause: "invalid_input",
-      },
-    };
-  }
   try {
     const res = await fetch(url, { method: "POST", headers, body });
     if (!res.ok) {

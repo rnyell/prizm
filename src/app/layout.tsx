@@ -11,14 +11,11 @@ import "../styles/globals.css";
 export const metadata: Metadata = {
   title: { template: "%s", default: "" },
   description: "Chat with multiple LLMs simultaneously",
-  icons: {
-    // icon: "/seo/logo.png",
-    // apple: "/seo/logo.png",
-  },
+  icons: {},
   openGraph: {
     type: "website",
     url: "mupt.vercel.app",
-    // images: "/seo/og.png",
+    images: undefined,
     title: "",
     description: "Chat with multiple LLMs simultaneously",
   },
@@ -48,7 +45,7 @@ export default function RootLayout({
       <body className={`relative ${fontVariables} antialiased`}>
         <AppProvider>
           <SidebarProvider>
-            <div className="w-full h-full grid grid-cols-[auto_1fr]">
+            <div className="w-full h-full grid grid-cols-1 md:grid-cols-[auto_1fr]">
               <Sidemenu />
               <div>{children}</div>
               <Toaster richColors />

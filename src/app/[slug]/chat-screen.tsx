@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { useConfig, useMessages } from "@/providers";
 import { llm as action } from "@/lib/actions";
-import { InputField } from "@/components/input-field";
+import { InputWrapper, InputField } from "@/components/input-field";
 import MessagesArea from "@/components/messages-area";
 import type { Model } from "@/lib/types";
 
@@ -69,17 +69,14 @@ function ChatScreen({ model }: Props) {
   return (
     <div className="pb-10 h-full relative bg-zinc-50">
       <MessagesArea messages={messages} />
-      <div
-        className="mt-4 w-3/5 absolute z-10 left-1/2 -translate-x-1/2 flex justify-center"
-        style={{ bottom: messages.length < 1 ? "50%" : "1rem" }}
-      >
+      <InputWrapper style={{ bottom: messages.length < 1 ? "50%" : "1rem" }}>
         <InputField
           value={input}
           onChange={(v) => setInput(v)}
           appendMessage={appendMessage}
           pending={pending}
         />
-      </div>
+      </InputWrapper>
     </div>
   );
 }

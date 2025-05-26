@@ -8,6 +8,7 @@ type Store = {
   models: Model[];
   messages: Message[];
   layout: "col" | "grid";
+  input: "separate" | "unit";
 };
 
 type Action =
@@ -28,12 +29,17 @@ type Action =
   | {
       type: "set_layout";
       layout: "col" | "grid";
+    }
+  | {
+      type: "set_textfield";
+      input: "separate" | "unit";
     };
 
 const initialStore: Store = {
   models: [],
   messages: [],
   layout: "col",
+  input: "separate",
 };
 
 function reducer(store: Store, action: Action): Store {
@@ -45,7 +51,8 @@ function reducer(store: Store, action: Action): Store {
     case "remove_model": {
       const model = action.model;
       const models = store.models.filter((sect) => sect !== model);
-      return { ...store, models };
+      const messages = store.messages.filter((msg) => msg.model !== model);
+      return { ...store, models, messages };
     }
     case "add_input": {
       const { model, role, content } = action;
@@ -59,6 +66,9 @@ function reducer(store: Store, action: Action): Store {
     }
     case "set_layout": {
       return { ...store, layout: action.layout };
+    }
+    case "set_textfield": {
+      return { ...store, input: action.input };
     }
   }
 }

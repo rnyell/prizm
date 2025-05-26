@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  type ReactNode,
+  type CSSProperties,
   type TextareaHTMLAttributes,
   type KeyboardEvent,
   useRef,
@@ -10,7 +12,13 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { ArrowUpIcon } from "lucide-react";
 
-interface Props
+interface WrapperProps {
+  className?: string;
+  style: CSSProperties;
+  children: ReactNode;
+}
+
+interface FieldProps
   extends Omit<
     TextareaHTMLAttributes<HTMLTextAreaElement>,
     "value" | "onChange"
@@ -21,13 +29,27 @@ interface Props
   pending: boolean;
 }
 
+export function InputWrapper({ children, style, className }: WrapperProps) {
+  return (
+    <div
+      className={cn(
+        "mt-4 w-3/5 absolute z-10 left-1/2 -translate-x-1/2 flex justify-center",
+        className,
+      )}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function InputField({
   value,
   onChange,
   appendMessage,
   pending,
   ...props
-}: Props) {
+}: FieldProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   function resizeTextarea() {
@@ -61,7 +83,7 @@ export function InputField({
   return (
     <div
       className={cn(
-        "p-2 min-h-9 min-w-56 w-full max-w-2xl rounded-xl border-[1.5px] border-zinc-500 bg-zinc-100",
+        "p-2 min-h-9 min-w-42 w-full rounded-xl border-[1.5px] border-zinc-500 bg-zinc-100 md:min-w-52",
         value.length <= 24
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
@@ -82,7 +104,7 @@ export function InputField({
         {...props}
       />
       <Button
-        className={cn("ml-auto rounded-xl", value.length > 25 && "row-start-2")}
+        className={cn("ml-auto rounded-lg", value.length > 25 && "row-start-2")}
         size="icon"
         disabled={pending}
         onClick={handleClick}

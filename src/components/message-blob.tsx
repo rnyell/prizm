@@ -17,16 +17,14 @@ function MessageBlob({ role, content }: Props) {
   }
 
   switch (role) {
-    case "system": {
+    case "user": {
       return (
-        <div className="mt-6 mb-14 flex flex-col gap-2">
-          <div className="p-2 max-w-chars-70">
-            <div className="markdown prose text-pretty">
-              <Markdown>{content}</Markdown>
-            </div>
+        <div className="ml-auto p-2 w-[85%] max-w-[400px] relative rounded-xl bg-zinc-200">
+          <div className="markdown text-pretty">
+            <Markdown>{content}</Markdown>
           </div>
           <div
-            className="p-1 size-max rounded hover:bg-zinc-100 cursor-pointer"
+            className="p-1 absolute -left-8 bottom-0 rounded hover:bg-zinc-100 cursor-pointer"
             onClick={handleCopy}
           >
             {copied ? (
@@ -38,14 +36,16 @@ function MessageBlob({ role, content }: Props) {
         </div>
       );
     }
-    case "user": {
+    case "system": {
       return (
-        <div className="ml-auto p-2 max-w-[400px] relative rounded-xl bg-zinc-200">
-          <div className="markdown text-pretty">
-            <Markdown>{content}</Markdown>
+        <div className="mt-6 mb-15 flex flex-col gap-2">
+          <div className="p-2 max-w-chars-70">
+            <div className="markdown prose text-pretty">
+              <Markdown>{content}</Markdown>
+            </div>
           </div>
           <div
-            className="p-1 absolute -left-8 bottom-0 rounded hover:bg-zinc-100 cursor-pointer"
+            className="p-1 size-max rounded hover:bg-zinc-100 cursor-pointer"
             onClick={handleCopy}
           >
             {copied ? (
