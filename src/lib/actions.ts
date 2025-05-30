@@ -1,6 +1,6 @@
 "use server";
 
-import type { Model } from "./types";
+import type { Model } from "@/types";
 
 type Options = {
   apiKey: string;
@@ -19,6 +19,7 @@ export async function llm(
   input: string,
   options: Options,
 ): Promise<LLMResponse> {
+  console.log("...started...");
   const url = "https://openrouter.ai/api/v1/chat/completions";
   const headers = {
     Authorization: `Bearer ${options.apiKey}`,
@@ -41,8 +42,8 @@ export async function llm(
       };
     }
     const data = await res.json();
-    console.log(data);
     const response = data.choices[0].message.content as string | null;
+    console.dir(data, { depth: 2 });
     return { response };
   } catch (error: unknown) {
     console.error(error);

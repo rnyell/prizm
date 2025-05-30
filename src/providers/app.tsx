@@ -2,8 +2,7 @@
 
 import type { ReactNode } from "react";
 import { ConfigProvider } from "./config";
-import { SectionProvider } from "./section";
-import { MessageProvider } from "./message";
+import { ChatProvider } from "./chat";
 
 interface Props {
   children: ReactNode;
@@ -12,9 +11,7 @@ interface Props {
 export function AppProvider({ children }: Props) {
   return (
     <ConfigProvider>
-      <MessageProvider>
-        <SectionProvider>{children}</SectionProvider>
-      </MessageProvider>
+      <ChatProvider>{children}</ChatProvider>
     </ConfigProvider>
   );
 }

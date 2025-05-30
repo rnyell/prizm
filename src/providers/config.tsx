@@ -1,18 +1,44 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
-import type { ReactNode } from "react";
+import type { Dispatch, ReactNode } from "react";
+import { createContext, use, useState, useReducer, useCallback } from "react";
 
-interface ProviderProps {
+interface Props {
   children: ReactNode;
 }
 
 interface Context {
   apiKey: string | undefined;
   setApiKey: (key: string) => void;
+  appearance: {
+    layout: "col" | "grid";
+    input: "separate" | "sync";
+  };
+  setAppearance: Dispatch<Action>;
 }
 
-const ConfigContext = createContext<Context | null>(null);
+type Action =
+  | {
+      type: "layout";
+      layout: "col" | "grid";
+    }
+  | {
+      type: "input";
+      input: "separate" | "sync";
+    };
+
+type Appearance = Context["appearance"];
+
+function reducer(store: Appearance, action: Action): Appearance {
+  switch (action.type) {
+    case "layout": {
+      return { ...store, layout: action.layout };
+    }
+    case "input": {
+      return { ...store, input: action.input };
+    }
+  }
+}
 
 function getApiKey() {
   try {
@@ -25,20 +51,33 @@ function getApiKey() {
   }
 }
 
-export function ConfigProvider({ children }: ProviderProps) {
-  const [apiKey, setApiKey] = useState<string | undefined>(getApiKey);
+const ConfigContext = createContext<Context | null>(null);
+
+const initialAppearance: Appearance = {
+  layout: "col",
+  input: "separate",
+};
+
+export function ConfigProvider({ children }: Props) {
+  const [_apiKey, _setApiKey] = useState<string | undefined>(getApiKey);
+  const [appearance, setAppearance] = useReducer(reducer, initialAppearance);
+
+  const apiKey = _apiKey;
+  const setApiKey = useCallback((key: string) => {
+    try {
+      localStorage.removeItem("api-key");
+      localStorage.setItem("api-key", key);
+    } catch (e) {
+      console.warn(e);
+    }
+    _setApiKey(key);
+  }, []);
 
   const contextValue = {
     apiKey,
-    setApiKey: (key: string) => {
-      try {
-        localStorage.removeItem("api-key");
-        localStorage.setItem("api-key", key);
-      } catch (e) {
-        console.warn(e);
-      }
-      setApiKey(key);
-    },
+    setApiKey,
+    appearance,
+    setAppearance,
   };
 
   return (
@@ -49,7 +88,7 @@ export function ConfigProvider({ children }: ProviderProps) {
 }
 
 export function useConfig() {
-  const context = useContext(ConfigContext);
+  const context = use(ConfigContext);
   if (!context) {
     throw new Error("ConfigContext is not provided correctly.");
   }

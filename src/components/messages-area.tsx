@@ -1,4 +1,4 @@
-import type { Message } from "@/lib/types";
+import type { Message } from "@/types";
 import { ScrollArea } from "./ui/scroll-area";
 import MessageBlob from "./message-blob";
 

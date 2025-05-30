@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import type { ModelName } from "@/lib/types";
-import { getModelByName, getModelDetails } from "@/lib/utils";
+import type { Title } from "@/types";
+import { getModelByTitle, getModelDetailsByTitle } from "@/lib/utils";
 import { NAVBAR_HEIGHT } from "@/styles/constants";
 import ModelDetails from "./model-details";
-import ChatScreen from "./chat-screen";
+import ChatInterface from "./chat-interface";
 
 interface Props {
-  params: Promise<{ slug: ModelName }>;
+  params: Promise<{ slug: Title }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -16,20 +16,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function Page({ params }: Props) {
   const { slug } = await params;
-  const model = getModelByName(slug);
-  const details = getModelDetails(slug);
+  const model = getModelByTitle(slug);
+  const details = getModelDetailsByTitle(slug);
 
   return (
     <div
-      className={`h-svh relative grid grid-rows-[auto_calc(100svh-${NAVBAR_HEIGHT}px)]`}
+      className="h-svh relative grid"
+      style={{ gridTemplateRows: `auto calc(100svh - ${NAVBAR_HEIGHT}px)` }}
     >
       <div
-        className={`p-2 h-[${NAVBAR_HEIGHT}px] sticky z-10 top-0 flex-center border-b bg-zinc-100`}
+        className="p-2 sticky z-10 top-0 flex-center border-b bg-zinc-100"
+        style={{ height: NAVBAR_HEIGHT }}
       >
         <ModelDetails details={details} />
       </div>
       <div>
-        <ChatScreen model={model} />
+        <ChatInterface model={model} />
       </div>
     </div>
   );
