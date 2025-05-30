@@ -127,6 +127,7 @@ export function useChat(type: ChatType, model: Model) {
           );
           return;
         }
+        console.log({ input });
         appendInput(input);
         appendResponse(input);
       }
