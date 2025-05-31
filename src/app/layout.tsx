@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { AppProvider } from "@/providers/app";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import Sidemenu from "@/components/sidemenu";
 import { Toaster } from "@/components/ui/sonner";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import "../styles/globals.css";
+import "@/styles/globals.css";
 
 export const metadata: Metadata = {
   title: { template: "%s", default: "" },
@@ -35,22 +35,26 @@ const geistMono = Geist_Mono({
 
 const fontVariables = `${geistSans.variable} ${geistMono.variable}`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
+
   return (
-    <html lang="en">
-      <body className={`relative ${fontVariables} antialiased`}>
-        <AppProvider>
-          <SidebarProvider>
-            <div className="w-full h-full grid grid-cols-1 md:grid-cols-[auto_1fr]">
-              <Sidemenu />
-              <div>{children}</div>
-              <Toaster richColors />
-            </div>
-          </SidebarProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`relative antialiased ${fontVariables}`}>
+        <AppProvider sidebarOpenState={defaultOpen}>
+          <div
+            className="w-full h-full grid grid-rows-1 grid-cols-1 md:grid-cols-[auto_1fr] selection:text-white selection:bg-indigo-500"
+            data-root
+          >
+            <Sidemenu />
+            <div data-children>{children}</div>
+            <Toaster richColors />
+          </div>
         </AppProvider>
       </body>
     </html>

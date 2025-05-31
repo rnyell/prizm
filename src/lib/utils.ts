@@ -81,6 +81,15 @@ export function getModelName(model: Model): Name {
   throw new Error("`model` is not valid.");
 }
 
+export function getModelDetails(model: Model): Details {
+  for (const m in models) {
+    if (models[m as Title].model === model) {
+      return models[m as Title];
+    }
+  }
+  throw new Error("`model` is not valid.");
+}
+
 export function getModelDetailsByTitle(key: Title): Details {
   return models[key];
 }
@@ -88,42 +97,42 @@ export function getModelDetailsByTitle(key: Title): Details {
 export const sidemenuItems = [
   {
     title: "Google/Gemini",
-    url: "/gemini",
+    url: "/s/gemini",
     icon: GeminiIcon,
   },
   {
     title: "Google/Gemma",
-    url: "/gemma",
+    url: "/s/gemma",
     icon: GeminiIcon,
   },
   {
     title: "Meta/Maverick",
-    url: "/maverick",
+    url: "/s/maverick",
     icon: MetaIcon,
   },
   {
     title: "Meta/Scout",
-    url: "/scout",
+    url: "/s/scout",
     icon: MetaIcon,
   },
   {
     title: "Mistral/Small",
-    url: "/mistral",
+    url: "/s/mistral",
     icon: MistralIcon,
   },
   {
     title: "Mistral/Devstral",
-    url: "/devstral",
+    url: "/s/devstral",
     icon: MistralIcon,
   },
   {
     title: "Deepseek/Chat",
-    url: "/deepseek",
+    url: "/s/deepseek",
     icon: DeepseekIcon,
   },
   {
     title: "Nvidia/Nemotron",
-    url: "/nemotron",
+    url: "/s/nemotron",
     icon: NvidiaIcon,
   },
 ];

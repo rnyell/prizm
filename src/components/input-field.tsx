@@ -131,8 +131,7 @@ export function SyncedInputField() {
 
   function appendInput(model: Model, input: string) {
     if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-      const msg = "Your input should have at least 2 characters.";
-      toast.warning(msg);
+      toast.warning("Your input should have at least 2 characters.");
       return;
     }
     dispatch({
@@ -143,51 +142,54 @@ export function SyncedInputField() {
     });
   }
 
+  function appendMessage() {
+    if (!apiKey) {
+      toast.error("You must provide your API_KEY in order to chat with models.");
+      return;
+    }
+    store.models.forEach((model) => {
+      appendInput(model, input);
+    });
+    startTransition(async () => {
+      const promises = store.models.map((model) =>
+        action(model, input, { apiKey: apiKey! }),
+      );
+      const setteled = await Promise.all(promises);
+      const results = store.models.map((model, i) => ({
+        model: model,
+        result: setteled[i],
+      }));
+      results.forEach(({ model, result }) => {
+        if (result.response) {
+          dispatch({
+            type: "multiple/add_response",
+            model: model,
+            role: "system",
+            content: result.response,
+          });
+        }
+        if (result.error) {
+          console.error(result.error);
+          dispatch({
+            type: "multiple/add_response",
+            model: model,
+            role: "system",
+            content: `Error occurred while generating response. Please try again.`,
+          });
+        }
+      });
+    });
+  }
+
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSyncedSubmit(() => {
-        startTransition(async () => {
-          if (!apiKey) {
-            toast.error(
-              "You must provide your API_KEY in order to chat with models.",
-            );
-            return;
-          }
-          store.models.forEach((model) => {
-            appendInput(model, input);
-          });
-          const promises = store.models.map((model) =>
-            action(model, input, { apiKey: apiKey! }),
-          );
-          const results = await Promise.all(promises);
-          console.dir(results, { depth: 2 });
-          const data = store.models.map((model, i) => ({
-            model,
-            result: results[i],
-          }));
-          data.forEach(({ model, result }) => {
-            if (result.response) {
-              dispatch({
-                type: "multiple/add_response",
-                model: model,
-                role: "system",
-                content: result.response,
-              });
-            }
-            if (result.error) {
-              console.error(result.error);
-              dispatch({
-                type: "multiple/add_response",
-                model: model,
-                role: "system",
-                content: `Error occurred while generating response. Please try again.`,
-              });
-            }
-          });
-        });
-      });
+      handleSyncedSubmit(appendMessage);
     }
+  }
+
+  function handleClick() {
+    handleSyncedSubmit(appendMessage);
   }
 
   return (
@@ -207,6 +209,7 @@ export function SyncedInputField() {
         )}
         size="icon"
         disabled={pending}
+        onClick={handleClick}
       >
         <SparklesIcon className="size-4" />
       </Button>

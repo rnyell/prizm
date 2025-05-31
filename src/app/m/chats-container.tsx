@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useConfig, useChatContext } from "@/providers";
+import { CHAT_HEADER_HEIGHT, TOOLBAR_HEIGHT } from "@/styles/constants";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import MessagesArea from "@/components/messages-area";
 import {
@@ -12,6 +13,7 @@ import {
 import { AddModelPopover } from "./toolbar";
 import ChatInterface from "./chat-interface";
 import { MinimizeIcon } from "lucide-react";
+import ChatHeader from "./chat-header";
 
 function ChatsContainer() {
   const { appearance } = useConfig();
@@ -62,11 +64,22 @@ function ChatsContainer() {
 
   return (
     <div
-      className="@container/chats h-full grid gap-px bg-border translate-0"
+      className="@container/chats h-full max-h-full grid gap-px bg-border translate-0"
       style={styles}
     >
       {models.map((model) => (
-        <ChatInterface model={model} key={model} />
+        <div
+          key={model}
+          style={{
+            display: "grid",
+            gridTemplateRows: `auto calc(100svh - ${
+              CHAT_HEADER_HEIGHT + TOOLBAR_HEIGHT
+            }px)`,
+          }}
+        >
+          <ChatHeader model={model} />
+          <ChatInterface model={model} />
+        </div>
       ))}
       {appearance.input === "sync" && (
         <InputWrapper

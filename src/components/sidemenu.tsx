@@ -3,8 +3,9 @@
 import { useState, type FormEvent } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 import { useConfig } from "@/providers";
-import { sidemenuItems } from "@/lib/utils";
+import { cn, sidemenuItems } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
@@ -16,16 +17,32 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarSeparator,
+  useSidebar,
 } from "./ui/sidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { LayoutTemplateIcon, KeyRoundIcon } from "lucide-react";
+import {
+  KeyRoundIcon,
+  BoxIcon,
+  SunIcon,
+  MonitorIcon,
+  MoonIcon,
+} from "lucide-react";
+
+const themeItems = [
+  { type: "light", icon: SunIcon },
+  { type: "system", icon: MonitorIcon },
+  { type: "dark", icon: MoonIcon },
+];
 
 function Sidemenu() {
   const { setApiKey } = useConfig();
+  const { theme, setTheme } = useTheme();
+  const { state } = useSidebar();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  console.log(state);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -41,12 +58,12 @@ function Sidemenu() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="bg-zinc-100">
+      <SidebarHeader className="pt-5 bg-zinc-100">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton className="rounded-xl" size="lg" asChild>
               <Link href="/m">
-                <LayoutTemplateIcon className="size-7 fill-zinc-800" />
+                <BoxIcon className="size-7 fill-indigo-400 stroke-zinc-800 stroke-[1.5]" />
                 <div className="group-data-[collapsible=icon]:hidden">
                   Simultaneous Chat
                 </div>
@@ -56,7 +73,7 @@ function Sidemenu() {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="bg-zinc-100">
-        <SidebarSeparator className="my-6 bg-zinc-400" />
+        <SidebarSeparator className="my-4 bg-zinc-400" />
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="gap-1">
@@ -69,7 +86,14 @@ function Sidemenu() {
                     isActive={pathname === item.url}
                   >
                     <Link className="flex items-center gap-4" href={item.url}>
-                      <item.icon className="size-7 fill-zinc-800" />
+                      <item.icon
+                        className={cn(
+                          "size-7",
+                          pathname === item.url
+                            ? "fill-indigo-500"
+                            : "fill-zinc-800",
+                        )}
+                      />
                       <div className="group-data-[collapsible=icon]:hidden">
                         {item.title}
                       </div>
@@ -82,32 +106,49 @@ function Sidemenu() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="bg-zinc-100">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger className="p-3 flex items-center gap-4 rounded-xl border transition-[background-color] hover:bg-zinc-300 cursor-pointer group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-zinc-100 group-data-[collapsible=icon]:bg-zinc-900 group-data-[collapsible=icon]:hover:bg-zinc-800">
-            <KeyRoundIcon className="size-5" />
-            <div className="text-sm group-data-[collapsible=icon]:hidden">
-              Set your key
-            </div>
-          </PopoverTrigger>
-          <PopoverContent className="min-w-72 text-sm" side="right" align="end">
-            <div className="leading-[1.2]">
-              To obtain your API key, visit{" "}
-              <Link
-                className="underline"
-                href="https://openrouter.ai/settings/keys"
-                target="_blank"
+        <div>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger className="p-3 flex items-center gap-4 rounded-xl border transition-[background-color] hover:bg-zinc-300 cursor-pointer group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-zinc-100 group-data-[collapsible=icon]:bg-zinc-900 group-data-[collapsible=icon]:hover:bg-zinc-800">
+              <KeyRoundIcon className="size-5" />
+              <div className="text-sm group-data-[collapsible=icon]:hidden">
+                Set your key
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="min-w-72 text-sm" align="end">
+              <div className="leading-[1.2]">
+                To obtain your API key, visit{" "}
+                <Link
+                  className="underline"
+                  href="https://openrouter.ai/settings/keys"
+                  target="_blank"
+                >
+                  openrouter.ai
+                </Link>
+              </div>
+              <form className="mt-4 flex flex-col gap-2" onSubmit={handleSubmit}>
+                <Input name="api-key" placeholder="Enter your API key" />
+                <Button className="ml-auto" size="sm" type="submit">
+                  Submit
+                </Button>
+              </form>
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div>
+          <div className="p-3 flex items-center gap-4 rounded-xl border">
+            {themeItems.map((th) => (
+              <div
+                className={cn("h-full aspect-square flex-center rounded-full", {
+                  "text-tertiary-400 light:text-tertiary-300": th.type === theme,
+                })}
+                onClick={() => setTheme(th.type)}
+                key={th.type}
               >
-                openrouter.ai
-              </Link>
-            </div>
-            <form className="mt-4 flex flex-col gap-2" onSubmit={handleSubmit}>
-              <Input name="api-key" placeholder="Enter your API key" />
-              <Button className="ml-auto" size="sm" type="submit">
-                Submit
-              </Button>
-            </form>
-          </PopoverContent>
-        </Popover>
+                <th.icon className="size-4" />
+              </div>
+            ))}
+          </div>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

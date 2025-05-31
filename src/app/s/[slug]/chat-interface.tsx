@@ -12,12 +12,11 @@ interface Props {
 function ChatInterface({ model }: Props) {
   const { store } = useChatContext("single");
   const messages = store.get(model) ?? [];
-  const isEmpty = messages.length < 1;
 
   return (
-    <div className="@container/interface pb-10 h-full relative bg-zinc-50">
+    <div className="@container/interface pb-10 h-full relative bg-background">
       <MessagesArea messages={messages} />
-      <InputWrapper isEmpty={isEmpty}>
+      <InputWrapper isEmpty={messages.length < 1}>
         <InputField type="single" model={model} />
       </InputWrapper>
     </div>

@@ -1,22 +1,20 @@
 import { Metadata } from "next";
-import { NAVBAR_HEIGHT } from "@/styles/constants";
+import { TOOLBAR_HEIGHT } from "@/styles/constants";
 import { Toolbar } from "./toolbar";
 import ChatsContainer from "./chats-container";
 
 export const metadata: Metadata = {
-  title: "",
+  title: "Simultaneous Chat",
 };
 
 function Page() {
   return (
     <div
       className="h-svh grid"
-      style={{ gridTemplateRows: `auto calc(100svh - ${NAVBAR_HEIGHT}px)` }}
+      style={{ gridTemplateRows: `auto calc(100svh - ${TOOLBAR_HEIGHT}px)` }}
     >
       <Toolbar />
-      <div className="h-full relative">
-        <ChatsContainer />
-      </div>
+      <ChatsContainer />
     </div>
   );
 }

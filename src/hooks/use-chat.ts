@@ -81,7 +81,7 @@ export function useChat(type: ChatType, model: Model) {
       // }
       // const { dispatch } = context.multiple;
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { dispatch, store } = useChatContext("multiple");
+      const { store, dispatch } = useChatContext("multiple");
 
       function appendInput(input: string) {
         if (input.trim().length < TEXTAREA_MIN_LENGTH) {
@@ -127,7 +127,6 @@ export function useChat(type: ChatType, model: Model) {
           );
           return;
         }
-        console.log({ input });
         appendInput(input);
         appendResponse(input);
       }

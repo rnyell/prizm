@@ -19,7 +19,7 @@ function MessageBlob({ role, content }: Props) {
   switch (role) {
     case "user": {
       return (
-        <div className="ml-auto p-2 w-[85%] max-w-[400px] relative rounded-xl bg-zinc-200">
+        <div className="ml-auto mt-2 p-2 w-[85%] max-w-[400px] relative rounded-xl bg-zinc-200">
           <div className="markdown text-pretty">
             <Markdown>{content}</Markdown>
           </div>

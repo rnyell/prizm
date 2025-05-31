@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
 import { cn, getModelByTitle, toolbarItems } from "@/lib/utils";
-import { NAVBAR_HEIGHT } from "@/styles/constants";
+import { TOOLBAR_HEIGHT } from "@/styles/constants";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,8 +22,8 @@ import type { Model, Title } from "@/types";
 export function Toolbar() {
   return (
     <div
-      className="px-4 py-2 flex items-center gap-5 text-[0.8rem] sticky z-10 top-0 border-b bg-zinc-100"
-      style={{ height: NAVBAR_HEIGHT }}
+      className="px-4 py-2 sticky z-10 top-0 flex items-center gap-5 text-[0.8rem] border-b bg-zinc-100"
+      style={{ height: TOOLBAR_HEIGHT }}
     >
       <SidebarTrigger className="cursor-pointer" />
       <div>
@@ -43,9 +43,13 @@ export function AddModelPopover() {
   const { store, dispatch } = useChatContext("multiple");
   const { models } = store;
 
-  function modelHandler(model: Model) {
+  function handleModelSelection(model: Model) {
     if (models.length < 4) {
-      dispatch({ type: "multiple/add_model", model });
+      if (!models.includes(model)) {
+        dispatch({ type: "multiple/add_model", model });
+      } else {
+        dispatch({ type: "multiple/remove_model", model });
+      }
     } else {
       toast.warning("You can chat with only four models at once.", {
         position: "top-center",
@@ -64,13 +68,13 @@ export function AddModelPopover() {
           {toolbarItems.map((item) => {
             const title = item.name.toLowerCase() as Title;
             const model = getModelByTitle(title);
-            const isSelected = models.find((m) => m === model);
+            const isSelected = Boolean(models.find((m) => m === model));
 
             return (
               <Button
-                className="px-2 py-1.5 h-[unset] gap-1 border rounded-full text-xs text-zinc-900 bg-zinc-100 hover:bg-zinc-200 cursor-cell disabled:pointer-events-auto disabled:cursor-not-allowed"
-                onClick={() => modelHandler(model)}
-                disabled={Boolean(isSelected)}
+                className="px-2 py-1.5 h-[unset] gap-1 border rounded-full text-xs text-zinc-900 bg-zinc-100 hover:bg-zinc-200 cursor-pointer data-[selected=true]:bg-indigo-500 data-[selected=true]:text-zinc-100 data-[selected=true]:[&>svg]:fill-zinc-100"
+                data-selected={isSelected}
+                onClick={() => handleModelSelection(model)}
                 key={item.name}
               >
                 <item.icon className="size-3.5 fill-zinc-800" />
@@ -104,7 +108,7 @@ function InputFieldPopover() {
             className={cn(
               "p-2 text-xs rounded-lg cursor-pointer",
               input === "separate"
-                ? "text-zinc-100 bg-zinc-700"
+                ? "text-zinc-100 bg-indigo-500 font-medium"
                 : "hover:bg-zinc-300",
             )}
             onClick={() => inputTypeHandler("separate")}
@@ -115,7 +119,7 @@ function InputFieldPopover() {
             className={cn(
               "p-2 text-xs rounded-lg cursor-pointer",
               input === "sync"
-                ? "text-zinc-100 bg-zinc-700"
+                ? "text-zinc-100 bg-indigo-500 font-medium"
                 : "hover:bg-zinc-300",
             )}
             onClick={() => inputTypeHandler("sync")}

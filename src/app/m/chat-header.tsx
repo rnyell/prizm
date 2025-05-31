@@ -1,9 +1,11 @@
 "use client";
 
 import { useChatContext } from "@/providers";
-import { getModelName } from "@/lib/utils";
+import { getModelDetails } from "@/lib/utils";
+import ModelDetails from "@/components/model-details";
 import { DownloadIcon, MaximizeIcon, XIcon } from "lucide-react";
 import type { Model } from "@/types";
+import { CHAT_HEADER_HEIGHT } from "@/styles/constants";
 
 interface Props {
   model: Model;
@@ -11,26 +13,25 @@ interface Props {
 
 function ChatHeader({ model }: Props) {
   const { store, dispatch } = useChatContext("multiple");
-  const name = getModelName(model);
+  const details = getModelDetails(model);
 
-  function handleDownload() {
+  function downloadChat() {
     let content = "";
     store.messages
       .filter((msg) => msg.model === model)
       .forEach((msg) => {
         if (msg.role === "user") {
-          content += `${msg.content}\n`;
+          content += `${msg.content}\n\n`;
         }
         if (msg.role === "system") {
-          content += `${msg.content}\n---\n\n`;
+          content += `${msg.content}\n\n---\n\n`;
         }
       });
-
     const blob = new Blob([content], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "content.md";
+    link.download = `export-chat-${details.name}.md`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -49,16 +50,19 @@ function ChatHeader({ model }: Props) {
   }
 
   return (
-    <div className="p-1 flex items-center border-b">
-      <div className="grow text-center text-sm font-medium">{name}</div>
-      <div className="ml-auto flex items-center gap-2 *:p-1 *:rounded *:bg-zinc-100 *:cursor-pointer">
-        <div onClick={handleDownload}>
+    <div
+      className="p-1 flex items-center border-b bg-background"
+      style={{ height: CHAT_HEADER_HEIGHT }}
+    >
+      <ModelDetails className="grow" size="sm" details={details} />
+      <div className="ml-auto flex items-center gap-2 *:p-1 *:rounded *:cursor-pointer">
+        <div className="bg-zinc-100" onClick={downloadChat}>
           <DownloadIcon className="size-3 stroke-[2.25]" />
         </div>
-        <div onClick={maximizeModel}>
+        <div className="bg-zinc-100" onClick={maximizeModel}>
           <MaximizeIcon className="size-3 stroke-[2.25]" />
         </div>
-        <div onClick={closeModel}>
+        <div className="bg-zinc-100" onClick={closeModel}>
           <XIcon className="size-3 stroke-[2.25]" />
         </div>
       </div>
