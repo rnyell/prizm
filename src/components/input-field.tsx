@@ -10,7 +10,7 @@ import type {
 import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
-import { useChat } from "@/hooks";
+import { useChat, useIsMobile } from "@/hooks";
 import { llm as action } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { TEXTAREA_BASE_LENGTH, TEXTAREA_MIN_LENGTH } from "@/lib/constants";
@@ -45,12 +45,15 @@ export function InputWrapper({
   length,
   synced = false,
 }: WrapperProps) {
+  const isMobile = useIsMobile();
+
   return (
     <div
       className={cn(
-        "w-full z-10 left-0 flex justify-center",
-        "data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4",
-        "data-[input-type=separate]:bg-background data-[input-type=separate]:absolute data-[input-type=sync]:fixed data-[input-type=sync]:bottom-4",
+        "z-10 flex justify-center border-0! data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4",
+        "data-[input-type=separate]:w-full data-[input-type=separate]:absolute data-[input-type=separate]:left-0 data-[input-type=separate]:bg-background",
+        "data-[input-type=sync]:4/5 data-[input-type=sync]:fixed data-[input-type=sync]:bottom-4 data-[input-type=sync]:left-1/2 data-[input-type=sync]:-translate-x-1/2 data-[input-type=sync]:@lg/interfaces:w-2/3 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[765px]",
+        isMobile && "data-[input-type=sync]:bottom-5",
       )}
       data-align={length === 0 ? "center" : "bottom"}
       data-input-type={synced ? "sync" : "separate"}
@@ -58,7 +61,6 @@ export function InputWrapper({
       <div
         className={cn(
           "w-9/10 @md/interface:w-4/5 @lg/interface:w-2/3 @lg/interface:max-w-[720px]",
-          "@lg/interfaces:w-2/3 @lg/interfaces:max-w-[720px] @xl/interfaces:max-w-[765px]",
           className,
         )}
       >

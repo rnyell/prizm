@@ -13,13 +13,9 @@ interface Props {
   children: ReactNode;
 }
 
-type Layout = "cols" | "grid";
-
-type Input = "separate" | "sync";
-
 type Appearance = {
-  layout: Layout;
-  input: Input;
+  layout: "cols" | "grid";
+  input: "separate" | "sync";
 };
 
 interface Context {
@@ -30,8 +26,8 @@ interface Context {
 }
 
 type Action =
-  | { type: "config/layout"; layout: Layout }
-  | { type: "config/input"; input: Input };
+  | { type: "config/layout"; layout: "cols" | "grid" }
+  | { type: "config/input"; input: "separate" | "sync" };
 
 function reducer(store: Appearance, action: Action): Appearance {
   switch (action.type) {
@@ -61,12 +57,12 @@ export function ConfigProvider({ children }: Props) {
     useLocalStorage<string>(APIKEY_STORAGE_NAME);
 
   useEffect(() => {
-    const layout = readLocalStorage<Layout>(LAYOUT_STORAGE_NAME);
+    const layout = readLocalStorage<"cols" | "grid">(LAYOUT_STORAGE_NAME);
     if (layout) {
       setAppearance({ type: "config/layout", layout });
     }
 
-    const input = readLocalStorage<Input>(INPUT_STORAGE_NAME);
+    const input = readLocalStorage<"separate" | "sync">(INPUT_STORAGE_NAME);
     if (input) {
       setAppearance({ type: "config/input", input });
     }

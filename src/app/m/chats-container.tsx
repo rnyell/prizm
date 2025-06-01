@@ -69,12 +69,14 @@ function ChatsContainer() {
     <div
       className={cn(
         "@container/interfaces h-full max-h-full grid gap-px bg-border translate-0",
-        "data-[scrollable=true]:w-full data-[scrollable=true]:overflow-x-auto data-[scrollable=true]:snap-center data-[scrollable=true]:snap-x data-[scrollable=true]:snap-mandatory data-[scrollable=true]:flex data-[scrollable=true]:gap-0 data-[scrollable=true]:*:shrink-0 data-[scrollable=true]:*:w-full data-[scrollable=true]:*:border-2 data-[scrollable=true]:*:border-border data-[scrollable=true]:*:border-t-0",
+        "data-[scrollable=true]:w-full data-[scrollable=true]:overflow-x-auto data-[scrollable=true]:snap-center data-[scrollable=true]:snap-x data-[scrollable=true]:snap-mandatory data-[scrollable=true]:flex data-[scrollable=true]:gap-[2px] data-[scrollable=true]:*:shrink-0 data-[scrollable=true]:*:w-full",
+        "data-[scrollable=true]:data-[input-type=sync]:translate-none",
         appearance.layout === "grid" &&
           models.length === 3 &&
           "[&>:first-child]:col-span-2",
       )}
       data-scrollable={isScrollable}
+      data-input-type={appearance.input}
       style={styles}
     >
       {models.map((model) => (
