@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const variants = cva("text-center cursor-pointer", {
+const variants = cva("text-center cursor-pointer dark:text-zinc-100", {
   variants: {
     size: {
       sm: "text-sm font-medium",
@@ -37,7 +37,7 @@ function ModelDetails({ details, className, size }: Props) {
           <SheetDescription>Context: {details.context}</SheetDescription>
         </SheetHeader>
         <div className="px-4">
-          <ScrollArea className="h-[75svh] whitespace-pre-line text-sm text-zinc-700">
+          <ScrollArea className="h-[75svh] whitespace-pre-line text-sm text-tertiary-700">
             {details.overview}
           </ScrollArea>
         </div>

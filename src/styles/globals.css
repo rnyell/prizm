@@ -41,6 +41,17 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+  --color-tertiary-50: var(--tertiary-50);
+  --color-tertiary-100: var(--tertiary-100);
+  --color-tertiary-200: var(--tertiary-200);
+  --color-tertiary-300: var(--tertiary-300);
+  --color-tertiary-400: var(--tertiary-400);
+  --color-tertiary-500: var(--tertiary-500);
+  --color-tertiary-600: var(--tertiary-600);
+  --color-tertiary-700: var(--tertiary-700);
+  --color-tertiary-800: var(--tertiary-800);
+  --color-tertiary-900: var(--tertiary-900);
+  --color-tertiary-950: var(--tertiary-950);
 }
 
 :root {
@@ -71,17 +82,17 @@
   --sidebar-accent-foreground: hsl(240 5.9% 10%);
   --sidebar-border: hsl(220 13% 91%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
-  --tertiary-50: 240 10% 4%;
-  --tertiary-100: 240 6% 10%;
-  --tertiary-200: 240 4% 16%;
-  --tertiary-300: 240 5% 26%;
-  --tertiary-400: 240 5% 34%;
-  --tertiary-500: 240 4% 46%;
-  --tertiary-600: 240 5% 65%;
-  --tertiary-700: 240 5% 84%;
-  --tertiary-800: 240 6% 90%;
-  --tertiary-900: 240 5% 96%;
-  --tertiary-950: 0 0% 98%;
+  --tertiary-50: hsl(0 0% 98%);
+  --tertiary-100: hsl(240 5% 96%);
+  --tertiary-200: hsl(240 6% 90%);
+  --tertiary-300: hsl(240 5% 84%);
+  --tertiary-400: hsl(240 5% 65%);
+  --tertiary-500: hsl(240 4% 46%);
+  --tertiary-600: hsl(240 5% 34%);
+  --tertiary-700: hsl(240 5% 26%);
+  --tertiary-800: hsl(240 4% 16%);
+  --tertiary-900: hsl(240 6% 10%);
+  --tertiary-950: hsl(240 10% 4%);
 }
 
 .dark {
@@ -111,17 +122,17 @@
   --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
   --sidebar-border: hsl(240 3.7% 15.9%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
-  --tertiary-50: 240 10% 4%;
-  --tertiary-100: 240 6% 10%;
-  --tertiary-200: 240 4% 16%;
-  --tertiary-300: 240 5% 26%;
-  --tertiary-400: 240 5% 34%;
-  --tertiary-500: 240 4% 46%;
-  --tertiary-600: 240 5% 65%;
-  --tertiary-700: 240 5% 84%;
-  --tertiary-800: 240 6% 90%;
-  --tertiary-900: 240 5% 96%;
-  --tertiary-950: 0 0% 98%;
+  --tertiary-50: hsl(240 10% 4%);
+  --tertiary-100: hsl(240 6% 10%);
+  --tertiary-200: hsl(240 4% 16%);
+  --tertiary-300: hsl(240 5% 26%);
+  --tertiary-400: hsl(240 5% 34%);
+  --tertiary-500: hsl(240 4% 46%);
+  --tertiary-600: hsl(240 5% 65%);
+  --tertiary-700: hsl(240 5% 84%);
+  --tertiary-800: hsl(240 6% 90%);
+  --tertiary-900: hsl(240 5% 96%);
+  --tertiary-950: hsl(0 0% 98%);
 }
 
 @layer base {
@@ -157,11 +168,6 @@
 
   svg {
     flex-shrink: 0;
-  }
-
-  /* temp fix for markdown */
-  .markdown pre code {
-    white-space: break-spaces;
   }
 }
 

@@ -2,10 +2,10 @@
 
 import { useChatContext } from "@/providers";
 import { getModelDetails } from "@/lib/utils";
+import { CHAT_HEADER_HEIGHT } from "@/lib/constants";
 import ModelDetails from "@/components/model-details";
 import { DownloadIcon, MaximizeIcon, XIcon } from "lucide-react";
 import type { Model } from "@/types";
-import { CHAT_HEADER_HEIGHT } from "@/styles/constants";
 
 interface Props {
   model: Model;
@@ -54,16 +54,19 @@ function ChatHeader({ model }: Props) {
       className="p-1 flex items-center border-b bg-background"
       style={{ height: CHAT_HEADER_HEIGHT }}
     >
-      <ModelDetails className="grow" size="sm" details={details} />
-      <div className="ml-auto flex items-center gap-2 *:p-1 *:rounded *:cursor-pointer">
-        <div className="bg-zinc-100" onClick={downloadChat}>
-          <DownloadIcon className="size-3 stroke-[2.25]" />
+      <div className="grow flex-center gap-4">
+        {details.logo && <details.logo className="size-3.5 fill-tertiary-700" />}
+        <ModelDetails size="sm" details={details} />
+      </div>
+      <div className="ml-auto flex items-center gap-2 *:p-1 *:rounded *:bg-tertiary-100 *:hover:bg-tertiary-200 *:cursor-pointer">
+        <div onClick={downloadChat}>
+          <DownloadIcon className="size-3 stroke-[2.25] dark:stroke-zinc-300" />
         </div>
-        <div className="bg-zinc-100" onClick={maximizeModel}>
-          <MaximizeIcon className="size-3 stroke-[2.25]" />
+        <div onClick={maximizeModel}>
+          <MaximizeIcon className="size-3 stroke-[2.25] dark:stroke-zinc-300" />
         </div>
-        <div className="bg-zinc-100" onClick={closeModel}>
-          <XIcon className="size-3 stroke-[2.25]" />
+        <div onClick={closeModel}>
+          <XIcon className="size-3 stroke-[2.25] dark:stroke-zinc-300" />
         </div>
       </div>
     </div>

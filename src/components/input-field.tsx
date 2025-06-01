@@ -8,20 +8,21 @@ import type {
   SetStateAction,
 } from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
-import { useChat } from "@/hooks/use-chat";
+import { useChat } from "@/hooks";
 import { llm as action } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { TEXTAREA_BASE_LENGTH, TEXTAREA_MIN_LENGTH } from "@/lib/constants";
 import { Button } from "./ui/button";
 import { ArrowUpIcon, SparklesIcon } from "lucide-react";
 import type { Model } from "@/types";
-import { toast } from "sonner";
 
 interface WrapperProps {
   children: ReactNode;
   className?: string;
-  isEmpty: boolean;
+  length: number;
+  synced?: boolean;
 }
 
 interface FieldProps {
@@ -38,17 +39,31 @@ interface TextareaProps
   onChange: (value: string) => void | Dispatch<SetStateAction<string>>;
 }
 
-export function InputWrapper({ children, className, isEmpty }: WrapperProps) {
+export function InputWrapper({
+  children,
+  className,
+  length,
+  synced = false,
+}: WrapperProps) {
   return (
     <div
       className={cn(
-        "mt-4 w-9/10 absolute z-10 left-1/2 -translate-x-1/2 flex justify-center",
-        "@md/interface:w-4/5 @lg/interface:w-2/3 @lg/interface:max-w-[720px]",
-        isEmpty ? "bottom-1/2" : "bottom-4",
-        className,
+        "w-full z-10 left-0 flex justify-center",
+        "data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4",
+        "data-[input-type=separate]:bg-background data-[input-type=separate]:absolute data-[input-type=sync]:fixed data-[input-type=sync]:bottom-4",
       )}
+      data-align={length === 0 ? "center" : "bottom"}
+      data-input-type={synced ? "sync" : "separate"}
     >
-      {children}
+      <div
+        className={cn(
+          "w-9/10 @md/interface:w-4/5 @lg/interface:w-2/3 @lg/interface:max-w-[720px]",
+          "@lg/interfaces:w-2/3 @lg/interfaces:max-w-[720px] @xl/interfaces:max-w-[765px]",
+          className,
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 }
@@ -96,7 +111,7 @@ export function InputField({ type, model }: FieldProps) {
   return (
     <div
       className={cn(
-        "p-2 min-h-9 w-full rounded-xl border-[1.5px] border-zinc-500 bg-zinc-100",
+        "p-2 min-h-9 w-full rounded-xl border-[1.5px] border-tertiary-500 bg-tertiary-100",
         value.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
@@ -195,7 +210,7 @@ export function SyncedInputField() {
   return (
     <div
       className={cn(
-        "p-2 min-h-9 min-w-42 w-full rounded-xl border-[1.5px] border-zinc-500 bg-zinc-100 md:min-w-52",
+        "p-2 min-h-9 min-w-42 w-full rounded-xl border-[1.5px] border-tertiary-500 bg-tertiary-100 md:min-w-52",
         input.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",

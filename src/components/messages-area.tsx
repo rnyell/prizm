@@ -9,7 +9,7 @@ interface Props {
 function MessagesArea({ messages }: Props) {
   return (
     <ScrollArea
-      className="mx-auto p-4 pb-8 max-w-4xl h-full"
+      className="mx-auto px-4 pb-8 max-w-4xl h-full"
       style={{ display: "block" }}
     >
       {messages.length >= 1 &&

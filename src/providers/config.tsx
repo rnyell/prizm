@@ -1,80 +1,87 @@
 "use client";
 
 import type { Dispatch, ReactNode } from "react";
-import { createContext, use, useState, useReducer, useCallback } from "react";
+import { createContext, use, useReducer, useCallback, useEffect } from "react";
+import { useLocalStorage } from "@/hooks";
+import { writeLocalStorage, readLocalStorage } from "@/lib/utils";
+
+const APIKEY_STORAGE_NAME = "config/api-key";
+const LAYOUT_STORAGE_NAME = "config/layout";
+const INPUT_STORAGE_NAME = "config/input";
 
 interface Props {
   children: ReactNode;
 }
 
+type Layout = "cols" | "grid";
+
+type Input = "separate" | "sync";
+
+type Appearance = {
+  layout: Layout;
+  input: Input;
+};
+
 interface Context {
   apiKey: string | undefined;
   setApiKey: (key: string) => void;
-  appearance: {
-    layout: "col" | "grid";
-    input: "separate" | "sync";
-  };
+  appearance: Appearance;
   setAppearance: Dispatch<Action>;
 }
 
 type Action =
-  | {
-      type: "layout";
-      layout: "col" | "grid";
-    }
-  | {
-      type: "input";
-      input: "separate" | "sync";
-    };
-
-type Appearance = Context["appearance"];
+  | { type: "config/layout"; layout: Layout }
+  | { type: "config/input"; input: Input };
 
 function reducer(store: Appearance, action: Action): Appearance {
   switch (action.type) {
-    case "layout": {
-      return { ...store, layout: action.layout };
+    case "config/layout": {
+      const layout = action.layout;
+      writeLocalStorage(LAYOUT_STORAGE_NAME, layout);
+      return { ...store, layout };
     }
-    case "input": {
-      return { ...store, input: action.input };
+    case "config/input": {
+      const input = action.input;
+      writeLocalStorage(INPUT_STORAGE_NAME, input);
+      return { ...store, input };
     }
-  }
-}
-
-function getApiKey() {
-  try {
-    const apiKey = localStorage.getItem("api-key");
-    if (apiKey) {
-      return apiKey;
-    }
-  } catch (e) {
-    console.warn(e);
   }
 }
 
 const ConfigContext = createContext<Context | null>(null);
 
 const initialAppearance: Appearance = {
-  layout: "col",
+  layout: "cols",
   input: "separate",
 };
 
 export function ConfigProvider({ children }: Props) {
-  const [_apiKey, _setApiKey] = useState<string | undefined>(getApiKey);
   const [appearance, setAppearance] = useReducer(reducer, initialAppearance);
+  const { value, writeValue, removeItem } =
+    useLocalStorage<string>(APIKEY_STORAGE_NAME);
 
-  const apiKey = _apiKey;
-  const setApiKey = useCallback((key: string) => {
-    try {
-      localStorage.removeItem("api-key");
-      localStorage.setItem("api-key", key);
-    } catch (e) {
-      console.warn(e);
+  useEffect(() => {
+    const layout = readLocalStorage<Layout>(LAYOUT_STORAGE_NAME);
+    if (layout) {
+      setAppearance({ type: "config/layout", layout });
     }
-    _setApiKey(key);
+
+    const input = readLocalStorage<Input>(INPUT_STORAGE_NAME);
+    if (input) {
+      setAppearance({ type: "config/input", input });
+    }
   }, []);
 
+  const setApiKey = useCallback(
+    (value: string) => {
+      removeItem(APIKEY_STORAGE_NAME);
+      writeValue(APIKEY_STORAGE_NAME, value);
+    },
+    [removeItem, writeValue],
+  );
+
   const contextValue = {
-    apiKey,
+    apiKey: value,
     setApiKey,
     appearance,
     setAppearance,

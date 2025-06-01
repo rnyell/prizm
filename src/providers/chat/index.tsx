@@ -1,9 +1,11 @@
 "use client";
 
-import { createContext, use, useReducer, useState } from "react";
+import { createContext, use, useEffect, useReducer, useState } from "react";
 import type { ReactNode, Dispatch, SetStateAction } from "react";
+import { removeLocalStorageItem, readLocalStorage } from "@/lib/utils";
 import * as Multiple from "./multiple-chat";
 import * as Single from "./single-chat";
+import { Model } from "@/types";
 
 type SingleChat = {
   type: "single";
@@ -42,10 +44,21 @@ export function ChatProvider({ children }: Props) {
     Multiple.initialStore,
   );
 
-  function handleSyncedSubmit(cb: () => void) {
+  function handleSyncedSubmit(fn: () => void) {
     setInput("");
-    cb();
+    fn();
   }
+
+  useEffect(() => {
+    const key = Multiple.MULTIPLE_MODELS_STORAGE_NAME;
+    const models = readLocalStorage<Model[]>(key);
+    if (models && Array.isArray(models)) {
+      removeLocalStorageItem(key);
+      models.forEach((model) => {
+        multipleDispatch({ type: "multiple/add_model", model });
+      });
+    }
+  }, []);
 
   const contextValue: Context = {
     single: {

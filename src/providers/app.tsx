@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { ThemeProvider } from "./theme";
 import { ConfigProvider } from "./config";
+import { ThemeProvider } from "./theme";
 import { ChatProvider } from "./chat";
 
 interface Props {
@@ -17,7 +17,6 @@ export function AppProvider({ children, sidebarOpenState }: Props) {
       <ThemeProvider
         attribute="class"
         defaultTheme="light"
-        enableSystem
         disableTransitionOnChange
       >
         <ChatProvider>

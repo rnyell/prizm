@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useChatContext } from "@/providers";
 import { getModelDetailsByTitle } from "@/lib/utils";
-import { TOOLBAR_HEIGHT } from "@/styles/constants";
+import { TOOLBAR_HEIGHT } from "@/lib/constants";
 import ModelDetails from "@/components/model-details";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import type { Title } from "@/types";
@@ -44,12 +44,12 @@ function Toolbar() {
 
   return (
     <div
-      className="p-2 sticky z-10 top-0 flex items-center border-b bg-zinc-100"
+      className="p-2 sticky z-10 top-0 flex items-center border-b bg-tertiary-100"
       style={{ height: TOOLBAR_HEIGHT }}
     >
-      <SidebarTrigger className="absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer" />
+      <SidebarTrigger className="absolute left-4 top-1/2 -translate-y-1/2" />
       <ModelDetails details={details} className="grow" size="lg" />
-      <div className="ml-auto pr-4 flex items-center gap-2 *:p-1.5 *:border-[1.5px] *:rounded-md *:hover:bg-zinc-200 *:cursor-pointer">
+      <div className="ml-auto pr-4 flex items-center gap-2 *:p-1.5 *:border-[1.5px] *:rounded-md *:hover:bg-tertiary-200 *:cursor-pointer">
         <div onClick={downloadChat}>
           <DownloadIcon className="size-4 stroke-[1.75]" />
         </div>

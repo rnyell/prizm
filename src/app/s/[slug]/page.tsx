@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { Title } from "@/types";
 import { getModelByTitle } from "@/lib/utils";
-import { TOOLBAR_HEIGHT } from "@/styles/constants";
+import { TOOLBAR_HEIGHT } from "@/lib/constants";
 import ChatInterface from "./chat-interface";
 import Toolbar from "./toolbar";
 

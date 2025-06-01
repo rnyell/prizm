@@ -16,7 +16,7 @@ function ChatInterface({ model }: Props) {
   return (
     <div className="@container/interface pb-10 h-full relative bg-background">
       <MessagesArea messages={messages} />
-      <InputWrapper isEmpty={messages.length < 1}>
+      <InputWrapper length={messages.length}>
         <InputField type="single" model={model} />
       </InputWrapper>
     </div>

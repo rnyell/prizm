@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
 import { cn, getModelByTitle, toolbarItems } from "@/lib/utils";
-import { TOOLBAR_HEIGHT } from "@/styles/constants";
+import { TOOLBAR_HEIGHT } from "@/lib/constants";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,10 +22,10 @@ import type { Model, Title } from "@/types";
 export function Toolbar() {
   return (
     <div
-      className="px-4 py-2 sticky z-10 top-0 flex items-center gap-5 text-[0.8rem] border-b bg-zinc-100"
+      className="px-4 py-2 sticky z-10 top-0 flex items-center gap-5 text-[0.8rem] border-b bg-tertiary-100"
       style={{ height: TOOLBAR_HEIGHT }}
     >
-      <SidebarTrigger className="cursor-pointer" />
+      <SidebarTrigger />
       <div>
         <AddModelPopover />
       </div>
@@ -50,6 +50,8 @@ export function AddModelPopover() {
       } else {
         dispatch({ type: "multiple/remove_model", model });
       }
+    } else if (models.length === 4 && models.includes(model)) {
+      dispatch({ type: "multiple/remove_model", model });
     } else {
       toast.warning("You can chat with only four models at once.", {
         position: "top-center",
@@ -59,7 +61,7 @@ export function AddModelPopover() {
 
   return (
     <Popover>
-      <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-full border hover:bg-zinc-200 cursor-pointer">
+      <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-full border hover:bg-tertiary-200 cursor-pointer dark:text-tertiary-700">
         <PlusIcon className="size-4 stroke-[1.75]" />
         <div>Add Model</div>
       </PopoverTrigger>
@@ -72,12 +74,12 @@ export function AddModelPopover() {
 
             return (
               <Button
-                className="px-2 py-1.5 h-[unset] gap-1 border rounded-full text-xs text-zinc-900 bg-zinc-100 hover:bg-zinc-200 cursor-pointer data-[selected=true]:bg-indigo-500 data-[selected=true]:text-zinc-100 data-[selected=true]:[&>svg]:fill-zinc-100"
+                className="px-2 py-1.5 h-[unset] gap-1 border rounded-full text-xs text-tertiary-900 bg-tertiary-100 hover:bg-tertiary-200 cursor-pointer data-[selected=true]:bg-indigo-500 data-[selected=true]:text-zinc-100! data-[selected=true]:[&>svg]:fill-zinc-100 dark:text-tertiary-600"
                 data-selected={isSelected}
                 onClick={() => handleModelSelection(model)}
                 key={item.name}
               >
-                <item.icon className="size-3.5 fill-zinc-800" />
+                <item.icon className="size-3.5 fill-tertiary-800 dark:fill-tertiary-700" />
                 {item.name}
               </Button>
             );
@@ -93,23 +95,23 @@ function InputFieldPopover() {
   const { input } = appearance;
 
   function inputTypeHandler(input: "separate" | "sync") {
-    setAppearance({ type: "input", input });
+    setAppearance({ type: "config/input", input });
   }
 
   return (
     <Popover>
-      <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-full border hover:bg-zinc-200 cursor-pointer">
+      <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-full border hover:bg-tertiary-200 cursor-pointer dark:text-tertiary-700">
         <TextCursorInputIcon className="size-4 stroke-[1.75]" />
         <div>Input Type</div>
       </PopoverTrigger>
       <PopoverContent className="p-1 w-max">
-        <div className="flex flex-col gap-1 text-sm">
+        <div className="flex flex-col gap-1 text-sm dark:text-tertiary-700">
           <div
             className={cn(
               "p-2 text-xs rounded-lg cursor-pointer",
               input === "separate"
                 ? "text-zinc-100 bg-indigo-500 font-medium"
-                : "hover:bg-zinc-300",
+                : "hover:bg-tertiary-300",
             )}
             onClick={() => inputTypeHandler("separate")}
           >
@@ -120,7 +122,7 @@ function InputFieldPopover() {
               "p-2 text-xs rounded-lg cursor-pointer",
               input === "sync"
                 ? "text-zinc-100 bg-indigo-500 font-medium"
-                : "hover:bg-zinc-300",
+                : "hover:bg-tertiary-300",
             )}
             onClick={() => inputTypeHandler("sync")}
           >
@@ -136,8 +138,8 @@ function LayoutPicker() {
   const { appearance, setAppearance } = useConfig();
   const { layout } = appearance;
 
-  function layoutHandler(layout: "col" | "grid") {
-    setAppearance({ type: "layout", layout });
+  function layoutHandler(layout: "cols" | "grid") {
+    setAppearance({ type: "config/layout", layout });
   }
 
   return (
@@ -145,11 +147,11 @@ function LayoutPicker() {
       <div
         className={cn(
           "py-1.5 px-2",
-          layout === "col"
-            ? "bg-zinc-700 stroke-zinc-200"
-            : "bg-zinc-200 stroke-zinc-600 cursor-pointer",
+          layout === "cols"
+            ? "bg-tertiary-700 stroke-tertiary-200"
+            : "bg-tertiary-200 stroke-tertiary-600 cursor-pointer",
         )}
-        onClick={() => layoutHandler("col")}
+        onClick={() => layoutHandler("cols")}
       >
         <Columns3Icon className="size-4 stroke-inherit" />
       </div>
@@ -157,8 +159,8 @@ function LayoutPicker() {
         className={cn(
           "py-1.5 px-2",
           layout === "grid"
-            ? "bg-zinc-700 stroke-zinc-200"
-            : "bg-zinc-200 stroke-zinc-600 cursor-pointer",
+            ? "bg-tertiary-700 stroke-tertiary-200"
+            : "bg-tertiary-200 stroke-tertiary-600 cursor-pointer",
         )}
         onClick={() => layoutHandler("grid")}
       >

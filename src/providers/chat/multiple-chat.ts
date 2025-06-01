@@ -1,6 +1,9 @@
 "use client";
 
 import type { Model, Message } from "@/types";
+import { writeLocalStorage } from "@/lib/utils";
+
+export const MULTIPLE_MODELS_STORAGE_NAME = "multiple/models";
 
 export type Store = {
   models: Model[];
@@ -36,12 +39,14 @@ export function reducer(store: Store, action: Action): Store {
   switch (action.type) {
     case "multiple/add_model": {
       const models = [...store.models, action.model];
+      writeLocalStorage(MULTIPLE_MODELS_STORAGE_NAME, models);
       return { ...store, models };
     }
     case "multiple/remove_model": {
       const model = action.model;
       const models = store.models.filter((mod) => mod !== model);
       const messages = store.messages.filter((msg) => msg.model !== model);
+      writeLocalStorage(MULTIPLE_MODELS_STORAGE_NAME, models);
       return { ...store, models, messages };
     }
     case "multiple/add_input": {

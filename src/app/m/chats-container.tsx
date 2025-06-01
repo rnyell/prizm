@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useConfig, useChatContext } from "@/providers";
-import { CHAT_HEADER_HEIGHT, TOOLBAR_HEIGHT } from "@/styles/constants";
+import { useIsMobile } from "@/hooks";
+import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import MessagesArea from "@/components/messages-area";
 import {
@@ -13,7 +14,6 @@ import {
 import { AddModelPopover } from "./toolbar";
 import ChatInterface from "./chat-interface";
 import { MinimizeIcon } from "lucide-react";
-import ChatHeader from "./chat-header";
 
 function ChatsContainer() {
   const { appearance } = useConfig();
@@ -23,6 +23,7 @@ function ChatsContainer() {
     (msg) => msg.model === maximizedModel,
   );
   const [open, setOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (maximizedModel) {
@@ -46,7 +47,7 @@ function ChatsContainer() {
     gridTemplateColumns: `repeat(${models.length <= 2 ? 1 : 2}, minmax(0, 1fr))`,
     gridTemplateRows: `repeat(${models.length === 1 ? 1 : 2}, minmax(0, 1fr))`,
   };
-  const styles = appearance.layout === "col" ? colStyles : gridStyles;
+  const styles = appearance.layout === "cols" ? colStyles : gridStyles;
 
   if (models.length === 0) {
     return (
@@ -62,30 +63,25 @@ function ChatsContainer() {
     );
   }
 
+  const isScrollable = appearance.layout === "cols" && isMobile;
+
   return (
     <div
-      className="@container/chats h-full max-h-full grid gap-px bg-border translate-0"
+      className={cn(
+        "@container/interfaces h-full max-h-full grid gap-px bg-border translate-0",
+        "data-[scrollable=true]:w-full data-[scrollable=true]:overflow-x-auto data-[scrollable=true]:snap-center data-[scrollable=true]:snap-x data-[scrollable=true]:snap-mandatory data-[scrollable=true]:flex data-[scrollable=true]:gap-0 data-[scrollable=true]:*:shrink-0 data-[scrollable=true]:*:w-full data-[scrollable=true]:*:border-2 data-[scrollable=true]:*:border-border data-[scrollable=true]:*:border-t-0",
+        appearance.layout === "grid" &&
+          models.length === 3 &&
+          "[&>:first-child]:col-span-2",
+      )}
+      data-scrollable={isScrollable}
       style={styles}
     >
       {models.map((model) => (
-        <div
-          key={model}
-          style={{
-            display: "grid",
-            gridTemplateRows: `auto calc(100svh - ${
-              CHAT_HEADER_HEIGHT + TOOLBAR_HEIGHT
-            }px)`,
-          }}
-        >
-          <ChatHeader model={model} />
-          <ChatInterface model={model} />
-        </div>
+        <ChatInterface model={model} key={model} />
       ))}
       {appearance.input === "sync" && (
-        <InputWrapper
-          className="w-4/5 fixed z-10 @lg/chats:w-2/3 @lg/chats:max-w-[720px] @xl/chats:max-w-[765px]"
-          isEmpty={false}
-        >
+        <InputWrapper length={1} synced>
           <SyncedInputField />
         </InputWrapper>
       )}
@@ -101,7 +97,7 @@ function ChatsContainer() {
                 </div>
               </div>
               <MessagesArea messages={maximizedMessages} />
-              <InputWrapper className="lg:max-w-xl" isEmpty={false}>
+              <InputWrapper className="lg:max-w-xl" length={1}>
                 <InputField type="multiple" model={maximizedModel} />
               </InputWrapper>
             </div>

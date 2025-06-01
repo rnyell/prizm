@@ -1,8 +1,10 @@
 "use client";
 
 import Markdown from "react-markdown";
-import { useClipboardWrite } from "@/hooks/use-clipboard";
+import { useClipboardWrite } from "@/hooks";
 import { CopyIcon, CopyCheckIcon } from "lucide-react";
+
+import styles from "@/styles/markdown.module.css";
 
 interface Props {
   role: "user" | "system";
@@ -19,12 +21,12 @@ function MessageBlob({ role, content }: Props) {
   switch (role) {
     case "user": {
       return (
-        <div className="ml-auto mt-2 p-2 w-[85%] max-w-[400px] relative rounded-xl bg-zinc-200">
-          <div className="markdown text-pretty">
+        <div className="ml-auto mt-4 p-2 w-[85%] max-w-[400px] relative rounded-xl bg-tertiary-200">
+          <div className={`prose text-pretty ${styles.markdown}`}>
             <Markdown>{content}</Markdown>
           </div>
           <div
-            className="p-1 absolute -left-8 bottom-0 rounded hover:bg-zinc-100 cursor-pointer"
+            className="p-1 absolute -left-8 bottom-0 rounded hover:bg-tertiary-100 cursor-pointer"
             onClick={handleCopy}
           >
             {copied ? (
@@ -40,12 +42,14 @@ function MessageBlob({ role, content }: Props) {
       return (
         <div className="mt-6 mb-15 flex flex-col gap-2">
           <div className="p-2 max-w-chars-70">
-            <div className="markdown prose text-pretty">
+            <div
+              className={`prose text-pretty dark:text-tertiary-700 ${styles.markdown}`}
+            >
               <Markdown>{content}</Markdown>
             </div>
           </div>
           <div
-            className="p-1 size-max rounded hover:bg-zinc-100 cursor-pointer"
+            className="p-1 size-max rounded hover:bg-tertiary-100 cursor-pointer"
             onClick={handleCopy}
           >
             {copied ? (
