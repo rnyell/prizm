@@ -8,10 +8,11 @@ import type {
   SetStateAction,
 } from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { readStreamableValue } from "ai/rsc";
 import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
 import { useChat, useIsMobile } from "@/hooks";
-import { generate as action, streamResponse } from "@/lib/actions";
+import { streamResponse } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { TEXTAREA_BASE_LENGTH, TEXTAREA_MIN_LENGTH } from "@/lib/constants";
 import { Button } from "./ui/button";
@@ -50,10 +51,12 @@ export function InputWrapper({
   return (
     <div
       className={cn(
-        "z-10 flex justify-center border-0! data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4",
-        "data-[input-type=separate]:w-full data-[input-type=separate]:absolute data-[input-type=separate]:left-0 data-[input-type=separate]:bg-background",
-        "data-[input-type=sync]:4/5 data-[input-type=sync]:fixed data-[input-type=sync]:bottom-4 data-[input-type=sync]:left-1/2 data-[input-type=sync]:-translate-x-1/2 data-[input-type=sync]:@lg/interfaces:w-2/3 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[765px]",
-        isMobile && "data-[input-type=sync]:bottom-5",
+        "w-full z-10 flex justify-center border-0! data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4",
+        "data-[input-type=separate]:absolute data-[input-type=separate]:left-0 data-[input-type=separate]:bg-background",
+        "data-[input-type=sync]:fixed data-[input-type=sync]:left-1/2 data-[input-type=sync]:-translate-x-1/2 data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[765px]",
+        isMobile
+          ? "data-[input-type=sync]:bottom-5"
+          : "data-[input-type=sync]:bottom-4 data-[input-type=sync]:4/5",
       )}
       data-align={length === 0 ? "center" : "bottom"}
       data-input-type={synced ? "sync" : "separate"}
@@ -163,30 +166,22 @@ export function SyncedInputField() {
 
   function appendResponse() {
     startTransition(async () => {
-      const promises = store.models.map((model) =>
-        action(model, input, { apiKey: apiKey! }),
-      );
-      const setteled = await Promise.all(promises);
-      const results = store.models.map((model, i) => ({
-        model: model,
-        result: setteled[i],
-      }));
-      results.forEach(({ model, result }) => {
-        if (result.response) {
-          dispatch({
-            type: "multiple/add-response",
-            model: model,
-            role: "system",
-            content: result.response,
-          });
+      const results = store.models.map(async (model) => {
+        dispatch({ type: "multiple/stream-init", model: model });
+        const result = await streamResponse(model, input, { apiKey: apiKey! });
+        return result;
+      });
+      results.forEach(async (result) => {
+        const { response, error } = await result;
+        if (response) {
+          for await (const delta of readStreamableValue(response)) {
+            dispatch({ type: "multiple/stream-update", delta: delta ?? "" });
+          }
         }
-        if (result.error) {
-          console.error(result.error);
+        if (error) {
           dispatch({
-            type: "multiple/add-response",
-            model: model,
-            role: "system",
-            content: `Error occurred while generating response. Please try again.`,
+            type: "multiple/stream-update",
+            delta: `Error occurred while generating response. Please try again.`,
           });
         }
       });

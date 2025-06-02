@@ -80,7 +80,7 @@ export function AddModelPopover() {
                 key={item.name}
               >
                 <item.icon className="size-3.5 fill-tertiary-800 dark:fill-tertiary-700" />
-                {item.name}
+                {title === "deepseek-v3" ? "deepseek" : item.name}
               </Button>
             );
           })}

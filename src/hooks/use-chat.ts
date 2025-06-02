@@ -8,7 +8,7 @@ import { streamResponse } from "@/lib/actions";
 import { TEXTAREA_MIN_LENGTH } from "@/lib/constants";
 import type { ChatType, Model } from "@/types";
 
-export const maxDuration = 30;
+export const maxDuration = 45;
 
 export function useChat(type: ChatType, model: Model) {
   const { apiKey } = useConfig();
@@ -20,11 +20,6 @@ export function useChat(type: ChatType, model: Model) {
       const { dispatch, store } = useChatContext("single");
 
       function appendInput(input: string) {
-        if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-          const msg = "Your input should have at least 2 characters.";
-          toast.warning(msg);
-          return;
-        }
         dispatch({
           type: "single/add-input",
           model: model,
@@ -46,7 +41,7 @@ export function useChat(type: ChatType, model: Model) {
               dispatch({
                 type: "single/stream-update",
                 model: model,
-                piece: delta ?? "",
+                delta: delta ?? "",
               });
             }
           }
@@ -54,7 +49,7 @@ export function useChat(type: ChatType, model: Model) {
             dispatch({
               type: "single/stream-update",
               model: model,
-              piece: `Error occurred while generating response. Please try again.`,
+              delta: `Error occurred while generating response. Please try again.`,
             });
           }
         });
@@ -67,18 +62,23 @@ export function useChat(type: ChatType, model: Model) {
           );
           return;
         }
+        if (input.trim().length < TEXTAREA_MIN_LENGTH) {
+          const msg = "Your input should have at least 2 characters.";
+          toast.warning(msg);
+          return;
+        }
         appendInput(input);
         appendResponse(input);
       }
 
       return {
         type,
+        store,
+        dispatch,
         pending,
+        append,
         appendInput,
         appendResponse,
-        append,
-        dispatch,
-        store,
       };
     }
     case "multiple": {
@@ -86,11 +86,6 @@ export function useChat(type: ChatType, model: Model) {
       const { store, dispatch } = useChatContext("multiple");
 
       function appendInput(input: string) {
-        if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-          const msg = "Your input should have at least 2 characters.";
-          toast.warning(msg);
-          return;
-        }
         dispatch({
           type: "multiple/add-input",
           model: model,
@@ -102,23 +97,17 @@ export function useChat(type: ChatType, model: Model) {
       function appendResponse(input: string) {
         startTransition(async () => {
           const result = await streamResponse(model, input, { apiKey: apiKey! });
-          dispatch({
-            type: "multiple/stream-init",
-            model: model,
-            role: "system",
-          });
+          dispatch({ type: "multiple/stream-init", model });
           if (result.response) {
             for await (const delta of readStreamableValue(result.response)) {
-              dispatch({
-                type: "multiple/stream-update",
-                piece: delta ?? "",
-              });
+              console.log(delta);
+              dispatch({ type: "multiple/stream-update", delta: delta ?? "" });
             }
           }
           if (result.error) {
             dispatch({
               type: "multiple/stream-update",
-              piece: `Error occurred while generating response. Please try again.`,
+              delta: `Error occurred while generating response. Please try again.`,
             });
           }
         });
@@ -131,18 +120,23 @@ export function useChat(type: ChatType, model: Model) {
           );
           return;
         }
+        if (input.trim().length < TEXTAREA_MIN_LENGTH) {
+          const msg = "Your input should have at least 2 characters.";
+          toast.warning(msg);
+          return;
+        }
         appendInput(input);
         appendResponse(input);
       }
 
       return {
         type,
+        store,
+        dispatch,
         pending,
+        append,
         appendInput,
         appendResponse,
-        append,
-        dispatch,
-        store,
       };
     }
   }

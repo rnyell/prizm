@@ -11,14 +11,17 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const variants = cva("text-center cursor-pointer dark:text-zinc-100", {
-  variants: {
-    size: {
-      sm: "text-sm font-medium",
-      lg: "text-lg font-semibold",
+const variants = cva(
+  "text-center cursor-pointer @max-[275px]/interface:truncate @max-[275px]:max-w-[105px] @max-[200px]/interface:max-w-[65px] dark:text-zinc-100",
+  {
+    variants: {
+      size: {
+        sm: "text-sm font-medium",
+        lg: "text-lg font-semibold",
+      },
     },
   },
-});
+);
 
 type Props = {
   details: Details;

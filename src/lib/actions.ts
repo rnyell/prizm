@@ -9,7 +9,7 @@ type Options = {
   apiKey: string;
 };
 
-export type LLMResponse = {
+export type GeneratedResponse = {
   response: string | null;
   error?: {
     message: string;
@@ -17,11 +17,11 @@ export type LLMResponse = {
   };
 };
 
-export async function generate(
+export async function generateResponse(
   model: Model,
   input: string,
   options: Options,
-): Promise<LLMResponse> {
+): Promise<GeneratedResponse> {
   const url = "https://openrouter.ai/api/v1/chat/completions";
   const headers = {
     Authorization: `Bearer ${options.apiKey}`,
@@ -74,6 +74,15 @@ export async function streamResponse(
   options: Options,
 ): Promise<StreamResult> {
   const { apiKey } = options;
+  if (!apiKey) {
+    return {
+      response: null,
+      error: {
+        message: "No API Key is provided!",
+        cause: "auth",
+      },
+    };
+  }
   const openrouter = createOpenRouter({ apiKey });
   const stream = createStreamableValue("");
   try {

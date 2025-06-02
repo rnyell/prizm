@@ -26,7 +26,7 @@ export type Action =
   | {
       type: "single/stream-update";
       model: Model;
-      piece: string;
+      delta: string;
     };
 
 export const initialStore: Store = new Map();
@@ -37,7 +37,7 @@ export function reducer(store: Store, action: Action): Store {
       const state = new Map(store);
       const { model, role, content } = action;
       const prevMessages = state.get(model) ?? [];
-      const newMessage: Message = { model, role, content };
+      const newMessage = { model, role, content };
       state.set(model, [...prevMessages, newMessage]);
       return state;
     }
@@ -45,7 +45,7 @@ export function reducer(store: Store, action: Action): Store {
       const state = new Map(store);
       const { model, role, content } = action;
       const prevMessages = state.get(model) ?? [];
-      const newMessage: Message = { model, role, content };
+      const newMessage = { model, role, content };
       state.set(model, [...prevMessages, newMessage]);
       return state;
     }
@@ -53,16 +53,16 @@ export function reducer(store: Store, action: Action): Store {
       const state = new Map(store);
       const { model, role } = action;
       const prevMessages = state.get(model) ?? [];
-      const newMessage: Message = { model, role, content: "" };
+      const newMessage = { model, role, content: "" };
       state.set(model, [...prevMessages, newMessage]);
       return state;
     }
     case "single/stream-update": {
       const state = new Map(store);
-      const { model, piece } = action;
+      const { model, delta } = action;
       const prevMessages = state.get(model) ?? [];
       const current = prevMessages[prevMessages.length - 1];
-      current.content += piece;
+      current.content += delta;
       return state;
     }
     case "single/clear-messages": {

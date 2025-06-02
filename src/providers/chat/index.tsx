@@ -50,7 +50,7 @@ export function ChatProvider({ children }: Props) {
   }
 
   useEffect(() => {
-    const key = Multiple.MULTIPLE_MODELS_STORAGE_NAME;
+    const key = Multiple.MODELS_STORAGE_NAME;
     const models = readLocalStorage<Model[]>(key);
     if (models && Array.isArray(models)) {
       removeLocalStorageItem(key);
