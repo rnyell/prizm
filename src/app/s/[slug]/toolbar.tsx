@@ -39,7 +39,7 @@ function Toolbar() {
   }
 
   function clearChat() {
-    dispatch({ type: "single/clear_messages", model: details.model });
+    dispatch({ type: "single/clear-messages", model: details.model });
   }
 
   return (

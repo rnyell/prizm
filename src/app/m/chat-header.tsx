@@ -39,13 +39,13 @@ function ChatHeader({ model }: Props) {
   }
 
   function maximizeModel() {
-    dispatch({ type: "multiple/maximize_model", model });
+    dispatch({ type: "multiple/maximize-model", model });
   }
 
   function closeModel() {
-    dispatch({ type: "multiple/remove_model", model });
+    dispatch({ type: "multiple/remove-model", model });
     if (store.maximizedModel === model) {
-      dispatch({ type: "multiple/minimize_model" });
+      dispatch({ type: "multiple/minimize-model" });
     }
   }
 

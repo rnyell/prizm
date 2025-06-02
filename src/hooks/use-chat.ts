@@ -1,11 +1,14 @@
 "use client";
 
 import { useTransition } from "react";
+import { readStreamableValue } from "ai/rsc";
 import { toast } from "sonner";
 import { useConfig, useChatContext } from "@/providers";
-import { llm as action } from "@/lib/actions";
+import { streamResponse } from "@/lib/actions";
 import { TEXTAREA_MIN_LENGTH } from "@/lib/constants";
 import type { ChatType, Model } from "@/types";
+
+export const maxDuration = 30;
 
 export function useChat(type: ChatType, model: Model) {
   const { apiKey } = useConfig();
@@ -23,7 +26,7 @@ export function useChat(type: ChatType, model: Model) {
           return;
         }
         dispatch({
-          type: "single/add_input",
+          type: "single/add-input",
           model: model,
           role: "user",
           content: input,
@@ -32,22 +35,26 @@ export function useChat(type: ChatType, model: Model) {
 
       function appendResponse(input: string) {
         startTransition(async () => {
-          const result = await action(model, input, { apiKey: apiKey! });
+          const result = await streamResponse(model, input, { apiKey: apiKey! });
+          dispatch({
+            type: "single/stream-init",
+            model: model,
+            role: "system",
+          });
           if (result.response) {
-            dispatch({
-              type: "single/add_response",
-              model: model,
-              role: "system",
-              content: result.response,
-            });
+            for await (const delta of readStreamableValue(result.response)) {
+              dispatch({
+                type: "single/stream-update",
+                model: model,
+                piece: delta ?? "",
+              });
+            }
           }
           if (result.error) {
-            console.error(result.error);
             dispatch({
-              type: "single/add_response",
+              type: "single/stream-update",
               model: model,
-              role: "system",
-              content: `Error occurred while generating response. Please try again.`,
+              piece: `Error occurred while generating response. Please try again.`,
             });
           }
         });
@@ -75,11 +82,6 @@ export function useChat(type: ChatType, model: Model) {
       };
     }
     case "multiple": {
-      // const context = use(ChatContext);
-      // if (!context) {
-      //   throw new Error("ChatContext is not provided correctly.");
-      // }
-      // const { dispatch } = context.multiple;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { store, dispatch } = useChatContext("multiple");
 
@@ -90,7 +92,7 @@ export function useChat(type: ChatType, model: Model) {
           return;
         }
         dispatch({
-          type: "multiple/add_input",
+          type: "multiple/add-input",
           model: model,
           role: "user",
           content: input,
@@ -99,22 +101,24 @@ export function useChat(type: ChatType, model: Model) {
 
       function appendResponse(input: string) {
         startTransition(async () => {
-          const result = await action(model, input, { apiKey: apiKey! });
+          const result = await streamResponse(model, input, { apiKey: apiKey! });
+          dispatch({
+            type: "multiple/stream-init",
+            model: model,
+            role: "system",
+          });
           if (result.response) {
-            dispatch({
-              type: "multiple/add_response",
-              model: model,
-              role: "system",
-              content: result.response,
-            });
+            for await (const delta of readStreamableValue(result.response)) {
+              dispatch({
+                type: "multiple/stream-update",
+                piece: delta ?? "",
+              });
+            }
           }
           if (result.error) {
-            console.error(result.error);
             dispatch({
-              type: "multiple/add_response",
-              model: model,
-              role: "system",
-              content: `Error occurred while generating response. Please try again.`,
+              type: "multiple/stream-update",
+              piece: `Error occurred while generating response. Please try again.`,
             });
           }
         });

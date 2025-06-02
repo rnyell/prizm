@@ -35,7 +35,7 @@ function ChatsContainer() {
 
   useEffect(() => {
     if (open === false) {
-      dispatch({ type: "multiple/minimize_model" });
+      dispatch({ type: "multiple/minimize-model" });
     }
   }, [open, dispatch]);
 
@@ -93,7 +93,7 @@ function ChatsContainer() {
             <div className="py-3 w-[85svw] h-[95svh]">
               <div className="p-2 absolute top-4 right-4 z-50 cursor-pointer">
                 <div
-                  onClick={() => dispatch({ type: "multiple/minimize_model" })}
+                  onClick={() => dispatch({ type: "multiple/minimize-model" })}
                 >
                   <MinimizeIcon className="size-5 stroke-[2.25]" />
                 </div>

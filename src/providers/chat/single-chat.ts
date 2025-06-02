@@ -5,25 +5,35 @@ import type { Model, Message } from "@/types";
 export type Store = Map<Model, Message[]>;
 
 export type Action =
-  | { type: "single/clear_messages"; model: Model }
+  | { type: "single/clear-messages"; model: Model }
   | {
-      type: "single/add_input";
+      type: "single/add-input";
       model: Model;
       role: "user";
       content: string;
     }
   | {
-      type: "single/add_response";
+      type: "single/add-response";
       model: Model;
       role: "system";
       content: string;
+    }
+  | {
+      type: "single/stream-init";
+      model: Model;
+      role: "system";
+    }
+  | {
+      type: "single/stream-update";
+      model: Model;
+      piece: string;
     };
 
 export const initialStore: Store = new Map();
 
 export function reducer(store: Store, action: Action): Store {
   switch (action.type) {
-    case "single/add_input": {
+    case "single/add-input": {
       const state = new Map(store);
       const { model, role, content } = action;
       const prevMessages = state.get(model) ?? [];
@@ -31,7 +41,7 @@ export function reducer(store: Store, action: Action): Store {
       state.set(model, [...prevMessages, newMessage]);
       return state;
     }
-    case "single/add_response": {
+    case "single/add-response": {
       const state = new Map(store);
       const { model, role, content } = action;
       const prevMessages = state.get(model) ?? [];
@@ -39,7 +49,23 @@ export function reducer(store: Store, action: Action): Store {
       state.set(model, [...prevMessages, newMessage]);
       return state;
     }
-    case "single/clear_messages": {
+    case "single/stream-init": {
+      const state = new Map(store);
+      const { model, role } = action;
+      const prevMessages = state.get(model) ?? [];
+      const newMessage: Message = { model, role, content: "" };
+      state.set(model, [...prevMessages, newMessage]);
+      return state;
+    }
+    case "single/stream-update": {
+      const state = new Map(store);
+      const { model, piece } = action;
+      const prevMessages = state.get(model) ?? [];
+      const current = prevMessages[prevMessages.length - 1];
+      current.content += piece;
+      return state;
+    }
+    case "single/clear-messages": {
       const state = new Map(store);
       const model = action.model;
       state.set(model, []);

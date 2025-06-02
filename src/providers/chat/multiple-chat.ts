@@ -12,22 +12,31 @@ export type Store = {
 };
 
 export type Action =
-  | { type: "multiple/add_model"; model: Model }
-  | { type: "multiple/remove_model"; model: Model }
+  | { type: "multiple/add-model"; model: Model }
+  | { type: "multiple/remove-model"; model: Model }
+  | { type: "multiple/maximize-model"; model: Model }
+  | { type: "multiple/minimize-model" }
   | {
-      type: "multiple/add_input";
+      type: "multiple/add-input";
       model: Model;
       role: "user";
       content: string;
     }
   | {
-      type: "multiple/add_response";
+      type: "multiple/add-response";
       model: Model;
       role: "system";
       content: string;
     }
-  | { type: "multiple/maximize_model"; model: Model }
-  | { type: "multiple/minimize_model" };
+  | {
+      type: "multiple/stream-init";
+      model: Model;
+      role: "system";
+    }
+  | {
+      type: "multiple/stream-update";
+      piece: string;
+    };
 
 export const initialStore: Store = {
   models: [],
@@ -37,32 +46,42 @@ export const initialStore: Store = {
 
 export function reducer(store: Store, action: Action): Store {
   switch (action.type) {
-    case "multiple/add_model": {
+    case "multiple/add-model": {
       const models = [...store.models, action.model];
       writeLocalStorage(MULTIPLE_MODELS_STORAGE_NAME, models);
       return { ...store, models };
     }
-    case "multiple/remove_model": {
+    case "multiple/remove-model": {
       const model = action.model;
       const models = store.models.filter((mod) => mod !== model);
       const messages = store.messages.filter((msg) => msg.model !== model);
       writeLocalStorage(MULTIPLE_MODELS_STORAGE_NAME, models);
       return { ...store, models, messages };
     }
-    case "multiple/add_input": {
+    case "multiple/add-input": {
       const { model, role, content } = action;
       const messages = [...store.messages, { model, role, content }];
       return { ...store, messages };
     }
-    case "multiple/add_response": {
+    case "multiple/add-response": {
       const { model, role, content } = action;
       const messages = [...store.messages, { model, role, content }];
       return { ...store, messages };
     }
-    case "multiple/maximize_model": {
+    case "multiple/stream-init": {
+      const { model, role } = action;
+      const messages = [...store.messages, { model, role, content: "" }];
+      return { ...store, messages };
+    }
+    case "multiple/stream-update": {
+      const current = store.messages[store.messages.length - 1];
+      current.content += action.piece;
+      return store;
+    }
+    case "multiple/maximize-model": {
       return { ...store, maximizedModel: action.model };
     }
-    case "multiple/minimize_model": {
+    case "multiple/minimize-model": {
       return { ...store, maximizedModel: null };
     }
   }

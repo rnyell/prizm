@@ -55,7 +55,7 @@ export function ChatProvider({ children }: Props) {
     if (models && Array.isArray(models)) {
       removeLocalStorageItem(key);
       models.forEach((model) => {
-        multipleDispatch({ type: "multiple/add_model", model });
+        multipleDispatch({ type: "multiple/add-model", model });
       });
     }
   }, []);

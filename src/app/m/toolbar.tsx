@@ -46,12 +46,12 @@ export function AddModelPopover() {
   function handleModelSelection(model: Model) {
     if (models.length < 4) {
       if (!models.includes(model)) {
-        dispatch({ type: "multiple/add_model", model });
+        dispatch({ type: "multiple/add-model", model });
       } else {
-        dispatch({ type: "multiple/remove_model", model });
+        dispatch({ type: "multiple/remove-model", model });
       }
     } else if (models.length === 4 && models.includes(model)) {
-      dispatch({ type: "multiple/remove_model", model });
+      dispatch({ type: "multiple/remove-model", model });
     } else {
       toast.warning("You can chat with only four models at once.", {
         position: "top-center",

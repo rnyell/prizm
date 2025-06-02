@@ -1,5 +1,8 @@
 "use server";
 
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { streamText } from "ai";
+import { createStreamableValue, StreamableValue } from "ai/rsc";
 import type { Model } from "@/types";
 
 type Options = {
@@ -14,12 +17,11 @@ export type LLMResponse = {
   };
 };
 
-export async function llm(
+export async function generate(
   model: Model,
   input: string,
   options: Options,
 ): Promise<LLMResponse> {
-  console.log("...started...");
   const url = "https://openrouter.ai/api/v1/chat/completions";
   const headers = {
     Authorization: `Bearer ${options.apiKey}`,
@@ -45,7 +47,48 @@ export async function llm(
     const response = data.choices[0].message.content as string | null;
     console.dir(data, { depth: 2 });
     return { response };
-  } catch (error: unknown) {
+  } catch (error) {
+    console.error(error);
+    return {
+      response: null,
+      error: {
+        message: "Something went wrong!",
+        cause: "unexpected",
+      },
+    };
+  }
+}
+
+export type StreamResult = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  response: StreamableValue<string, any> | null;
+  error?: {
+    message: string;
+    cause?: string;
+  };
+};
+
+export async function streamResponse(
+  model: Model,
+  input: string,
+  options: Options,
+): Promise<StreamResult> {
+  const { apiKey } = options;
+  const openrouter = createOpenRouter({ apiKey });
+  const stream = createStreamableValue("");
+  try {
+    (async () => {
+      const { textStream } = streamText({
+        model: openrouter(model),
+        prompt: input,
+      });
+      for await (const delta of textStream) {
+        stream.update(delta);
+      }
+      stream.done();
+    })();
+    return { response: stream.value };
+  } catch (error) {
     console.error(error);
     return {
       response: null,

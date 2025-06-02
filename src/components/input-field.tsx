@@ -11,7 +11,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
 import { useChat, useIsMobile } from "@/hooks";
-import { llm as action } from "@/lib/actions";
+import { generate as action, streamResponse } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { TEXTAREA_BASE_LENGTH, TEXTAREA_MIN_LENGTH } from "@/lib/constants";
 import { Button } from "./ui/button";
@@ -146,27 +146,22 @@ export function SyncedInputField() {
     useChatContext("multiple");
   const [pending, startTransition] = useTransition();
 
-  function appendInput(model: Model, input: string) {
-    if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-      toast.warning("Your input should have at least 2 characters.");
-      return;
-    }
-    dispatch({
-      type: "multiple/add_input",
-      model: model,
-      role: "user",
-      content: input,
+  function appendInput() {
+    store.models.forEach((model) => {
+      if (input.trim().length < TEXTAREA_MIN_LENGTH) {
+        toast.warning("Your input should have at least 2 characters.");
+        return;
+      }
+      dispatch({
+        type: "multiple/add-input",
+        model: model,
+        role: "user",
+        content: input,
+      });
     });
   }
 
-  function appendMessage() {
-    if (!apiKey) {
-      toast.error("You must provide your API_KEY in order to chat with models.");
-      return;
-    }
-    store.models.forEach((model) => {
-      appendInput(model, input);
-    });
+  function appendResponse() {
     startTransition(async () => {
       const promises = store.models.map((model) =>
         action(model, input, { apiKey: apiKey! }),
@@ -179,7 +174,7 @@ export function SyncedInputField() {
       results.forEach(({ model, result }) => {
         if (result.response) {
           dispatch({
-            type: "multiple/add_response",
+            type: "multiple/add-response",
             model: model,
             role: "system",
             content: result.response,
@@ -188,7 +183,7 @@ export function SyncedInputField() {
         if (result.error) {
           console.error(result.error);
           dispatch({
-            type: "multiple/add_response",
+            type: "multiple/add-response",
             model: model,
             role: "system",
             content: `Error occurred while generating response. Please try again.`,
@@ -196,6 +191,15 @@ export function SyncedInputField() {
         }
       });
     });
+  }
+
+  function appendMessage() {
+    if (!apiKey) {
+      toast.error("You must provide your API_KEY in order to chat with models.");
+      return;
+    }
+    appendInput();
+    appendResponse();
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
