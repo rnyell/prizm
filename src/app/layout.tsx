@@ -11,11 +11,13 @@ import "@/styles/globals.css";
 export const metadata: Metadata = {
   title: { template: "%s", default: "Prism" },
   description: `The Multi-Model AI Chat Experience`,
-  icons: {},
+  icons: {
+    icon: "/seo/logo.svg",
+    apple: "/seo/logo.svg",
+  },
   openGraph: {
     type: "website",
     url: "mupt.vercel.app",
-    images: undefined,
     title: `The Multi-Model AI Chat Experience | Seamless Conversations with Multiple AI Models`,
     description:
       "Chat with multiple AI models simultaneously, compare their responses side-by-side in real-time. Ideal for AI research, testing, model analysis.",

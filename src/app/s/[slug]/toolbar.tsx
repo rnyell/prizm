@@ -4,10 +4,11 @@ import { usePathname } from "next/navigation";
 import { useChatContext } from "@/providers";
 import { getModelDetailsByTitle } from "@/lib/utils";
 import { TOOLBAR_HEIGHT } from "@/lib/constants";
-import ModelDetails from "@/components/model-details";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import type { Title } from "@/types";
+import ModelDetails from "@/components/model-details";
+import ThemeToggle from "@/components/theme-toggle";
 import { DownloadIcon, TrashIcon } from "lucide-react";
+import type { Title } from "@/types";
 
 function Toolbar() {
   const { store, dispatch } = useChatContext("single");
@@ -49,12 +50,21 @@ function Toolbar() {
     >
       <SidebarTrigger className="absolute left-4 top-1/2 -translate-y-1/2" />
       <ModelDetails details={details} className="grow" size="lg" />
-      <div className="ml-auto pr-4 flex items-center gap-2 *:p-1.5 *:border-[1.5px] *:rounded-md *:hover:bg-tertiary-200 *:cursor-pointer">
-        <div onClick={downloadChat}>
+      <div className="ml-auto pr-4 flex items-center gap-2">
+        <div
+          className="p-1.5 border rounded-md transition-[background] hover:bg-tertiary-200 cursor-pointer"
+          onClick={downloadChat}
+        >
           <DownloadIcon className="size-4 stroke-[1.75]" />
         </div>
-        <div onClick={clearChat}>
+        <div
+          className="p-1.5 border rounded-md transition-[background] hover:bg-tertiary-200 cursor-pointer"
+          onClick={clearChat}
+        >
           <TrashIcon className="size-4 stroke-[1.75]" />
+        </div>
+        <div>
+          <ThemeToggle />
         </div>
       </div>
     </div>
