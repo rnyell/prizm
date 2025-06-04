@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
+import ThemeToggle from "@/components/theme-toggle";
 import {
   Columns3Icon,
   Grid2x2Icon,
@@ -22,7 +23,7 @@ import type { Model, Title } from "@/types";
 export function Toolbar() {
   return (
     <div
-      className="px-4 py-2 sticky z-10 top-0 flex items-center gap-5 text-[0.8rem] border-b bg-tertiary-100"
+      className="px-4 py-2 sticky z-10 top-0 flex items-center gap-5 text-[0.8rem] border-b bg-tertiary-100 max-md:gap-4 max-sm:gap-3"
       style={{ height: TOOLBAR_HEIGHT }}
     >
       <SidebarTrigger />
@@ -34,6 +35,9 @@ export function Toolbar() {
       </div>
       <div className="ml-auto">
         <LayoutPicker />
+      </div>
+      <div>
+        <ThemeToggle />
       </div>
     </div>
   );
@@ -61,9 +65,9 @@ export function AddModelPopover() {
 
   return (
     <Popover>
-      <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-full border hover:bg-tertiary-200 cursor-pointer dark:text-tertiary-700">
+      <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-full border border-tertiary-200 transition-[background-color] hover:bg-tertiary-200 cursor-pointer dark:text-tertiary-700 max-sm:p-1.5 max-sm:aspect-square">
         <PlusIcon className="size-4 stroke-[1.75]" />
-        <div>Add Model</div>
+        <div className="max-sm:hidden">Add Model</div>
       </PopoverTrigger>
       <PopoverContent className="w-max">
         <div className="grid grid-cols-[repeat(3,max-content)] gap-x-1.5 gap-y-2">
@@ -100,9 +104,9 @@ function InputFieldPopover() {
 
   return (
     <Popover>
-      <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-full border hover:bg-tertiary-200 cursor-pointer dark:text-tertiary-700">
+      <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-full border border-tertiary-200 transition-[background-color] hover:bg-tertiary-200 cursor-pointer dark:text-tertiary-700 max-sm:p-1.5 max-sm:aspect-square">
         <TextCursorInputIcon className="size-4 stroke-[1.75]" />
-        <div>Input Type</div>
+        <div className="max-sm:hidden">Input Type</div>
       </PopoverTrigger>
       <PopoverContent className="p-1 w-max">
         <div className="flex flex-col gap-1 text-sm dark:text-tertiary-700">
@@ -143,13 +147,13 @@ function LayoutPicker() {
   }
 
   return (
-    <div className="overflow-hidden flex items-center gap-px rounded-md border bg-border">
+    <div className="overflow-hidden flex items-center gap-px rounded-md border border-tertiary-200">
       <div
         className={cn(
           "py-1.5 px-2",
           layout === "cols"
             ? "bg-tertiary-700 stroke-tertiary-200"
-            : "bg-tertiary-200 stroke-tertiary-600 cursor-pointer",
+            : "stroke-tertiary-600 cursor-pointer",
         )}
         onClick={() => layoutHandler("cols")}
       >
@@ -160,7 +164,7 @@ function LayoutPicker() {
           "py-1.5 px-2",
           layout === "grid"
             ? "bg-tertiary-700 stroke-tertiary-200"
-            : "bg-tertiary-200 stroke-tertiary-600 cursor-pointer",
+            : "stroke-tertiary-600 cursor-pointer",
         )}
         onClick={() => layoutHandler("grid")}
       >

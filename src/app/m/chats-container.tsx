@@ -16,14 +16,15 @@ import ChatInterface from "./chat-interface";
 import { MinimizeIcon } from "lucide-react";
 
 function ChatsContainer() {
+  const [open, setOpen] = useState(false);
   const { appearance } = useConfig();
   const { store, dispatch } = useChatContext("multiple");
   const { messages, models, maximizedModel } = store;
   const maximizedMessages = messages.filter(
     (msg) => msg.model === maximizedModel,
   );
-  const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
+  const isScrollableX = isMobile && appearance.layout === "cols";
 
   useEffect(() => {
     if (maximizedModel) {
@@ -63,13 +64,11 @@ function ChatsContainer() {
     );
   }
 
-  const isScrollableX = isMobile && appearance.layout === "cols";
-
   return (
     <div
       className={cn(
         "@container/interfaces h-full max-h-full grid gap-px bg-border",
-        "data-[scrollable=false]:data-[input-type=sync]:translate-0",
+        "data-[input-type=sync]:translate-0 data-[input-type=sync]:overflow-y-hidden" /* to create a containing box for 'fixed' positioned <SyncedInput /> */,
         "data-[scrollable=true]:w-full",
         "data-[scroll-orientation=x]:overflow-x-auto data-[scroll-orientation=x]:snap-x data-[scroll-orientation=x]:snap-proximity data-[scroll-orientation=x]:flex data-[scroll-orientation=x]:gap-[2px]",
         "[&>[data-scroll-item=true]]:shrink-0 [&>[data-scroll-item=true]]:w-full [&>[data-scroll-item=true]]:snap-start",

@@ -52,6 +52,7 @@ export function InputWrapper({
     <div
       className={cn(
         "w-full z-10 flex justify-center border-0! data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4",
+        "before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
         "data-[input-type=separate]:absolute data-[input-type=separate]:left-0 data-[input-type=separate]:bg-background",
         "data-[input-type=sync]:fixed data-[input-type=sync]:left-1/2 data-[input-type=sync]:-translate-x-1/2 data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[765px]",
         isMobile
@@ -108,7 +109,7 @@ export function InputField({ type, model }: FieldProps) {
         value.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
-        usingSyncedInput && "opacity-0 pointer-events-none",
+        usingSyncedInput && "hidden",
       )}
     >
       <Textarea

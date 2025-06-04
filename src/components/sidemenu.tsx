@@ -3,7 +3,6 @@
 import { useState, type FormEvent } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import { useConfig } from "@/providers";
 import { cn, sidemenuItems } from "@/lib/utils";
 import {
@@ -19,20 +18,13 @@ import {
   SidebarSeparator,
 } from "./ui/sidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import {
-  KeyRoundIcon,
-  SunIcon,
-  MoonIcon,
-  ShieldBanIcon,
-  PyramidIcon,
-} from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { KeyRoundIcon, ShieldBanIcon, PyramidIcon } from "lucide-react";
 
 function Sidemenu() {
   const { setApiKey } = useConfig();
-  const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -46,15 +38,6 @@ function Sidemenu() {
       alert("failed to set api key for unknown reason. please try again!");
     }
     setOpen(false);
-  }
-
-  function toggleTheme() {
-    if (theme === "light") {
-      setTheme("dark");
-    }
-    if (theme === "dark") {
-      setTheme("light");
-    }
   }
 
   return (
@@ -146,7 +129,7 @@ function Sidemenu() {
               </div>
             </DialogTrigger>
             <DialogContent className="min-w-[50vw] top-2/5">
-              <h2 className="text-xl font-semibold">Privacy Noets</h2>
+              <h2 className="text-xl font-semibold">Privacy Notes</h2>
               <ul className="mt-4 space-y-6">
                 <li>
                   <h4 className="mb-2 text-lg font-medium">No Server Storage</h4>
@@ -181,34 +164,6 @@ function Sidemenu() {
               </ul>
             </DialogContent>
           </Dialog>
-        </div>
-        <div>
-          <div
-            className="p-3 w-full flex items-center gap-4 rounded-xl border border-tertiary-200 cursor-pointer transition-[background-color] hover:bg-tertiary-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800"
-            onClick={toggleTheme}
-          >
-            <div>
-              {theme === "dark" && (
-                <div
-                  className="flex-center rounded-full group-data-[collapsible=icon]:text-tertiary-100"
-                  onClick={() => setTheme("light")}
-                >
-                  <SunIcon className="size-5" />
-                </div>
-              )}
-              {theme === "light" && (
-                <div
-                  className="flex-center rounded-full group-data-[collapsible=icon]:text-tertiary-100"
-                  onClick={() => setTheme("dark")}
-                >
-                  <MoonIcon className="size-5" />
-                </div>
-              )}
-            </div>
-            <div className="text-sm group-data-[collapsible=icon]:hidden">
-              Theme
-            </div>
-          </div>
         </div>
       </SidebarFooter>
     </Sidebar>

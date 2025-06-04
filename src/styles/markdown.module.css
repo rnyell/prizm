@@ -1,16 +1,9 @@
 /* a basic overrider for "@tailwindcss/typography" plugin */
 
 .markdown {
-  /* colors */
-  :where(*) {
-    color: var(--tertiary-800) !important;
-  }
-
-  strong {
-    color: var(--tertiary-900) !important;
-  }
-
   /* typo */
+  font-size: 1rem;
+
   h1 {
     margin-block: calc(var(--spacing) * 6) calc(var(--spacing) * 2);
     font-size: var(--text-2xl);
@@ -52,5 +45,20 @@
     code {
       white-space: break-spaces;
     }
+  }
+
+  @media screen and (width < 25rem) {
+    :where(*) {
+      font-size: 92.5% !important;
+    }
+  }
+
+  /* colors */
+  :where(*) {
+    color: var(--tertiary-800) !important;
+  }
+
+  strong {
+    color: var(--tertiary-900) !important;
   }
 }

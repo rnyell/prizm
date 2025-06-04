@@ -40,7 +40,7 @@ function MessageBlob({ role, content }: Props) {
     }
     case "system": {
       return (
-        <div className="mt-6 mb-15 flex flex-col gap-2">
+        <div className="mt-6 mb-20 flex flex-col gap-2">
           <div className="p-2 max-w-chars-70">
             <div
               className={`prose text-pretty dark:text-tertiary-700 ${styles.markdown}`}
