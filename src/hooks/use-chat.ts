@@ -5,6 +5,7 @@ import { readStreamableValue } from "ai/rsc";
 import { toast } from "sonner";
 import { useConfig, useChatContext } from "@/providers";
 import { streamResponse } from "@/lib/actions";
+import { generateId } from "@/lib/utils";
 import { TEXTAREA_MIN_LENGTH } from "@/lib/constants";
 import type { ChatType, Model } from "@/types";
 
@@ -21,21 +22,16 @@ export function useChat(type: ChatType, model: Model) {
 
       function appendInput(input: string) {
         dispatch({
-          type: "single/add-input",
+          type: "single/append-input",
           model: model,
-          role: "user",
           content: input,
         });
       }
 
       function appendResponse(input: string) {
+        dispatch({ type: "single/stream-init", model: model });
         startTransition(async () => {
           const result = await streamResponse(model, input, { apiKey: apiKey! });
-          dispatch({
-            type: "single/stream-init",
-            model: model,
-            role: "system",
-          });
           if (result.response) {
             for await (const delta of readStreamableValue(result.response)) {
               dispatch({
@@ -87,33 +83,61 @@ export function useChat(type: ChatType, model: Model) {
 
       function appendInput(input: string) {
         dispatch({
-          type: "multiple/add-input",
+          type: "multiple/append-input",
           model: model,
-          role: "user",
           content: input,
         });
       }
 
-      function appendResponse(input: string) {
-        startTransition(async () => {
-          const result = await streamResponse(model, input, { apiKey: apiKey! });
-          dispatch({ type: "multiple/stream-init", model });
-          if (result.response) {
-            for await (const delta of readStreamableValue(result.response)) {
-              console.log(delta);
-              dispatch({ type: "multiple/stream-update", delta: delta ?? "" });
+      async function appendResponse(input: string) {
+        const id = generateId(12);
+        dispatch({ type: "multiple/stream-init", model, id });
+        try {
+          const result2 = await fetch("/api/chat", {
+            method: "POST",
+            body: JSON.stringify({ apiKey, model, prompt: input }),
+          });
+
+          const reader = result2.body?.getReader();
+          const decoder = new TextDecoder();
+
+          if (!reader) return;
+
+          while (true) {
+            const { done, value } = await reader.read();
+
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\n").filter((line) => line.trim());
+
+            for (const line of lines) {
+              if (line.startsWith("0:")) {
+                try {
+                  const delta = JSON.parse(line.slice(2));
+                  dispatch({ type: "multiple/stream-update", id, delta });
+                } catch (e) {
+                  console.error("Error parsing chunk:", e);
+                  dispatch({
+                    type: "multiple/stream-update",
+                    id: id,
+                    delta: `Error occurred while generating response. Please try again.`,
+                  });
+                }
+              }
             }
           }
-          if (result.error) {
-            dispatch({
-              type: "multiple/stream-update",
-              delta: `Error occurred while generating response. Please try again.`,
-            });
-          }
-        });
+        } catch (e) {
+          console.error(e);
+          dispatch({
+            type: "multiple/stream-update",
+            id: id,
+            delta: `Error occurred while generating response. Please try again.`,
+          });
+        }
       }
 
-      function append(input: string) {
+      async function append(input: string) {
         if (!apiKey) {
           toast.error(
             "You must provide your API_KEY in order to chat with models.",
@@ -126,7 +150,7 @@ export function useChat(type: ChatType, model: Model) {
           return;
         }
         appendInput(input);
-        appendResponse(input);
+        await appendResponse(input);
       }
 
       return {

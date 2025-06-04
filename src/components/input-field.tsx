@@ -2,10 +2,10 @@
 
 import type {
   ReactNode,
-  KeyboardEvent,
-  TextareaHTMLAttributes,
   Dispatch,
   SetStateAction,
+  KeyboardEvent,
+  TextareaHTMLAttributes,
 } from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { readStreamableValue } from "ai/rsc";
@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
 import { useChat, useIsMobile } from "@/hooks";
 import { streamResponse } from "@/lib/actions";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import { TEXTAREA_BASE_LENGTH, TEXTAREA_MIN_LENGTH } from "@/lib/constants";
 import { Button } from "./ui/button";
 import { ArrowUpIcon, SparklesIcon } from "lucide-react";
@@ -75,37 +75,25 @@ export function InputWrapper({
 
 export function InputField({ type, model }: FieldProps) {
   const { appearance } = useConfig();
-  const { input, handleSyncedSubmit } = useChatContext("multiple");
   const { pending, append } = useChat(type, model);
+  const { input } = useChatContext("multiple");
   const [value, setValue] = useState("");
-  const usingSyncedInput = type === "multiple" && appearance.input === "sync";
+
+  const usingSyncedInput = appearance.input === "sync" && type === "multiple";
 
   function appendMessages() {
-    if (usingSyncedInput) {
-      append(input);
-      return;
-    }
     append(value);
     setValue("");
   }
 
   function handleChange(value: string) {
-    if (usingSyncedInput) {
-      return;
-    }
     setValue(value);
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      if (usingSyncedInput) {
-        handleSyncedSubmit(appendMessages);
-        return;
-      } else {
-        appendMessages();
-        return;
-      }
+      appendMessages();
     }
   }
 
@@ -120,7 +108,7 @@ export function InputField({ type, model }: FieldProps) {
         value.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
-        usingSyncedInput && "opacity-0",
+        usingSyncedInput && "opacity-0 pointer-events-none",
       )}
     >
       <Textarea
@@ -145,44 +133,37 @@ export function InputField({ type, model }: FieldProps) {
 
 export function SyncedInputField() {
   const { apiKey } = useConfig();
-  const { store, dispatch, input, setInput, handleSyncedSubmit } =
-    useChatContext("multiple");
+  const { store, dispatch, input, setInput } = useChatContext("multiple");
   const [pending, startTransition] = useTransition();
 
   function appendInput() {
     store.models.forEach((model) => {
-      if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-        toast.warning("Your input should have at least 2 characters.");
-        return;
-      }
-      dispatch({
-        type: "multiple/add-input",
-        model: model,
-        role: "user",
-        content: input,
-      });
+      dispatch({ type: "multiple/append-input", content: input, model });
     });
   }
 
+  const ids: string[] = [];
+
   function appendResponse() {
+    const results = store.models.map(async (model) => {
+      const id = generateId(12);
+      ids.push(id);
+      dispatch({ type: "multiple/stream-init", model, id });
+      const result = await streamResponse(model, input, { apiKey: apiKey! });
+      return result;
+    });
     startTransition(async () => {
-      const results = store.models.map(async (model) => {
-        dispatch({ type: "multiple/stream-init", model: model });
-        const result = await streamResponse(model, input, { apiKey: apiKey! });
-        return result;
-      });
-      results.forEach(async (result) => {
+      results.forEach(async (result, index) => {
+        const id = ids[index];
         const { response, error } = await result;
         if (response) {
           for await (const delta of readStreamableValue(response)) {
-            dispatch({ type: "multiple/stream-update", delta: delta ?? "" });
+            dispatch({ type: "multiple/stream-update", delta: delta ?? "", id });
           }
         }
         if (error) {
-          dispatch({
-            type: "multiple/stream-update",
-            delta: `Error occurred while generating response. Please try again.`,
-          });
+          const delta = `Error occurred while generating response. Please try again.`;
+          dispatch({ type: "multiple/stream-update", id, delta });
         }
       });
     });
@@ -193,19 +174,24 @@ export function SyncedInputField() {
       toast.error("You must provide your API_KEY in order to chat with models.");
       return;
     }
+    if (input.trim().length < TEXTAREA_MIN_LENGTH) {
+      toast.warning("Your input should have at least 2 characters.");
+      return;
+    }
     appendInput();
     appendResponse();
+    setInput("");
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSyncedSubmit(appendMessage);
+      appendMessage();
     }
   }
 
   function handleClick() {
-    handleSyncedSubmit(appendMessage);
+    appendMessage();
   }
 
   return (

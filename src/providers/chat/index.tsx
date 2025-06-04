@@ -19,7 +19,6 @@ type MultipleChat = {
   dispatch: Dispatch<Multiple.Action>;
   input: string;
   setInput: Dispatch<SetStateAction<string>>;
-  handleSyncedSubmit: (cb: () => void) => void;
 };
 
 type Context = {
@@ -44,11 +43,6 @@ export function ChatProvider({ children }: Props) {
     Multiple.initialStore,
   );
 
-  function handleSyncedSubmit(fn: () => void) {
-    setInput("");
-    fn();
-  }
-
   useEffect(() => {
     const key = Multiple.MODELS_STORAGE_NAME;
     const models = readLocalStorage<Model[]>(key);
@@ -72,7 +66,6 @@ export function ChatProvider({ children }: Props) {
       dispatch: multipleDispatch,
       input,
       setInput,
-      handleSyncedSubmit,
     },
   };
 

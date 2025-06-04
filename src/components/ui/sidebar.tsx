@@ -487,7 +487,7 @@ function SidebarMenuItem({ className, ...props }: ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button p-2 w-full overflow-hidden flex items-center gap-2 rounded-md text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding,background-color,color] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-tertiary-300 data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-12! group-data-[collapsible=icon]:p-2! group-data-[collapsible=icon]:justify-center [&>span:last-child]:truncate",
+  "peer/menu-button p-2 w-full overflow-hidden flex items-center gap-2 rounded-md text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding,background-color,color] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-tertiary-200 data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-12! group-data-[collapsible=icon]:p-2! group-data-[collapsible=icon]:justify-center [&>span:last-child]:truncate",
   {
     variants: {
       variant: {

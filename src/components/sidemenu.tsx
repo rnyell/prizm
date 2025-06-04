@@ -102,7 +102,7 @@ function Sidemenu() {
       <SidebarFooter className="bg-tertiary-100">
         <div>
           <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger className="p-3 w-full flex items-center gap-4 rounded-xl border transition-[background-color] hover:bg-tertiary-300 cursor-pointer group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800">
+            <PopoverTrigger className="p-3 w-full flex items-center gap-4 rounded-xl border border-tertiary-200 transition-[background-color] hover:bg-tertiary-200 cursor-pointer group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800">
               <KeyRoundIcon className="size-5" />
               <div className="text-sm group-data-[collapsible=icon]:hidden">
                 Set your key
@@ -130,7 +130,7 @@ function Sidemenu() {
         </div>
         <div>
           <div
-            className="p-3 w-full flex items-center gap-4 rounded-xl border cursor-pointer transition-[background-color] hover:bg-tertiary-300 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800"
+            className="p-3 w-full flex items-center gap-4 rounded-xl border border-tertiary-200 cursor-pointer transition-[background-color] hover:bg-tertiary-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800"
             onClick={toggleTheme}
           >
             <div>

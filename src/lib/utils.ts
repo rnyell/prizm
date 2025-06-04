@@ -10,6 +10,8 @@ import {
 } from "@/components/icons";
 import type { Model, Title, Details, Models, Name } from "@/types";
 
+export { generateId } from "ai";
+
 export function readLocalStorage<T>(key: string): T | undefined {
   try {
     const value = localStorage.getItem(key);
@@ -121,7 +123,7 @@ const models: Models = {
   },
   nemotron: {
     model: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
-    name: "llama-3.1-nemotron-ultra-v1",
+    name: "llama-3.1-nemotron",
     context: 131072,
     logo: NvidiaIcon,
     overview:

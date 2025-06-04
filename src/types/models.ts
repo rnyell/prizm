@@ -39,7 +39,7 @@ export type Name =
   | "devstral-small"
   | "deepseek-chat"
   | "deepseek-chat-v3"
-  | "llama-3.1-nemotron-ultra-v1"
+  | "llama-3.1-nemotron"
   | "qwen3-14b";
 
 export type Details = {
