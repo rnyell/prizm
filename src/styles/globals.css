@@ -47,12 +47,13 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-geist: var(--font-geist-sans);
-  --font-geist-mono: var(--font-geist-mono);
-  --breakpoint-xs: 30rem;
   --spacing-chars-70: 70ch;
   --spacing-chars-75: 75ch;
   --spacing-chars-80: 80ch;
+  --text-md: 0.925rem;
+  --font-geist: var(--font-geist-sans);
+  --font-geist-mono: var(--font-geist-mono);
+  --breakpoint-xs: 30rem;
 }
 
 :root {

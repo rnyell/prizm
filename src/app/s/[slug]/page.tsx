@@ -11,7 +11,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  return { title: slug };
+  return { title: `Prism | ${slug}` };
 }
 
 async function Page({ params }: Props) {

@@ -1,11 +1,6 @@
-import { Metadata } from "next";
 import { TOOLBAR_HEIGHT } from "@/lib/constants";
 import { Toolbar } from "./toolbar";
 import ChatsContainer from "./chats-container";
-
-export const metadata: Metadata = {
-  title: "Simultaneous Chat",
-};
 
 function Page() {
   return (

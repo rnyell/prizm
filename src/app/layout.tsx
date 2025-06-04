@@ -9,15 +9,16 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: { template: "%s", default: "" },
-  description: "Chat with multiple LLMs simultaneously",
+  title: { template: "%s", default: "Prism" },
+  description: `The Multi-Model AI Chat Experience`,
   icons: {},
   openGraph: {
     type: "website",
     url: "mupt.vercel.app",
     images: undefined,
-    title: "",
-    description: "Chat with multiple LLMs simultaneously",
+    title: `The Multi-Model AI Chat Experience | Seamless Conversations with Multiple AI Models`,
+    description:
+      "Chat with multiple AI models simultaneously, compare their responses side-by-side in real-time. Ideal for AI research, testing, model analysis.",
   },
 };
 

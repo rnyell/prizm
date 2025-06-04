@@ -21,7 +21,14 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { KeyRoundIcon, BoxIcon, SunIcon, MoonIcon } from "lucide-react";
+import {
+  KeyRoundIcon,
+  SunIcon,
+  MoonIcon,
+  ShieldBanIcon,
+  PyramidIcon,
+} from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 function Sidemenu() {
   const { setApiKey } = useConfig();
@@ -57,7 +64,7 @@ function Sidemenu() {
           <SidebarMenuItem>
             <SidebarMenuButton className="rounded-xl" size="lg" asChild>
               <Link href="/m">
-                <BoxIcon className="size-7 stroke-[1.5] fill-indigo-500 stroke-zinc-800 dark:fill-zinc-950 dark:stroke-indigo-400" />
+                <PyramidIcon className="size-7 stroke-[1.5] fill-indigo-500 stroke-zinc-800 dark:fill-zinc-950 dark:stroke-indigo-400" />
                 <div className="group-data-[collapsible=icon]:hidden">
                   Simultaneous Chat
                 </div>
@@ -127,6 +134,53 @@ function Sidemenu() {
               </form>
             </PopoverContent>
           </Popover>
+        </div>
+        <div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <div className="p-3 w-full flex items-center gap-4 rounded-xl border border-tertiary-200 cursor-pointer transition-[background-color] hover:bg-tertiary-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800">
+                <ShieldBanIcon className="size-5" />
+                <div className="text-sm group-data-[collapsible=icon]:hidden">
+                  Privacy
+                </div>
+              </div>
+            </DialogTrigger>
+            <DialogContent className="min-w-[50vw] top-2/5">
+              <h2 className="text-xl font-semibold">Privacy Noets</h2>
+              <ul className="mt-4 space-y-6">
+                <li>
+                  <h4 className="mb-2 text-lg font-medium">No Server Storage</h4>
+                  <p className="text-md text-tertiary-800">
+                    Chat conversations are stored only temporarily in the
+                    browser&apos;s memory. Conversations are never sent to or
+                    saved on external servers or databases.
+                  </p>
+                </li>
+                <li>
+                  <h4 className="mb-2 text-lg font-medium">
+                    Ephemeral Sessions
+                  </h4>
+                  <p className="text-md text-tertiary-800">
+                    All chat data is cleared when the app is closed, the page is
+                    refreshed, or the browser tab is exited, ensuring no chat
+                    history remains after the session ends. This may not provide
+                    a proper UX but this is a reasonable compromise to prioritize
+                    the privacy and keep your dumb questions asked to AI safe and
+                    unseen.
+                  </p>
+                </li>
+                <li>
+                  <h4 className="mb-2 text-lg font-medium">
+                    Storing Your API Key
+                  </h4>
+                  <p className="text-md text-tertiary-800">
+                    Only the OpenRouter API key is stored in your browser&apos;s
+                    localStorage to maintain communication with AI models.
+                  </p>
+                </li>
+              </ul>
+            </DialogContent>
+          </Dialog>
         </div>
         <div>
           <div
