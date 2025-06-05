@@ -54,7 +54,7 @@ function ChatHeader({ model }: Props) {
       className="p-1 flex items-center border-b bg-background"
       style={{ height: CHAT_HEADER_HEIGHT }}
     >
-      <div className="grow flex-center gap-4">
+      <div className="grow flex-x-center gap-4">
         {details.logo && <details.logo className="size-3.5 fill-tertiary-700" />}
         <ModelDetails size="sm" details={details} />
       </div>

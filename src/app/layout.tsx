@@ -4,23 +4,24 @@ import { cookies } from "next/headers";
 import { AppProvider } from "@/providers/app";
 import Sidemenu from "@/components/sidemenu";
 import { Toaster } from "@/components/ui/sonner";
+
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
+  applicationName: "Prism",
   title: { template: "%s", default: "Prism" },
-  description: `The Multi-Model AI Chat Experience`,
+  description: "Seamless conversations with multiple AI models",
   icons: {
     icon: "/seo/logo.svg",
     apple: "/seo/logo.svg",
   },
   openGraph: {
     type: "website",
-    url: "mupt.vercel.app",
-    title: `The Multi-Model AI Chat Experience | Seamless Conversations with Multiple AI Models`,
-    description:
-      "Chat with multiple AI models simultaneously, compare their responses side-by-side in real-time. Ideal for AI research, testing, model analysis.",
+    url: "przm.vercel.app",
+    title: "Prism | Multi-Model AI Chat Experience",
+    description: `Chat with multiple AI models simultaneously, compare their responses side-by-side.`,
   },
 };
 
@@ -38,11 +39,11 @@ const geistMono = Geist_Mono({
 
 const fontVariables = `${geistSans.variable} ${geistMono.variable}`;
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
+interface Props {
   children: ReactNode;
-}>) {
+}
+
+async function RootLayout({ children }: Readonly<Props>) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
@@ -50,10 +51,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`relative antialiased ${fontVariables}`}>
         <AppProvider sidebarOpenState={defaultOpen}>
-          <div
-            className="w-full h-full grid grid-rows-1 grid-cols-1 md:grid-cols-[auto_1fr] selection:text-white selection:bg-indigo-500"
-            data-root
-          >
+          <div className="w-full h-full grid grid-rows-1 grid-cols-1 md:grid-cols-[auto_1fr] selection:text-white selection:bg-indigo-500">
             <Sidemenu />
             <div data-children>{children}</div>
             <Toaster richColors />
@@ -63,3 +61,5 @@ export default async function RootLayout({
     </html>
   );
 }
+
+export default RootLayout;

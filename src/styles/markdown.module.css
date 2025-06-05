@@ -30,7 +30,7 @@
 
   ol,
   ul {
-    padding-left: calc(var(--spacing) * 4);
+    padding-left: calc(var(--spacing) * 3);
   }
 
   strong {
@@ -47,9 +47,15 @@
     }
   }
 
-  @media screen and (width < 25rem) {
-    :where(*) {
-      font-size: 92.5% !important;
+  @container interface (width < 40rem) {
+    & {
+      font-size: 0.975rem;
+    }
+  }
+
+  @container interface (width < 25rem) {
+    & {
+      font-size: 0.925rem;
     }
   }
 

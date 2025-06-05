@@ -171,9 +171,19 @@
   svg {
     flex-shrink: 0;
   }
+
+  /* Temp? Fix
+   * RadixUI for some reasons uses `display: table` for them which causes some layout issues. */
+  [data-slot="scroll-area"] {
+    display: block !important;
+  }
+
+  [data-slot="scroll-area-viewport"] > div {
+    display: block !important;
+  }
 }
 
-@utility flex-center {
+@utility flex-x-center {
   display: flex;
   align-items: center;
   justify-content: center;

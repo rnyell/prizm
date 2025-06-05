@@ -68,23 +68,23 @@ function ChatsContainer() {
     <div
       className={cn(
         "@container/interfaces h-full max-h-full grid gap-px bg-border",
-        "data-[input-type=sync]:translate-0 data-[input-type=sync]:overflow-y-hidden" /* to create a containing box for 'fixed' positioned <SyncedInput /> */,
-        "data-[scrollable=true]:w-full",
-        "data-[scroll-orientation=x]:overflow-x-auto data-[scroll-orientation=x]:snap-x data-[scroll-orientation=x]:snap-proximity data-[scroll-orientation=x]:flex data-[scroll-orientation=x]:gap-[2px]",
+        "data-[input-type=sync]:overflow-y-hidden",
+        "data-[scrollable=true]:w-full data-[scrollable=true]:overflow-x-auto data-[scrollable=true]:snap-x data-[scrollable=true]:snap-proximity data-[scrollable=true]:flex data-[scrollable=true]:gap-[2px]",
         "[&>[data-scroll-item=true]]:shrink-0 [&>[data-scroll-item=true]]:w-full [&>[data-scroll-item=true]]:snap-start",
         appearance.layout === "grid" &&
           models.length === 3 &&
           "[&>:first-child]:col-span-2",
       )}
       data-scrollable={isScrollableX}
-      data-scroll-orientation={isScrollableX ? "x" : "y"}
       data-input-type={appearance.input}
       style={styles}
     >
       {models.map((model) => (
-        <div className="h-full" data-scroll-item={isScrollableX} key={model}>
-          <ChatInterface model={model} />
-        </div>
+        <ChatInterface
+          key={model}
+          model={model}
+          data-scroll-item={isScrollableX}
+        />
       ))}
       {appearance.input === "sync" && (
         <InputWrapper length={1} synced>

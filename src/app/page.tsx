@@ -6,7 +6,7 @@ function Main() {
   return (
     <div className="h-svh grid">
       <div
-        className="p-2 sticky z-10 top-0 flex-center border-b bg-tertiary-100"
+        className="p-2 sticky z-10 top-0 flex-x-center border-b bg-tertiary-100"
         style={{ height: TOOLBAR_HEIGHT }}
       >
         <SidebarTrigger className="absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer" />

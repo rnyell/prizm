@@ -23,7 +23,7 @@ function ThemeToggle() {
       <div>
         {theme === "dark" && (
           <div
-            className="flex-center rounded-full group-data-[collapsible=icon]:text-tertiary-100"
+            className="flex-x-center rounded-full group-data-[collapsible=icon]:text-tertiary-100"
             onClick={() => setTheme("light")}
           >
             <SunIcon className="size-4" />
@@ -31,7 +31,7 @@ function ThemeToggle() {
         )}
         {theme === "light" && (
           <div
-            className="flex-center rounded-full group-data-[collapsible=icon]:text-tertiary-100"
+            className="flex-x-center rounded-full group-data-[collapsible=icon]:text-tertiary-100"
             onClick={() => setTheme("dark")}
           >
             <MoonIcon className="size-4" />

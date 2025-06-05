@@ -51,8 +51,7 @@ export function InputWrapper({
   return (
     <div
       className={cn(
-        "w-full z-10 flex justify-center border-0! data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4",
-        "before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
+        "w-full z-10 flex justify-center data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4 before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
         "data-[input-type=separate]:absolute data-[input-type=separate]:left-0 data-[input-type=separate]:bg-background",
         "data-[input-type=sync]:fixed data-[input-type=sync]:left-1/2 data-[input-type=sync]:-translate-x-1/2 data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[765px]",
         isMobile
@@ -105,7 +104,7 @@ export function InputField({ type, model }: FieldProps) {
   return (
     <div
       className={cn(
-        "p-2 min-h-9 w-full rounded-xl border-[1.5px] border-tertiary-500 bg-tertiary-100",
+        "p-2 w-full rounded-xl border-[1.5px] border-tertiary-500 bg-tertiary-100 max-sm:p-1.5 max-sm:border",
         value.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
@@ -119,7 +118,7 @@ export function InputField({ type, model }: FieldProps) {
       />
       <Button
         className={cn(
-          "ml-auto rounded-lg",
+          "ml-auto rounded-lg max-sm:p-1.5 max-sm:size-8",
           value.length > TEXTAREA_BASE_LENGTH && "row-start-2",
         )}
         size="icon"
@@ -198,7 +197,7 @@ export function SyncedInputField() {
   return (
     <div
       className={cn(
-        "p-2 min-h-9 min-w-42 w-full rounded-xl border-[1.5px] border-tertiary-500 bg-tertiary-100 md:min-w-52",
+        "p-2 min-w-52 w-full rounded-xl border-[1.5px] border-tertiary-500 bg-tertiary-100 max-md:min-w-42 max-sm:p-1.5 max-sm:border",
         input.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
@@ -242,7 +241,7 @@ export function Textarea({ value, onChange, ...props }: TextareaProps) {
 
   return (
     <textarea
-      className="resize-none pt-1 pl-2 w-full min-h-9 max-h-80 focus:outline-0"
+      className="resize-none pt-1 pl-2 w-full min-h-9 max-h-80 focus:outline-0 max-sm:min-h-8"
       ref={fieldRef}
       value={value}
       onChange={(e) => {
