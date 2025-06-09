@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import MessagesArea from "@/components/messages-area";
 import {
-  InputField,
   InputWrapper,
+  InputField,
   SyncedInputField,
 } from "@/components/input-field";
 import { AddModelPopover } from "./toolbar";
@@ -19,12 +19,11 @@ function ChatsContainer() {
   const [open, setOpen] = useState(false);
   const { appearance } = useConfig();
   const { store, dispatch } = useChatContext("multiple");
+  const { layout, input } = appearance;
   const { messages, models, maximizedModel } = store;
-  const maximizedMessages = messages.filter(
-    (msg) => msg.model === maximizedModel,
-  );
+  const maximizedMessages = messages.filter((m) => m.model === maximizedModel);
   const isMobile = useIsMobile();
-  const isScrollableX = isMobile && appearance.layout === "cols";
+  const isScrollableX = isMobile && layout === "cols";
 
   useEffect(() => {
     if (maximizedModel) {
@@ -59,24 +58,20 @@ function ChatsContainer() {
       className={cn(
         "@container/interfaces h-full max-h-full grid gap-px bg-border",
         "data-[layout=cols]:grid-rows-1",
-        "data-[input-type=sync]:overflow-y-hidden",
         "data-[scrollable=true]:w-full data-[scrollable=true]:overflow-x-auto data-[scrollable=true]:snap-x data-[scrollable=true]:snap-proximity data-[scrollable=true]:flex data-[scrollable=true]:gap-[2px]",
+        "data-[scrollable=false]:data-[input-type=sync]:translate-0 data-[input-type=sync]:overflow-y-hidden",
         "[&>[data-scroll-item=true]]:shrink-0 [&>[data-scroll-item=true]]:w-full [&>[data-scroll-item=true]]:snap-start",
-        appearance.layout === "grid" && models.length === 1
-          ? "grid-rows-1"
-          : "grid-rows-2",
-        appearance.layout === "grid" && models.length <= 2
-          ? "grid-cols-1"
-          : "grid-cols-2",
-        appearance.layout === "grid" &&
-          models.length === 3 &&
-          "[&>:first-child]:col-span-2",
+        layout === "grid" && models.length === 1 ? "grid-rows-1" : "grid-rows-2",
+        layout === "grid" && models.length <= 2 ? "grid-cols-1" : "grid-cols-2",
+        layout === "grid" && models.length === 3
+          ? "[&>:first-child]:col-span-2"
+          : "",
       )}
       data-scrollable={isScrollableX}
-      data-layout={appearance.layout}
-      data-input-type={appearance.input}
+      data-layout={layout}
+      data-input-type={input}
       style={
-        appearance.layout === "cols"
+        layout === "cols"
           ? { gridTemplateColumns: `repeat(${models.length}, minmax(0, 1fr))` }
           : undefined
       }
@@ -88,7 +83,7 @@ function ChatsContainer() {
           data-scroll-item={isScrollableX}
         />
       ))}
-      {appearance.input === "sync" && (
+      {input === "sync" && (
         <InputWrapper length={1} synced>
           <SyncedInputField />
         </InputWrapper>

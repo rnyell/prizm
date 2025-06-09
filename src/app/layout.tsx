@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { AppProvider } from "@/providers/app";
 import { Toaster } from "@/components/ui/sonner";
+import Sidemenu from "@/components/sidemenu";
 
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -50,8 +51,9 @@ async function RootLayout({ children }: Readonly<Props>) {
     <html lang="en" suppressHydrationWarning>
       <body className={`relative antialiased ${fontVariables}`}>
         <AppProvider sidebarOpenState={defaultOpen}>
-          <div className="w-full h-full selection:text-white selection:bg-indigo-500">
-            <div data-children>{children}</div>
+          <div className="w-full h-full grid grid-rows-1 grid-cols-1 md:grid-cols-[auto_1fr] selection:text-white selection:bg-indigo-500">
+            <Sidemenu />
+            <div className="@container/root">{children}</div>
             <Toaster richColors />
           </div>
         </AppProvider>
