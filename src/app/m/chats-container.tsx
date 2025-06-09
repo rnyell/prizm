@@ -40,16 +40,6 @@ function ChatsContainer() {
     }
   }, [open, dispatch]);
 
-  const colStyles = {
-    gridTemplateColumns: `repeat(${models.length}, minmax(0, 1fr))`,
-    gridTemplateRows: `repeat(1, minmax(0, 1fr))`,
-  };
-  const gridStyles = {
-    gridTemplateColumns: `repeat(${models.length <= 2 ? 1 : 2}, minmax(0, 1fr))`,
-    gridTemplateRows: `repeat(${models.length === 1 ? 1 : 2}, minmax(0, 1fr))`,
-  };
-  const styles = appearance.layout === "cols" ? colStyles : gridStyles;
-
   if (models.length === 0) {
     return (
       <div className="h-full grid place-content-center">
@@ -68,16 +58,28 @@ function ChatsContainer() {
     <div
       className={cn(
         "@container/interfaces h-full max-h-full grid gap-px bg-border",
+        "data-[layout=cols]:grid-rows-1",
         "data-[input-type=sync]:overflow-y-hidden",
         "data-[scrollable=true]:w-full data-[scrollable=true]:overflow-x-auto data-[scrollable=true]:snap-x data-[scrollable=true]:snap-proximity data-[scrollable=true]:flex data-[scrollable=true]:gap-[2px]",
         "[&>[data-scroll-item=true]]:shrink-0 [&>[data-scroll-item=true]]:w-full [&>[data-scroll-item=true]]:snap-start",
+        appearance.layout === "grid" && models.length === 1
+          ? "grid-rows-1"
+          : "grid-rows-2",
+        appearance.layout === "grid" && models.length <= 2
+          ? "grid-cols-1"
+          : "grid-cols-2",
         appearance.layout === "grid" &&
           models.length === 3 &&
           "[&>:first-child]:col-span-2",
       )}
       data-scrollable={isScrollableX}
+      data-layout={appearance.layout}
       data-input-type={appearance.input}
-      style={styles}
+      style={
+        appearance.layout === "cols"
+          ? { gridTemplateColumns: `repeat(${models.length}, minmax(0, 1fr))` }
+          : undefined
+      }
     >
       {models.map((model) => (
         <ChatInterface
