@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "przm.vercel.app",
-    title: "Prism | Multi-Model AI Chat Experience",
-    description: `Chat with multiple AI models simultaneously, compare their responses side-by-side.`,
+    title: "Prism | Multi-Model Chat Experience",
+    description: `Chat with multiple AI models simultaneously and compare their responses side-by-side.`,
   },
 };
 

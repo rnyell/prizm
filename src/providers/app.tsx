@@ -16,7 +16,7 @@ export function AppProvider({ children, sidebarOpenState }: Props) {
     <ConfigProvider>
       <ThemeProvider
         attribute="class"
-        defaultTheme="light"
+        defaultTheme="dark"
         disableTransitionOnChange
       >
         <ChatProvider>
