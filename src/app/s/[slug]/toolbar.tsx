@@ -45,10 +45,10 @@ function Toolbar() {
 
   return (
     <div
-      className="p-2 sticky z-10 top-0 flex items-center border-b bg-tertiary-100"
+      className="pl-4 py-2 sticky z-10 top-0 flex items-center border-b bg-tertiary-100"
       style={{ height: TOOLBAR_HEIGHT }}
     >
-      <SidebarTrigger className="absolute left-4 top-1/2 -translate-y-1/2" />
+      <SidebarTrigger />
       <ModelDetails details={details} className="grow" size="lg" />
       <div className="ml-auto pr-4 flex items-center gap-2">
         <div

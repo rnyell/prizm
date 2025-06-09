@@ -1,6 +1,6 @@
 {
-  "name": "mupt",
-  "version": "0.0.5",
+  "name": "prizm",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

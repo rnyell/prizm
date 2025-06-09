@@ -1,21 +1,26 @@
-import { TOOLBAR_HEIGHT } from "@/lib/constants";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import Link from "next/link";
 
-function Main() {
-  // TODO unify toolbars
+function Page() {
   return (
-    <div className="h-svh grid">
-      <div
-        className="p-2 sticky z-10 top-0 flex-x-center border-b bg-tertiary-100"
-        style={{ height: TOOLBAR_HEIGHT }}
-      >
-        <SidebarTrigger className="absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer" />
-      </div>
-      <div className="p-4 justify-self-center text-xl">
-        Select a model from the sidebar to start chatting with your AI assistant.
-      </div>
+    <div className="p-4 h-svh grid content-center justify-items-center gap-8 grid-flow-col max-md:grid-flow-row max-md:gap-6">
+      <Link href="/m">
+        <div className="p-4 min-w-md max-lg:min-w-xs rounded-xl border transition-[background-color] bg-tertiary-100 hover:bg-tertiary-200">
+          <h4 className="font-semibold">Simultaneous</h4>
+          <p className="mt-4 text-tertiary-800">
+            Chat with multiple assistants at once.
+          </p>
+        </div>
+      </Link>
+      <Link href="/s">
+        <div className="p-4 min-w-md max-lg:min-w-xs rounded-xl border transition-[background-color] bg-tertiary-100 hover:bg-tertiary-200">
+          <h4 className="font-semibold">Separate</h4>
+          <p className="mt-4 text-tertiary-800">
+            Interact with each assistant separately.
+          </p>
+        </div>
+      </Link>
     </div>
   );
 }
 
-export default Main;
+export default Page;

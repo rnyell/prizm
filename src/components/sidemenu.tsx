@@ -110,7 +110,11 @@ function Sidemenu() {
                 </Link>
               </div>
               <form className="mt-4 flex flex-col gap-2" onSubmit={handleSubmit}>
-                <Input name="api-key" placeholder="Enter your API key" />
+                <Input
+                  className="placeholder:text-xs"
+                  name="api-key"
+                  placeholder="Enter your API key"
+                />
                 <Button className="ml-auto" size="sm" type="submit">
                   Submit
                 </Button>
@@ -128,7 +132,7 @@ function Sidemenu() {
                 </div>
               </div>
             </DialogTrigger>
-            <DialogContent className="min-w-[50vw] top-2/5">
+            <DialogContent className="min-w-[50vw]">
               <h2 className="text-xl font-semibold">Privacy Notes</h2>
               <ul className="mt-4 space-y-6">
                 <li>
