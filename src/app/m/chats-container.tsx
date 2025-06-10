@@ -65,7 +65,7 @@ function ChatsContainer() {
         layout === "grid" && models.length <= 2 ? "grid-cols-1" : "grid-cols-2",
         layout === "grid" && models.length === 3
           ? "[&>:first-child]:col-span-2"
-          : "",
+          : null,
       )}
       data-scrollable={isScrollableX}
       data-layout={layout}
