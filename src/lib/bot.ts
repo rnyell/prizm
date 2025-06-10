@@ -17,9 +17,9 @@ const bot = new Bot(TOKEN);
 bot.command("start", async (ctx) => {
   const chatId = ctx.chatId;
   const replyMessage = `
-Welcome to Prizm — the gateway to seamless conversations with multiple AI models\\. Chat, compare, and explore AI responses side\\-by\\-side\\.
+Welcome to Prizm — the gateway to seamless conversations with multiple AI models\\.
 
-You can use Prizm directly within Telegram as a Mini App or access it via __\`przm\\.vercel\\.app\`__, on your phone or desktop\\.
+You can use Prizm directly within Telegram as a Mini App or access it via __[przm\\.vercel\\.app](https://przm.vercel.app)__, on your phone or desktop\\.
 
 Commands:
 /start
