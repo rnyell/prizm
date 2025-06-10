@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 import { useChatContext } from "@/providers";
 import { getModelDetailsByTitle } from "@/lib/utils";
 import { TOOLBAR_HEIGHT } from "@/lib/constants";
@@ -28,6 +29,12 @@ function Toolbar() {
           content += `${msg.content}\n\n---\n\n`;
         }
       });
+    if (content.length < 5) {
+      toast.warning(
+        "The chat history is quite empty. Please start a conversation first.",
+      );
+      return;
+    }
     const blob = new Blob([content], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");

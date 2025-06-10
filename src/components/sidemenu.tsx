@@ -136,7 +136,7 @@ function Sidemenu() {
               <h2 className="text-xl font-semibold">Privacy Notes</h2>
               <ul className="mt-4 space-y-6">
                 <li>
-                  <h4 className="mb-2 text-lg font-medium">No Server Storage</h4>
+                  <h4 className="mb-2 text-lg font-medium">No Storage</h4>
                   <p className="text-md text-tertiary-800">
                     Chat conversations are stored only temporarily in the
                     browser&apos;s memory. Conversations are never sent to or
@@ -153,13 +153,12 @@ function Sidemenu() {
                     history remains after the session ends. This may not provide
                     a proper UX but this is a reasonable compromise to prioritize
                     the privacy and keep your dumb questions asked to AI safe and
-                    unseen.
+                    unseen. So basically closing your browser acts as a
+                    kill-switch!
                   </p>
                 </li>
                 <li>
-                  <h4 className="mb-2 text-lg font-medium">
-                    Storing Your API Key
-                  </h4>
+                  <h4 className="mb-2 text-lg font-medium">Your API Key</h4>
                   <p className="text-md text-tertiary-800">
                     Only the OpenRouter API key is stored in your browser&apos;s
                     localStorage to maintain communication with AI models.

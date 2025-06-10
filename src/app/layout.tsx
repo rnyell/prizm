@@ -10,8 +10,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  applicationName: "Prism",
-  title: { template: "%s", default: "Prism" },
+  applicationName: "Prizm",
+  title: { template: "%s", default: "Prizm" },
   description: "Seamless conversations with multiple AI models",
   icons: {
     icon: "/seo/logo.svg",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "przm.vercel.app",
-    title: "Prism | Multi-Model Chat Experience",
+    title: "Prizm | Multi-Model Chat Experience",
     description: `Chat with multiple AI models simultaneously and compare their responses side-by-side.`,
   },
 };
