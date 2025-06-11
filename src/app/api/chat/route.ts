@@ -10,7 +10,11 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: openrouter(model),
+    temperature: 0.45,
     prompt,
+    onError: ({ error }) => {
+      console.error("Error occured while streaming.", error);
+    },
   });
 
   return result.toDataStreamResponse();

@@ -13,26 +13,29 @@ const TOKEN =
 const bot = new Bot(TOKEN);
 
 /** MarkdownV2 notes:
-      _   *   [   ]   (   )   ~   `   >   #   +   -   =   |   {   }   .   !  must be escaped. */
+    Symbols:  _   *   [   ]   (   )   ~   `   >   #   +   -   =   |   {   }   .   !  must be escaped. */
+
 bot.command("start", async (ctx) => {
   const chatId = ctx.chatId;
-  const replyMessage = `
+  const message = `
 Welcome to Prizm — the gateway to seamless conversations with multiple AI models\\.
 
 You can use Prizm directly within Telegram as a Mini App or access it via __[przm\\.vercel\\.app](https://przm.vercel.app)__, on your phone or desktop\\.
 
-Commands:
-/start
-/help
+Use /help command to learn how to activate the app
+
+If you encounter any issues, please contact us through @PrizmChatSupportBot.
   `;
 
-  await bot.api.sendMessage(chatId, replyMessage, { parse_mode: "MarkdownV2" });
+  await bot.api.sendMessage(chatId, message, {
+    parse_mode: "MarkdownV2",
+  });
 });
 
 bot.command("help", async (ctx) => {
   const chatId = ctx.chatId;
-  const replyMessage = `
-  To use the app:
+  const message = `
+To use the app:
 
 1\\. First, visit __[Openrouter](https://openrouter.ai/settings/keys)__ to get your API Key\\. \\(It's recommended to open this link \\"outside\\" of the Telegram app for an easier login process, as you'll need to create an account on Openrouter to obtain your key\\.\\)
 
@@ -41,7 +44,9 @@ bot.command("help", async (ctx) => {
 3\\. That's it\\! Your AI models are now ready to use\\.
   `;
 
-  await bot.api.sendMessage(chatId, replyMessage, { parse_mode: "MarkdownV2" });
+  await bot.api.sendMessage(chatId, message, {
+    parse_mode: "MarkdownV2",
+  });
 });
 
-export default bot;
+export { bot };

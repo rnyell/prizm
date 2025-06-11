@@ -91,7 +91,7 @@ function ChatsContainer() {
       {maximizedModel && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="p-0 w-max h-max max-w-[unset]! [&>button]:hidden">
-            <div className="py-3 w-[85svw] h-[95svh]">
+            <div className="py-3 w-[80svw] h-[90svh] max-xs:w-[100svw] max-xs:h-[100svh]">
               <div className="p-2 absolute top-4 right-4 z-50 cursor-pointer">
                 <div
                   onClick={() => dispatch({ type: "multiple/minimize-model" })}
@@ -100,7 +100,7 @@ function ChatsContainer() {
                 </div>
               </div>
               <MessagesArea messages={maximizedMessages} />
-              <InputWrapper className="lg:max-w-xl" length={1}>
+              <InputWrapper length={1}>
                 <InputField type="multiple" model={maximizedModel} />
               </InputWrapper>
             </div>

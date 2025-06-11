@@ -21,7 +21,6 @@ import type { Model } from "@/types";
 
 interface WrapperProps {
   children: ReactNode;
-  className?: string;
   length: number;
   synced?: boolean;
 }
@@ -42,7 +41,6 @@ interface TextareaProps
 
 export function InputWrapper({
   children,
-  className,
   length,
   synced = false,
 }: WrapperProps) {
@@ -51,9 +49,9 @@ export function InputWrapper({
   return (
     <div
       className={cn(
-        "w-full z-10 flex justify-center data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4 before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
-        "data-[input-type=separate]:absolute data-[input-type=separate]:left-0 data-[input-type=separate]:bg-background",
-        "data-[input-type=sync]:fixed data-[input-type=sync]:left-1/2 data-[input-type=sync]:-translate-x-1/2 data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[765px]",
+        "w-4/5 z-10 left-1/2 -translate-x-1/2 data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4 @lg/interface:w-2/3 @lg/interface:max-w-2xl before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
+        "data-[input-type=separate]:absolute data-[input-type=separate]:bg-background",
+        "data-[input-type=sync]:fixed data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[760px]",
         isMobile
           ? "data-[input-type=sync]:bottom-5"
           : "data-[input-type=sync]:bottom-4 data-[input-type=sync]:4/5",
@@ -61,14 +59,7 @@ export function InputWrapper({
       data-align={length === 0 ? "center" : "bottom"}
       data-input-type={synced ? "sync" : "separate"}
     >
-      <div
-        className={cn(
-          "w-9/10 @md/interface:w-4/5 @lg/interface:w-2/3 @lg/interface:max-w-[720px]",
-          className,
-        )}
-      >
-        {children}
-      </div>
+      {children}
     </div>
   );
 }
@@ -104,7 +95,7 @@ export function InputField({ type, model }: FieldProps) {
   return (
     <div
       className={cn(
-        "p-2 w-full rounded-xl border-[1.5px] border-tertiary-500 bg-tertiary-100 max-sm:p-1.5 max-sm:border",
+        "p-2 w-full rounded-xl border-[1.5px] border-tertiary-500 dark:border-tertiary-300 bg-tertiary-100 max-sm:p-1.5 max-sm:border max-sm:border-tertiary-400 dark:max-sm:border-tertiary-200",
         value.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
@@ -118,14 +109,14 @@ export function InputField({ type, model }: FieldProps) {
       />
       <Button
         className={cn(
-          "ml-auto rounded-lg max-sm:p-1.5 max-sm:size-8",
+          "ml-auto rounded-lg max-sm:p-1.5 max-sm:size-8 @max-xs/interface:size-7",
           value.length > TEXTAREA_BASE_LENGTH && "row-start-2",
         )}
         size="icon"
         disabled={pending}
         onClick={handleClick}
       >
-        <ArrowUpIcon className="size-5" />
+        <ArrowUpIcon className="size-5 max-sm:size-4" />
       </Button>
     </div>
   );
@@ -197,7 +188,7 @@ export function SyncedInputField() {
   return (
     <div
       className={cn(
-        "p-2 min-w-52 w-full rounded-xl border-[1.5px] border-tertiary-500 bg-tertiary-100 max-md:min-w-42 max-sm:p-1.5 max-sm:border",
+        "p-2 min-w-52 w-full rounded-xl border-[1.5px] border-tertiary-500 dark:border-tertiary-300 bg-tertiary-100 max-md:min-w-42 max-sm:p-1.5 max-sm:border max-sm:border-tertiary-400 dark:max-sm:border-tertiary-300",
         input.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
@@ -213,7 +204,7 @@ export function SyncedInputField() {
         disabled={pending}
         onClick={handleClick}
       >
-        <SparklesIcon className="size-4" />
+        <SparklesIcon className="size-4 max-sm:size-3.5" />
       </Button>
     </div>
   );
@@ -241,7 +232,7 @@ export function Textarea({ value, onChange, ...props }: TextareaProps) {
 
   return (
     <textarea
-      className="resize-none pt-1 pl-2 w-full min-h-9 max-h-80 focus:outline-0 max-sm:min-h-8"
+      className="resize-none pt-1 pl-2 w-full min-h-9 max-h-80 focus:outline-0 max-sm:min-h-8 @max-xs/interface:text-sm @max-xs/interface:pt-1.5"
       ref={fieldRef}
       value={value}
       onChange={(e) => {

@@ -90,6 +90,10 @@ export async function streamResponse(
       const { textStream } = streamText({
         model: openrouter(model),
         prompt: input,
+        temperature: 0.45,
+        onError: ({ error }) => {
+          console.error("Error occured while streaming.", error);
+        },
       });
       for await (const delta of textStream) {
         stream.update(delta);

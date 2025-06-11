@@ -1,14 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import bot from "@/lib/bot";
+import { bot } from "@/lib/bot";
 
-export const POST = async (req: NextRequest) => {
+export async function POST(req: Request) {
   const body = await req.json();
   try {
     await bot.init();
     await bot.handleUpdate(body);
-    return NextResponse.json({ status: "success" });
+    return Response.json({ status: "success" });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ status: "failed" });
+    return Response.json({ status: "failed" });
   }
-};
+}
