@@ -5,7 +5,7 @@ import { createContext, use, useReducer, useCallback, useEffect } from "react";
 import { useLocalStorage } from "@/hooks";
 import { writeLocalStorage, readLocalStorage } from "@/lib/utils";
 
-const APIKEY_STORAGE_NAME = "config/api-key";
+export const APIKEY_STORAGE_NAME = "config/api-key";
 const LAYOUT_STORAGE_NAME = "config/layout";
 const INPUT_STORAGE_NAME = "config/input";
 

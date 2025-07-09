@@ -51,7 +51,7 @@ export function InputWrapper({
       className={cn(
         "w-4/5 z-10 left-1/2 -translate-x-1/2 data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4 @lg/interface:w-2/3 @lg/interface:max-w-2xl before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
         "data-[input-type=separate]:absolute data-[input-type=separate]:bg-background",
-        "data-[input-type=sync]:fixed data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[760px]",
+        "data-[input-type=sync]:overflow-hidden data-[input-type=sync]:fixed data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[760px]",
         isMobile
           ? "data-[input-type=sync]:bottom-5"
           : "data-[input-type=sync]:bottom-4 data-[input-type=sync]:4/5",
