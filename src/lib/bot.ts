@@ -1,6 +1,5 @@
 import { join } from "node:path";
 import { Bot, Keyboard, InlineKeyboard, InputFile } from "grammy";
-// import { type ConversationFlavor, conversations } from "@grammyjs/conversations";
 
 // const BASE_URL =
 //   process.env.NODE_ENV === "development"
@@ -12,15 +11,14 @@ const TOKEN =
     ? process.env.BOT_TOKEN_DEV!
     : process.env.BOT_TOKEN_PROD!;
 
-// const bot = new Bot<ConversationFlavor<Context>>(TOKEN);
-// bot.use(conversations());
-
 const bot = new Bot(TOKEN);
 
-/**
- * Commands
- * start - support - help - notes
- */
+const customKeyboard = new Keyboard()
+  .text("Privacy Notes")
+  .row()
+  .text("Support")
+  .row()
+  .resized();
 
 bot.command("start", async (ctx) => {
   const chatId = ctx.chatId;
@@ -31,7 +29,6 @@ You can use Prizm directly within Telegram or access it via __[przm\\.vercel\\.a
 
 Use /help command to learn how to activate and work with the app\\.
 
-Use /notes to see privacy and release notes\\.
 
 If you encounter any issues, please contact us through @PrizmChatSupportBot\\.
 ‌
@@ -39,21 +36,26 @@ If you encounter any issues, please contact us through @PrizmChatSupportBot\\.
 
   await ctx.api.sendMessage(chatId, message, {
     parse_mode: "MarkdownV2",
+    reply_markup: customKeyboard,
   });
 });
 
-const helpInlineKeyboard = new InlineKeyboard()
-  .text(` Set API Key `, "apikey")
+const helpMenuButtons = new InlineKeyboard()
+  .text(` Setting the API Key `, "apikey")
   .row()
-  .text(` Visual Guide `, "visual")
+  .text(` A Quick Visual Guide `, "visual")
   .row()
   .text(` Syncing Input Filed `, "input")
   .row();
 
 bot.command("help", async (ctx) => {
-  const message = `Tap any button to get detailed instructions.`;
+  const message = `
+Tap any button to get detailed instructions.
+
+For additional help or questions, feel free to message our support bot @PrizmChatSupportBot.
+`;
   await ctx.reply(message, {
-    reply_markup: helpInlineKeyboard,
+    reply_markup: helpMenuButtons,
   });
 });
 
@@ -88,7 +90,7 @@ bot.callbackQuery("input", async (ctx) => {
   const imgPath = join(process.cwd(), "public", "guides", "input.jpg");
   const img = new InputFile(imgPath);
   const caption = `
-There is two kind of input field to interact with models;
+There are two kinds of input fields to interact with models:
 
 *Separate:* Each model has its own input field, so you can chat with them individually\\.
 *Sync:* Use a single input field to chat with multiple models simultaneously\\.
@@ -100,19 +102,7 @@ There is two kind of input field to interact with models;
   });
 });
 
-bot.command("support", async (ctx) => {
-  await ctx.reply("@PrizmChatSupportBot");
-});
-
-const notesKeyboard = new Keyboard().text("Privacy Notes").row().oneTime();
-
-bot.command("notes", async (ctx) => {
-  const message = `Select`;
-  await ctx.reply(message, {
-    reply_markup: notesKeyboard,
-  });
-});
-
+/** handling custom keyboard buttons, received via `customKeyboard` */
 bot.on("message:text", async (ctx) => {
   const text = ctx.message.text;
 
@@ -131,12 +121,16 @@ All chat data is cleared when the app is closed, the page is refreshed, or the b
     await ctx.reply(message, {
       parse_mode: "MarkdownV2",
     });
+    return;
+  }
+
+  if (text === "Support") {
+    await ctx.reply("@PrizmChatSupportBot", {
+      parse_mode: "MarkdownV2",
+    });
+    return;
   }
 });
-
-// bot.command("setapikey", async (ctx) => {
-//   await ctx.conversation.enter("setApiKey");
-// });
 
 export { bot };
 
