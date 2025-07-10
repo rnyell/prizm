@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { Bot, InlineKeyboard, InputFile } from "grammy";
+import { Bot, Keyboard, InlineKeyboard, InputFile } from "grammy";
 // import { type ConversationFlavor, conversations } from "@grammyjs/conversations";
 
 // const BASE_URL =
@@ -17,18 +17,24 @@ const TOKEN =
 
 const bot = new Bot(TOKEN);
 
+/**
+ * Commands
+ * start - support - help - notes
+ */
+
 bot.command("start", async (ctx) => {
   const chatId = ctx.chatId;
   const message = `
 Welcome to Prizm — the gateway to seamless conversations with multiple AI models\\.
 
-You can use Prizm directly within Telegram or access it via __[przm\\.vercel\\.app](https://przm.vercel.app)__, on your phone or desktop\\.
+You can use Prizm directly within Telegram or access it via __[przm\\.vercel\\.app](https://przm.vercel.app)__\\.
 
-Use /help command to learn how to activate the app
+Use /help command to learn how to activate and work with the app\\.
 
-See /notes to
+Use /notes to see privacy and release notes\\.
 
 If you encounter any issues, please contact us through @PrizmChatSupportBot\\.
+‌
   `;
 
   await ctx.api.sendMessage(chatId, message, {
@@ -36,48 +42,96 @@ If you encounter any issues, please contact us through @PrizmChatSupportBot\\.
   });
 });
 
-bot.command("notes", async (ctx) => {
-  const message = `notes`;
-  await ctx.reply(message, {
-    parse_mode: "MarkdownV2",
-  });
-});
-
-const inlineKeyboard = new InlineKeyboard()
-  .text("How to set my API Key", "apikey")
+const helpInlineKeyboard = new InlineKeyboard()
+  .text(` Set API Key `, "apikey")
   .row()
-  .text("How to use synced input", "input")
+  .text(` Visual Guide `, "visual")
+  .row()
+  .text(` Syncing Input Filed `, "input")
   .row();
 
 bot.command("help", async (ctx) => {
-  await ctx.reply("help", {
-    reply_markup: inlineKeyboard,
+  const message = `Tap any button to get detailed instructions.`;
+  await ctx.reply(message, {
+    reply_markup: helpInlineKeyboard,
   });
 });
 
 bot.callbackQuery("apikey", async (ctx) => {
-  const message = `
+  const chatId = ctx.chatId as number;
+  const imgPath = join(process.cwd(), "public", "guides", "apikey.png");
+  const img = new InputFile(imgPath);
+  const caption = `
 To set your API Key:
 
 1\\. First, visit __[Openrouter](https://openrouter.ai/settings/keys)__ to get your API Key\\. \\(It's recommended to open this link \\"outside\\" of the Telegram app for an easier login process, as you'll need to create an account on Openrouter to obtain your key\\.\\)
 
-2\\. Then paste your key in the designated section in the sidebar\\.
-
-3\\. That's it\\! Your AI models are now ready to use\\.
+2\\. Then paste your key in the designated section in the sidebar as shown in the picture\\.
   `;
 
-  await ctx.reply(message, {
+  await ctx.api.sendPhoto(chatId, img, {
+    caption: caption,
     parse_mode: "MarkdownV2",
   });
 });
 
+bot.callbackQuery("visual", async (ctx) => {
+  const chatId = ctx.chatId as number;
+  const imgPath = join(process.cwd(), "public", "guides", "visual.png");
+  const img = new InputFile(imgPath);
+  const caption = `A visual guide on how to utilize toolbar controls.`;
+  await ctx.api.sendPhoto(chatId, img, { caption });
+});
+
 bot.callbackQuery("input", async (ctx) => {
   const chatId = ctx.chatId as number;
-  const imgPath = join(process.cwd(), "public", "guides", "img.jpg");
+  const imgPath = join(process.cwd(), "public", "guides", "input.jpg");
   const img = new InputFile(imgPath);
+  const caption = `
+There is two kind of input field to interact with models;
+
+*Separate:* Each model has its own input field, so you can chat with them individually\\.
+*Sync:* Use a single input field to chat with multiple models simultaneously\\.
+  `;
+
   await ctx.api.sendPhoto(chatId, img, {
-    caption: `caption`,
+    caption: caption,
+    parse_mode: "MarkdownV2",
   });
+});
+
+bot.command("support", async (ctx) => {
+  await ctx.reply("@PrizmChatSupportBot");
+});
+
+const notesKeyboard = new Keyboard().text("Privacy Notes").row().oneTime();
+
+bot.command("notes", async (ctx) => {
+  const message = `Select`;
+  await ctx.reply(message, {
+    reply_markup: notesKeyboard,
+  });
+});
+
+bot.on("message:text", async (ctx) => {
+  const text = ctx.message.text;
+
+  if (text === "Privacy Notes") {
+    const message = `
+*Privacy Notes*
+
+
+*No Storage*
+Chat conversations are stored only temporarily in the browser's memory\\. Conversations are never sent to or saved on external servers or databases\\. Only the OpenRouter API key is stored in your browser's localStorage to maintain communication with AI models\\.
+
+*Ephemeral Sessions*
+All chat data is cleared when the app is closed, the page is refreshed, or the browser tab is exited, ensuring no chat history remains after the session ends\\. This may not provide a proper UX but this is a reasonable compromise to prioritize the privacy and keep your dumb questions asked to AI safe and unseen\\. So basically closing your browser acts as a kill\\-switch\\!
+    `;
+
+    await ctx.reply(message, {
+      parse_mode: "MarkdownV2",
+    });
+  }
 });
 
 // bot.command("setapikey", async (ctx) => {

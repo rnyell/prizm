@@ -43,7 +43,7 @@ export function Toolbar() {
   );
 }
 
-export function AddModelPopover() {
+export function AddModelPopover({ defaultOpen = false }) {
   const { store, dispatch } = useChatContext("multiple");
   const { models } = store;
 
@@ -64,7 +64,7 @@ export function AddModelPopover() {
   }
 
   return (
-    <Popover>
+    <Popover defaultOpen={defaultOpen}>
       <PopoverTrigger className="py-1.5 px-2 flex items-center gap-1 text-xs font-medium rounded-md border border-tertiary-200 transition-[background-color] hover:bg-tertiary-200 cursor-pointer dark:text-tertiary-700 max-sm:p-1.5 max-sm:aspect-square">
         <PlusIcon className="size-4 stroke-[1.75]" />
         <div className="max-sm:hidden">Add Model</div>

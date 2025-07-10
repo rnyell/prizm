@@ -140,7 +140,9 @@ function Sidemenu() {
                   <p className="text-md text-tertiary-800">
                     Chat conversations are stored only temporarily in the
                     browser&apos;s memory. Conversations are never sent to or
-                    saved on external servers or databases.
+                    saved on external servers or databases. Only the OpenRouter
+                    API key is stored in your browser&apos;s localStorage to
+                    maintain communication with AI models.
                   </p>
                 </li>
                 <li>
@@ -155,13 +157,6 @@ function Sidemenu() {
                     the privacy and keep your dumb questions asked to AI safe and
                     unseen. So basically closing your browser acts as a
                     kill-switch!
-                  </p>
-                </li>
-                <li>
-                  <h4 className="mb-2 text-lg font-medium">Your API Key</h4>
-                  <p className="text-md text-tertiary-800">
-                    Only the OpenRouter API key is stored in your browser&apos;s
-                    localStorage to maintain communication with AI models.
                   </p>
                 </li>
               </ul>

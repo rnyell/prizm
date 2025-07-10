@@ -46,7 +46,7 @@ function ChatsContainer() {
           Add a model to get started. You can add more models later from the
           toolbar.
           <div className="mt-4 mx-auto w-max text-[0.9rem]">
-            <AddModelPopover />
+            <AddModelPopover defaultOpen />
           </div>
         </div>
       </div>
