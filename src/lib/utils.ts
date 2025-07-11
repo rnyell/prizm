@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { GitPullRequestIcon } from "lucide-react";
 import {
   GeminiIcon,
   MetaIcon,
@@ -90,9 +91,9 @@ const models: Models = {
       "Mistral Small 3.1 24B Instruct is an upgraded variant of Mistral Small 3 (2501), featuring 24 billion parameters with advanced multimodal capabilities. It provides state-of-the-art performance in text-based reasoning and vision tasks, including image analysis, programming, mathematical reasoning, and multilingual support across dozens of languages. Equipped with an extensive 128k token context window and optimized for efficient local inference, it supports use cases such as conversational agents, function calling, long-document comprehension, and privacy-sensitive deployments.",
   },
   devstral: {
-    model: "mistralai/devstral-small:free",
+    model: "mistralai/devstral-small-2505:free",
     name: "devstral-small",
-    context: 131072,
+    context: 32768,
     logo: MistralIcon,
     overview:
       "Devstral-Small-2505 is a 24B parameter agentic LLM fine-tuned from Mistral-Small-3.1, jointly developed by Mistral AI and All Hands AI for advanced software engineering tasks. It is optimized for codebase exploration, multi-file editing, and integration into coding agents, achieving state-of-the-art results on SWE-Bench Verified (46.8%).\n\nDevstral supports a 128k context window and uses a custom Tekken tokenizer. It is text-only, with the vision encoder removed, and is suitable for local deployment on high-end consumer hardware (e.g., RTX 4090, 32GB RAM Macs).\n\nDevstral is best used in agentic workflows via the OpenHands scaffold and is compatible with inference frameworks like vLLM, Transformers, and Ollama. It is released under the Apache 2.0 license.",
@@ -121,20 +122,28 @@ const models: Models = {
     overview:
       "DeepSeek-V3 is the latest model from the DeepSeek team, building upon the instruction following and coding abilities of the previous versions. Pre-trained on nearly 15 trillion tokens, the reported evaluations reveal that the model outperforms other open-source models and rivals leading closed-source models.",
   },
-  nemotron: {
-    model: "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
-    name: "llama-3.1-nemotron",
-    context: 131072,
-    logo: NvidiaIcon,
-    overview:
-      "Llama-3.1-Nemotron-Ultra-253B-v1 is a large language model (LLM) optimized for advanced reasoning, human-interactive chat, retrieval-augmented generation (RAG), and tool-calling tasks. Derived from Meta’s Llama-3.1-405B-Instruct, it has been significantly customized using Neural Architecture Search (NAS), resulting in enhanced efficiency, reduced memory usage, and improved inference latency.\n\nThe model supports a context length of up to 128K tokens and can operate efficiently on an 8x NVIDIA H100 node.",
-  },
   qwen: {
     model: "qwen/qwen3-14b:free",
     name: "qwen3-14b",
     context: 40960,
     logo: QwenIcon,
     overview: `Qwen3-14B is a dense 14.8B parameter causal language model from the Qwen3 series, designed for both complex reasoning and efficient dialogue. It supports seamless switching between a "thinking" mode for tasks like math, programming, and logical inference, and a "non-thinking" mode for general-purpose conversation.\n\nThe model is fine-tuned for instruction-following, agent tool use, creative writing, and multilingual tasks across 100+ languages and dialects. It natively handles 32K token contexts and can extend to 131K tokens using YaRN-based scaling.`,
+  },
+  nemotron: {
+    model: "nvidia/llama-3.3-nemotron-super-49b-v1:free",
+    name: "llama-3.1-nemotron",
+    context: 131072,
+    logo: NvidiaIcon,
+    overview:
+      "Llama-3.3-Nemotron-Super-49B-v1 is a large language model (LLM) optimized for advanced reasoning, conversational interactions, retrieval-augmented generation (RAG), and tool-calling tasks.\n\nDerived from Meta's Llama-3.3-70B-Instruct, it employs a Neural Architecture Search (NAS) approach, significantly enhancing efficiency and reducing memory requirements. This allows the model to support a context length of up to 128K tokens and fit efficiently on single high-performance GPUs, such as NVIDIA H200.",
+  },
+  cypher: {
+    model: "openrouter/cypher-alpha:free",
+    name: "cypher-alpha",
+    context: 1000000,
+    logo: GitPullRequestIcon,
+    overview:
+      "This is a cloaked model provided to the community to gather feedback. It's an all-purpose model supporting real-world, long-context tasks including code generation.",
   },
 };
 
@@ -180,16 +189,16 @@ export const sidemenuItems = [
     url: "/s/maverick",
     icon: MetaIcon,
   },
-  // {
-  //   title: "Meta/Llama-8b",
-  //   url: "/s/llama-8b",
-  //   icon: MetaIcon,
-  // },
   {
     title: "Scout",
     url: "/s/scout",
     icon: MetaIcon,
   },
+  // {
+  //   title: "Meta/Llama-8b",
+  //   url: "/s/llama-8b",
+  //   icon: MetaIcon,
+  // },
   // {
   //   title: "Mistral/Llama",
   //   url: "/s/mistral",
@@ -216,15 +225,20 @@ export const sidemenuItems = [
     icon: DeepseekIcon,
   },
   {
-    title: "Nemotron",
-    url: "/s/nemotron",
-    icon: NvidiaIcon,
-  },
-  {
     title: "Qwen",
     url: "/s/qwen",
     icon: QwenIcon,
   },
+  {
+    title: "Nemotron",
+    url: "/s/nemotron",
+    icon: NvidiaIcon,
+  },
+  // {
+  //   title: "Cypher",
+  //   url: "/s/cypher",
+  //   icon: GitPullRequestIcon,
+  // },
 ];
 
 export const toolbarItems = [
@@ -235,6 +249,7 @@ export const toolbarItems = [
   { name: "Devstral", icon: MistralIcon },
   { name: "Nemo", icon: MistralIcon },
   { name: "Deepseek-v3", icon: DeepseekIcon },
-  { name: "Nemotron", icon: NvidiaIcon },
   { name: "Qwen", icon: QwenIcon },
+  { name: "Nemotron", icon: NvidiaIcon },
+  // { name: "Cypher", icon: GitPullRequestIcon },
 ];

@@ -1,18 +1,20 @@
-import type { JSX } from "react";
+import type { JSX, ReactNode } from "react";
 
 export type Model =
   | "google/gemma-3-27b-it:free"
   | "google/gemini-2.0-flash-exp:free"
   | "meta-llama/llama-4-maverick:free"
+  // | "meta-llama/llama-4-maverick-17b-128e-instruct:free"
   | "meta-llama/llama-4-scout:free"
   | "meta-llama/llama-3.3-8b-instruct:free"
   | "mistralai/mistral-nemo:free"
-  | "mistralai/devstral-small:free"
+  | "mistralai/devstral-small-2505:free"
   | "mistralai/mistral-small-3.1-24b-instruct:free"
   | "deepseek/deepseek-chat:free"
   | "deepseek/deepseek-chat-v3-0324:free"
-  | "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"
-  | "qwen/qwen3-14b:free";
+  | "nvidia/llama-3.3-nemotron-super-49b-v1:free"
+  | "qwen/qwen3-14b:free"
+  | "openrouter/cypher-alpha:free";
 
 export type Title =
   | "gemma"
@@ -26,7 +28,8 @@ export type Title =
   | "deepseek"
   | "deepseek-v3"
   | "nemotron"
-  | "qwen";
+  | "qwen"
+  | "cypher";
 
 export type Name =
   | "gemini-2.0-flash-exp"
@@ -40,14 +43,15 @@ export type Name =
   | "deepseek-chat"
   | "deepseek-chat-v3"
   | "llama-3.1-nemotron"
-  | "qwen3-14b";
+  | "qwen3-14b"
+  | "cypher-alpha";
 
 export type Details = {
   model: Model;
   name: Name;
   context: number;
   overview: string;
-  logo?: ({ className }: { className?: string }) => JSX.Element;
+  logo?: ({ className }: { className?: string }) => JSX.Element | ReactNode;
 };
 
 export type Models = Record<Title, Details>;

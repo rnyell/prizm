@@ -24,7 +24,7 @@ async function Page({ params }: Props) {
       style={{ gridTemplateRows: `auto calc(100svh - ${TOOLBAR_HEIGHT}px)` }}
     >
       <Toolbar />
-      <div>
+      <div className="overflow-clip">
         <ChatInterface model={model} />
       </div>
     </div>

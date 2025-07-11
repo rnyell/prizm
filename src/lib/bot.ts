@@ -1,11 +1,6 @@
 import { join } from "node:path";
 import { Bot, Keyboard, InlineKeyboard, InputFile } from "grammy";
 
-// const BASE_URL =
-//   process.env.NODE_ENV === "development"
-//     ? process.env.BASE_URL_DEV!
-//     : process.env.BASE_URL_PROD!;
-
 const TOKEN =
   process.env.NODE_ENV === "development"
     ? process.env.BOT_TOKEN_DEV!
@@ -23,7 +18,7 @@ const customKeyboard = new Keyboard()
 bot.command("start", async (ctx) => {
   const chatId = ctx.chatId;
   const message = `
-Welcome to Prizm — the gateway to seamless conversations with multiple AI models\\.
+Welcome to *Prizm* — the gateway to seamless conversations with multiple AI models\\.
 
 You can use Prizm directly within Telegram or access it via __[przm\\.vercel\\.app](https://przm.vercel.app)__\\.
 
