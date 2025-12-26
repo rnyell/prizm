@@ -9,13 +9,13 @@ export async function POST(req: Request) {
   const openrouter = createOpenRouter({ apiKey });
 
   const result = streamText({
+    prompt,
     model: openrouter(model),
     temperature: 0.45,
-    prompt,
     onError: ({ error }) => {
       console.error("Error occured while streaming.", error);
     },
   });
 
-  return result.toDataStreamResponse();
+  return result.toTextStreamResponse();
 }

@@ -73,7 +73,6 @@ export function AddModelPopover({ defaultOpen = false }) {
         <div className="grid grid-cols-[repeat(3,max-content)] gap-x-1.5 gap-y-2">
           {toolbarItems.map((item) => {
             const title = item.name.toLowerCase() as Title;
-            console.log("title", title);
             const model = getModelByTitle(title);
             const isSelected = Boolean(models.find((m) => m === model));
 

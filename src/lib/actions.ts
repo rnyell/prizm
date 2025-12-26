@@ -1,8 +1,8 @@
 "use server";
 
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
-import { createStreamableValue, StreamableValue } from "ai/rsc";
+import { createStreamableValue, StreamableValue } from "@ai-sdk/rsc";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import type { Model } from "@/types";
 
 type Options = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { readStreamableValue } from "ai/rsc";
+import { readStreamableValue } from "@ai-sdk/rsc";
 import { toast } from "sonner";
 import { useConfig, useChatContext } from "@/providers";
 import { streamResponse } from "@/lib/actions";
@@ -90,7 +90,7 @@ export function useChat(type: ChatType, model: Model) {
       }
 
       async function appendResponse(input: string) {
-        const id = generateId(12);
+        const id = generateId();
         dispatch({ type: "multiple/stream-init", model, id });
         try {
           const result2 = await fetch("/api/chat", {

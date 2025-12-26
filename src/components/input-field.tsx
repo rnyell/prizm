@@ -8,7 +8,7 @@ import type {
   TextareaHTMLAttributes,
 } from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { readStreamableValue } from "ai/rsc";
+import { readStreamableValue } from "@ai-sdk/rsc";
 import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
 import { useChat, useIsMobile } from "@/hooks";
@@ -137,7 +137,7 @@ export function SyncedInputField() {
 
   function appendResponse() {
     const results = store.models.map(async (model) => {
-      const id = generateId(12);
+      const id = generateId();
       ids.push(id);
       dispatch({ type: "multiple/stream-init", model, id });
       const result = await streamResponse(model, input, { apiKey: apiKey! });
