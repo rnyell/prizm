@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { useChatContext } from "@/providers";
-import { getModelDetails } from "@/lib/utils";
+import { createMarkdown, getModelDetails } from "@/lib/utils";
 import { CHAT_HEADER_HEIGHT } from "@/lib/constants";
 import ModelDetails from "@/components/model-details";
 import { DownloadIcon, MaximizeIcon, XIcon } from "lucide-react";
@@ -17,17 +17,7 @@ function ChatHeader({ model }: Props) {
   const details = getModelDetails(model);
 
   function downloadChat() {
-    let content = "";
-    store.messages
-      .filter((msg) => msg.model === model)
-      .forEach((msg) => {
-        if (msg.role === "user") {
-          content += `${msg.content}\n\n`;
-        }
-        if (msg.role === "system") {
-          content += `${msg.content}\n\n---\n\n`;
-        }
-      });
+    const content = createMarkdown(store.messages, details.model);
     if (content.length < 5) {
       toast.warning(
         "The chat history is quite empty. Please start a conversation first.",

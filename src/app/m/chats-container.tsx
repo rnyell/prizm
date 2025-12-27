@@ -77,11 +77,7 @@ function ChatsContainer() {
       }
     >
       {models.map((model) => (
-        <ChatInterface
-          key={model}
-          model={model}
-          data-scroll-item={isScrollableX}
-        />
+        <ChatInterface key={model} model={model} />
       ))}
       {input === "sync" && (
         <InputWrapper length={1} synced>

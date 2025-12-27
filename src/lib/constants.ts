@@ -1,5 +1,5 @@
 export const TEXTAREA_BASE_LENGTH = 24;
-export const TEXTAREA_MIN_LENGTH = 2;
+export const TEXTAREA_MIN_LENGTH = 3;
 
 /* style related */
 export const TOOLBAR_HEIGHT = 60;

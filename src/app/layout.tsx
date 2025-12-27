@@ -1,9 +1,7 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { AppProvider } from "@/providers/app";
 import { Toaster } from "@/components/ui/sonner";
-import Sidemenu from "@/components/sidemenu";
 
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -44,18 +42,12 @@ interface Props {
 }
 
 async function RootLayout({ children }: Readonly<Props>) {
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`relative antialiased ${fontVariables}`}>
-        <AppProvider sidebarOpenState={defaultOpen}>
-          <div className="w-full h-full grid grid-rows-1 grid-cols-1 md:grid-cols-[auto_1fr] selection:text-white selection:bg-indigo-500">
-            <Sidemenu />
-            <div className="@container/root">{children}</div>
-            <Toaster richColors />
-          </div>
+        <AppProvider>
+          <div className="@container/root h-full">{children}</div>
+          <Toaster richColors />
         </AppProvider>
       </body>
     </html>

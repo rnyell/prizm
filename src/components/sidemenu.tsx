@@ -1,32 +1,52 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useConfig } from "@/providers";
-import { cn, sidemenuItems } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
-  SidebarHeader,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarSeparator,
 } from "./ui/sidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { KeyRoundIcon, ShieldBanIcon, PyramidIcon } from "lucide-react";
+import { KeyRoundIcon, HomeIcon } from "lucide-react";
+
+const menuItems = [
+  {
+    url: "/",
+    tag: "Home",
+    icon: HomeIcon,
+  },
+  {
+    url: "/m",
+    tag: "Multi",
+    icon: HomeIcon,
+  },
+  {
+    url: "/s",
+    tag: "Normal",
+    icon: HomeIcon,
+  },
+  {
+    url: "/about",
+    tag: "About",
+    icon: HomeIcon,
+  },
+];
 
 function Sidemenu() {
+  const pathname = usePathname();
   const { setApiKey } = useConfig();
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -42,26 +62,13 @@ function Sidemenu() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="pt-5 bg-tertiary-100">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton className="rounded-xl" size="lg" asChild>
-              <Link href="/m">
-                <PyramidIcon className="size-7 stroke-[1.5] fill-indigo-500 stroke-zinc-800 dark:fill-zinc-950 dark:stroke-indigo-400" />
-                <div className="group-data-[collapsible=icon]:hidden">
-                  Simultaneous Chat
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
+      <div className="min-h-[10vh]"></div>
       <SidebarContent className="bg-tertiary-100">
-        <SidebarSeparator className="my-4 bg-tertiary-400" />
+        {/* <SidebarSeparator className="my-4 bg-tertiary-400" /> */}
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1">
-              {sidemenuItems.map((item) => (
+            <SidebarMenu className="gap-6">
+              {menuItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton
                     className="rounded-xl"
@@ -79,7 +86,7 @@ function Sidemenu() {
                         )}
                       />
                       <div className="group-data-[collapsible=icon]:hidden dark:text-tertiary-700">
-                        {item.title}
+                        {item.tag}
                       </div>
                     </Link>
                   </SidebarMenuButton>
@@ -90,79 +97,36 @@ function Sidemenu() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="bg-tertiary-100">
-        <div>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger className="p-3 w-full flex items-center gap-4 rounded-xl border border-tertiary-200 transition-[background-color] hover:bg-tertiary-200 cursor-pointer group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800">
-              <KeyRoundIcon className="size-5" />
-              <div className="text-sm group-data-[collapsible=icon]:hidden">
-                Set your key
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="min-w-72 text-sm" align="end">
-              <div className="leading-[1.2]">
-                To obtain your API key, visit{" "}
-                <Link
-                  className="underline"
-                  href="https://openrouter.ai/settings/keys"
-                  target="_blank"
-                >
-                  openrouter.ai
-                </Link>
-              </div>
-              <form className="mt-4 flex flex-col gap-2" onSubmit={handleSubmit}>
-                <Input
-                  className="placeholder:text-xs"
-                  name="api-key"
-                  placeholder="Enter your API key"
-                />
-                <Button className="ml-auto" size="sm" type="submit">
-                  Submit
-                </Button>
-              </form>
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <div className="p-3 w-full flex items-center gap-4 rounded-xl border border-tertiary-200 cursor-pointer transition-[background-color] hover:bg-tertiary-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800">
-                <ShieldBanIcon className="size-5" />
-                <div className="text-sm group-data-[collapsible=icon]:hidden">
-                  Privacy
-                </div>
-              </div>
-            </DialogTrigger>
-            <DialogContent className="min-w-[50vw]">
-              <h2 className="text-xl font-semibold">Privacy Notes</h2>
-              <ul className="mt-4 space-y-6">
-                <li>
-                  <h4 className="mb-2 text-lg font-medium">No Storage</h4>
-                  <p className="text-md text-tertiary-800">
-                    Chat conversations are stored only temporarily in the
-                    browser&apos;s memory. Conversations are never sent to or
-                    saved on external servers or databases. Only the OpenRouter
-                    API key is stored in your browser&apos;s localStorage to
-                    maintain communication with AI models.
-                  </p>
-                </li>
-                <li>
-                  <h4 className="mb-2 text-lg font-medium">
-                    Ephemeral Sessions
-                  </h4>
-                  <p className="text-md text-tertiary-800">
-                    All chat data is cleared when the app is closed, the page is
-                    refreshed, or the browser tab is exited, ensuring no chat
-                    history remains after the session ends. This may not provide
-                    a proper UX but this is a reasonable compromise to prioritize
-                    the privacy and keep your dumb questions asked to AI safe and
-                    unseen. So basically closing your browser acts as a
-                    kill-switch!
-                  </p>
-                </li>
-              </ul>
-            </DialogContent>
-          </Dialog>
-        </div>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger className="p-3 w-full flex items-center gap-4 rounded-xl border border-tertiary-200 transition-[background-color] hover:bg-tertiary-200 cursor-pointer group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:text-tertiary-100 group-data-[collapsible=icon]:bg-tertiary-900 group-data-[collapsible=icon]:hover:bg-tertiary-800">
+            <KeyRoundIcon className="size-5" />
+            <div className="text-sm group-data-[collapsible=icon]:hidden">
+              Set your key
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="min-w-72 text-sm" align="end">
+            <div className="leading-[1.2]">
+              To obtain your API key, visit{" "}
+              <Link
+                className="underline"
+                href="https://openrouter.ai/settings/keys"
+                target="_blank"
+              >
+                openrouter.ai
+              </Link>
+            </div>
+            <form className="mt-4 flex flex-col gap-2" onSubmit={handleSubmit}>
+              <Input
+                className="placeholder:text-xs"
+                name="api-key"
+                placeholder="Enter your API key"
+              />
+              <Button className="ml-auto" size="sm" type="submit">
+                Submit
+              </Button>
+            </form>
+          </PopoverContent>
+        </Popover>
       </SidebarFooter>
     </Sidebar>
   );

@@ -2,9 +2,13 @@
 
 import type { Model, Message } from "@/types";
 
-export type Store = Map<Model, Message[]>;
+export type Store = {
+  history: Map<Model, Message[]>;
+  current: Model | null;
+};
 
 export type Action =
+  | { type: "single/select-model"; model: Model }
   | { type: "single/clear-messages"; model: Model }
   | { type: "single/append-input"; model: Model; content: string }
   | { type: "single/stream-init"; model: Model }
@@ -16,47 +20,53 @@ export type Action =
       content: string;
     };
 
-export const initialStore: Store = new Map();
+export const initialStore: Store = {
+  history: new Map(),
+  current: null,
+};
 
 export function reducer(store: Store, action: Action): Store {
   switch (action.type) {
+    case "single/select-model": {
+      return { ...store, current: action.model };
+    }
     case "single/append-input": {
-      const state = new Map(store);
+      const history = new Map(store.history);
       const { model, content } = action;
-      const prevMessages = state.get(model) ?? [];
+      const prevMessages = history.get(model) ?? [];
       const newMessage = { model, role: "user", content } as Message;
-      state.set(model, [...prevMessages, newMessage]);
-      return state;
+      history.set(model, [...prevMessages, newMessage]);
+      return { ...store, history };
     }
     case "single/add-response": {
-      const state = new Map(store);
+      const history = new Map(store.history);
       const { model, role, content } = action;
-      const prevMessages = state.get(model) ?? [];
+      const prevMessages = history.get(model) ?? [];
       const newMessage = { model, role, content };
-      state.set(model, [...prevMessages, newMessage]);
-      return state;
+      history.set(model, [...prevMessages, newMessage]);
+      return { ...store, history };
     }
     case "single/stream-init": {
-      const state = new Map(store);
+      const history = new Map(store.history);
       const { model } = action;
-      const messages = state.get(model) ?? [];
+      const messages = history.get(model) ?? [];
       const initMessage = { model, role: "system", content: "" } as Message;
-      state.set(model, [...messages, initMessage]);
-      return state;
+      history.set(model, [...messages, initMessage]);
+      return { ...store, history };
     }
     case "single/stream-update": {
-      const state = new Map(store);
+      const history = new Map(store.history);
       const { model, delta } = action;
-      const messages = state.get(model) ?? [];
+      const messages = history.get(model) ?? [];
       const current = messages[messages.length - 1];
       current.content += delta;
-      return state;
+      return { ...store, history };
     }
     case "single/clear-messages": {
-      const state = new Map(store);
+      const history = new Map(store.history);
       const model = action.model;
-      state.set(model, []);
-      return state;
+      history.set(model, []);
+      return { ...store, history };
     }
   }
 }

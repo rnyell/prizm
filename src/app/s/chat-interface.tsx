@@ -11,7 +11,7 @@ interface Props {
 
 function ChatInterface({ model }: Props) {
   const { store } = useChatContext("single");
-  const messages = store.get(model) ?? [];
+  const messages = store.history.get(model) ?? [];
 
   return (
     <div className="@container/interface pb-10 h-full relative bg-background">

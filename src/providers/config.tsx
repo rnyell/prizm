@@ -1,11 +1,17 @@
 "use client";
 
 import type { Dispatch, ReactNode } from "react";
-import { createContext, use, useReducer, useCallback, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useCallback,
+  useEffect,
+} from "react";
 import { useLocalStorage } from "@/hooks";
 import { writeLocalStorage, readLocalStorage } from "@/lib/utils";
 
-export const APIKEY_STORAGE_NAME = "config/api-key";
+const APIKEY_STORAGE_NAME = "config/api-key";
 const LAYOUT_STORAGE_NAME = "config/layout";
 const INPUT_STORAGE_NAME = "config/input";
 
@@ -53,16 +59,14 @@ const initialAppearance: Appearance = {
 
 export function ConfigProvider({ children }: Props) {
   const [appearance, setAppearance] = useReducer(reducer, initialAppearance);
-  const { value, writeValue, removeItem } =
-    useLocalStorage<string>(APIKEY_STORAGE_NAME);
+  const { value, writeValue } = useLocalStorage<string>(APIKEY_STORAGE_NAME);
 
   useEffect(() => {
     const layout = readLocalStorage<"cols" | "grid">(LAYOUT_STORAGE_NAME);
+    const input = readLocalStorage<"separate" | "sync">(INPUT_STORAGE_NAME);
     if (layout) {
       setAppearance({ type: "config/layout", layout });
     }
-
-    const input = readLocalStorage<"separate" | "sync">(INPUT_STORAGE_NAME);
     if (input) {
       setAppearance({ type: "config/input", input });
     }
@@ -70,10 +74,10 @@ export function ConfigProvider({ children }: Props) {
 
   const setApiKey = useCallback(
     (value: string) => {
-      removeItem(APIKEY_STORAGE_NAME);
+      //? commented::removeItem(APIKEY_STORAGE_NAME);
       writeValue(APIKEY_STORAGE_NAME, value);
     },
-    [removeItem, writeValue],
+    [writeValue],
   );
 
   const contextValue = {
@@ -91,7 +95,7 @@ export function ConfigProvider({ children }: Props) {
 }
 
 export function useConfig() {
-  const context = use(ConfigContext);
+  const context = useContext(ConfigContext);
   if (!context) {
     throw new Error("ConfigContext is not provided correctly.");
   }

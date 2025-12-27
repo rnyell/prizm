@@ -30,6 +30,9 @@ export function useChat(type: ChatType, model: Model) {
 
       function appendResponse(input: string) {
         dispatch({ type: "single/stream-init", model: model });
+        // TODO check
+        // fetch("/api/chat")
+        // return { response: result.toTextStreamResponse() };
         startTransition(async () => {
           const result = await streamResponse(model, input, { apiKey: apiKey! });
           if (result.response) {
@@ -59,8 +62,7 @@ export function useChat(type: ChatType, model: Model) {
           return;
         }
         if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-          const msg = "Your input should have at least 2 characters.";
-          toast.warning(msg);
+          toast.warning("Your input should have at least 3 characters.");
           return;
         }
         appendInput(input);
@@ -93,12 +95,12 @@ export function useChat(type: ChatType, model: Model) {
         const id = generateId();
         dispatch({ type: "multiple/stream-init", model, id });
         try {
-          const result2 = await fetch("/api/chat", {
+          const result = await fetch("/api/chat", {
             method: "POST",
             body: JSON.stringify({ apiKey, model, prompt: input }),
           });
 
-          const reader = result2.body?.getReader();
+          const reader = result.body?.getReader();
           const decoder = new TextDecoder();
 
           if (!reader) return;
@@ -119,8 +121,8 @@ export function useChat(type: ChatType, model: Model) {
                 } catch (e) {
                   console.error("Error parsing chunk:", e);
                   dispatch({
-                    type: "multiple/stream-update",
                     id: id,
+                    type: "multiple/stream-update",
                     delta: `Error occurred while generating response. Please try again.`,
                   });
                 }
@@ -130,8 +132,8 @@ export function useChat(type: ChatType, model: Model) {
         } catch (e) {
           console.error(e);
           dispatch({
-            type: "multiple/stream-update",
             id: id,
+            type: "multiple/stream-update",
             delta: `Error occurred while generating response. Please try again.`,
           });
         }
@@ -145,8 +147,7 @@ export function useChat(type: ChatType, model: Model) {
           return;
         }
         if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-          const msg = "Your input should have at least 2 characters.";
-          toast.warning(msg);
+          toast.warning("Your input should have at least 3 characters.");
           return;
         }
         appendInput(input);

@@ -1,11 +1,17 @@
 "use client";
 
-import { createContext, use, useEffect, useReducer, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import type { ReactNode, Dispatch, SetStateAction } from "react";
-import { removeLocalStorageItem, readLocalStorage } from "@/lib/utils";
+import { readLocalStorage } from "@/lib/utils";
 import * as Multiple from "./multiple-chat";
 import * as Single from "./single-chat";
-import { Model } from "@/types";
+import type { Model } from "@/types";
 
 type SingleChat = {
   type: "single";
@@ -46,8 +52,7 @@ export function ChatProvider({ children }: Props) {
   useEffect(() => {
     const key = Multiple.MODELS_STORAGE_NAME;
     const models = readLocalStorage<Model[]>(key);
-    if (models && Array.isArray(models)) {
-      removeLocalStorageItem(key);
+    if (Array.isArray(models)) {
       models.forEach((model) => {
         multipleDispatch({ type: "multiple/add-model", model });
       });
@@ -79,7 +84,7 @@ export function ChatProvider({ children }: Props) {
 export function useChatContext(type: "single"): SingleChat;
 export function useChatContext(type: "multiple"): MultipleChat;
 export function useChatContext(type: "single" | "multiple") {
-  const context = use(ChatContext);
+  const context = useContext(ChatContext);
   if (!context) {
     throw new Error("ChatContext is not provided correctly.");
   }

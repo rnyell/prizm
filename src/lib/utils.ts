@@ -1,6 +1,5 @@
-import { clsx, type ClassValue } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { GitPullRequestIcon } from "lucide-react";
 import {
   GeminiIcon,
   MetaIcon,
@@ -9,9 +8,24 @@ import {
   MistralIcon,
   QwenIcon,
 } from "@/components/icons";
-import type { Model, Title, Details, Models, Name } from "@/types";
+import type { Model, Title, Details, Models, Name, Message } from "@/types";
 
 export { generateId } from "ai";
+
+export function createMarkdown(messages: Message[], model: Model) {
+  let content = "";
+  messages
+    .filter((msg) => msg.model === model)
+    .forEach((msg) => {
+      if (msg.role === "user") {
+        content += `${msg.content}\n\n`;
+      }
+      if (msg.role === "system") {
+        content += `${msg.content}\n\n---\n\n`;
+      }
+    });
+  return content;
+}
 
 export function readLocalStorage<T>(key: string): T | undefined {
   try {
@@ -31,119 +45,81 @@ export function writeLocalStorage<T>(key: string, value: T) {
   } catch {}
 }
 
-export function removeLocalStorageItem(key: string) {
-  try {
-    localStorage.removeItem(key);
-  } catch {}
-}
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// TODO add link for all
 const models: Models = {
   gemini: {
     model: "google/gemini-2.0-flash-exp:free",
-    name: "gemini-2.0-flash-exp",
+    name: "gemini-flash",
     context: 1048576,
-    logo: GeminiIcon,
     overview:
       "Gemini Flash 2.0 offers a significantly faster time to first token (TTFT) compared to Gemini Flash 1.5, while maintaining quality on par with larger models like Gemini Pro 1.5. It introduces notable enhancements in multimodal understanding, coding capabilities, complex instruction following, and function calling. These advancements come together to deliver more seamless and robust agentic experiences.",
+    logo: GeminiIcon,
   },
   gemma: {
     model: "google/gemma-3-27b-it:free",
-    name: "gemma-3-27b-it",
-    context: 96000,
-    logo: GeminiIcon,
+    name: "gemma-3",
+    context: 1,
     overview:
       "Gemma 3 introduces multimodality, supporting vision-language input and text outputs. It handles context windows up to 128k tokens, understands over 140 languages, and offers improved math, reasoning, and chat capabilities, including structured outputs and function calling. Gemma 3 27B is Google's latest open source model, successor to Gemma 2",
+    logo: GeminiIcon,
   },
-  maverick: {
-    model: "meta-llama/llama-4-maverick:free",
-    name: "llama-4-maverick",
-    context: 128000,
-    logo: MetaIcon,
+  gpt: {
+    model: "openai/gpt-oss-120b:free",
+    name: "gpt-oss",
+    context: 1310000,
     overview:
-      "Llama 4 Maverick 17B Instruct (128E) is a high-capacity multimodal language model from Meta, built on a mixture-of-experts (MoE) architecture with 128 experts and 17 billion active parameters per forward pass (400B total). It supports multilingual text and image input, and produces multilingual text and code output across 12 supported languages. Optimized for vision-language tasks, Maverick is instruction-tuned for assistant-like behavior, image reasoning, and general-purpose multimodal interaction.\n\nMaverick features early fusion for native multimodality and a 1 million token context window. It was trained on a curated mixture of public, licensed, and Meta-platform data, covering ~22 trillion tokens, with a knowledge cutoff in August 2024. Released on April 5, 2025 under the Llama 4 Community License, Maverick is suited for research and commercial applications requiring advanced multimodal understanding and high model throughput.",
+      "gpt-oss-120b is an open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and general-purpose production use cases. It activates 5.1B parameters per forward pass and is optimized to run on a single H100 GPU with native MXFP4 quantization. The model supports configurable reasoning depth, full chain-of-thought access, and native tool use, including function calling, browsing, and structured output generation.",
+    logo: GeminiIcon,
   },
-  scout: {
-    model: "meta-llama/llama-4-scout:free",
-    name: "llama-4-scout",
-    context: 256000,
-    logo: MetaIcon,
-    overview:
-      "Llama 4 Scout 17B Instruct (16E) is a mixture-of-experts (MoE) language model developed by Meta, activating 17 billion parameters out of a total of 109B. It supports native multimodal input (text and image) and multilingual output (text and code) across 12 supported languages. Designed for assistant-style interaction and visual reasoning, Scout uses 16 experts per forward pass and features a context length of 10 million tokens, with a training corpus of ~40 trillion tokens.\n\nBuilt for high efficiency and local or commercial deployment, Llama 4 Scout incorporates early fusion for seamless modality integration. It is instruction-tuned for use in multilingual chat, captioning, and image understanding tasks. Released under the Llama 4 Community License, it was last trained on data up to August 2024 and launched publicly on April 5, 2025.",
-  },
-  "llama-8b": {
-    model: "meta-llama/llama-3.3-8b-instruct:free",
-    name: "llama-3.3-8b",
-    context: 128000,
-    logo: MetaIcon,
-    overview:
-      "A lightweight and ultra-fast variant of Llama 3.3 70B, for use when quick response times are needed most.",
+  devstral: {
+    model: "mistralai/devstral-2512:free",
+    name: "devstral",
+    context: 262144,
+    overview: `Devstral 2 is a state-of-the-art open-source model by Mistral AI specializing in agentic coding. It is a 123B-parameter dense transformer model supporting a 256K context window.\n\nDevstral 2 supports exploring codebases and orchestrating changes across multiple files while maintaining architecture-level context. It tracks framework dependencies, detects failures, and retries with corrections—solving challenges like bug fixing and modernizing legacy systems. The model can be fine-tuned to prioritize specific languages or optimize for large enterprise codebases. It is available under a modified MIT license.`,
+    logo: MistralIcon,
   },
   mistral: {
     model: "mistralai/mistral-small-3.1-24b-instruct:free",
-    name: "mistral-small-3.1-instruct",
-    context: 96000,
+    name: "mistral",
+    context: 128000,
+    overview: `Mistral Small 3.1 24B Instruct is an upgraded variant of Mistral Small 3 (2501), featuring 24 billion parameters with advanced multimodal capabilities.\n\nIt provides state-of-the-art performance in text-based reasoning and vision tasks, including image analysis, programming, mathematical reasoning, and multilingual support across dozens of languages. Equipped with an extensive 128k token context window and optimized for efficient local inference, it supports use cases such as conversational agents, function calling, long-document comprehension, and privacy-sensitive deployments.`,
+    link: "https://openrouter.ai/mistralai/devstral-2512:free",
     logo: MistralIcon,
-    overview:
-      "Mistral Small 3.1 24B Instruct is an upgraded variant of Mistral Small 3 (2501), featuring 24 billion parameters with advanced multimodal capabilities. It provides state-of-the-art performance in text-based reasoning and vision tasks, including image analysis, programming, mathematical reasoning, and multilingual support across dozens of languages. Equipped with an extensive 128k token context window and optimized for efficient local inference, it supports use cases such as conversational agents, function calling, long-document comprehension, and privacy-sensitive deployments.",
-  },
-  devstral: {
-    model: "mistralai/devstral-small-2505:free",
-    name: "devstral-small",
-    context: 32768,
-    logo: MistralIcon,
-    overview:
-      "Devstral-Small-2505 is a 24B parameter agentic LLM fine-tuned from Mistral-Small-3.1, jointly developed by Mistral AI and All Hands AI for advanced software engineering tasks. It is optimized for codebase exploration, multi-file editing, and integration into coding agents, achieving state-of-the-art results on SWE-Bench Verified (46.8%).\n\nDevstral supports a 128k context window and uses a custom Tekken tokenizer. It is text-only, with the vision encoder removed, and is suitable for local deployment on high-end consumer hardware (e.g., RTX 4090, 32GB RAM Macs).\n\nDevstral is best used in agentic workflows via the OpenHands scaffold and is compatible with inference frameworks like vLLM, Transformers, and Ollama. It is released under the Apache 2.0 license.",
-  },
-  nemo: {
-    model: "mistralai/mistral-nemo:free",
-    name: "mistral-nemo",
-    context: 131072,
-    logo: MistralIcon,
-    overview:
-      "A 12B parameter model with a 128k token context length built by Mistral in collaboration with NVIDIA.\n\nThe model is multilingual, supporting English, French, German, Spanish, Italian, Portuguese, Chinese, Japanese, Korean, Arabic, and Hindi.\n\nIt supports function calling and is released under the Apache 2.0 license.",
-  },
-  "deepseek-v3": {
-    model: "deepseek/deepseek-chat-v3-0324:free",
-    name: "deepseek-chat-v3",
-    context: 163840,
-    logo: DeepseekIcon,
-    overview:
-      "DeepSeek V3, a 685B-parameter, mixture-of-experts model, is the latest iteration of the flagship chat model family from the DeepSeek team.\n\nIt succeeds the DeepSeek V3 model and performs really well on a variety of tasks.",
-  },
-  deepseek: {
-    model: "deepseek/deepseek-chat:free",
-    name: "deepseek-chat",
-    context: 163840,
-    logo: DeepseekIcon,
-    overview:
-      "DeepSeek-V3 is the latest model from the DeepSeek team, building upon the instruction following and coding abilities of the previous versions. Pre-trained on nearly 15 trillion tokens, the reported evaluations reveal that the model outperforms other open-source models and rivals leading closed-source models.",
   },
   qwen: {
-    model: "qwen/qwen3-14b:free",
-    name: "qwen3-14b",
-    context: 40960,
+    model: "qwen/qwen3-coder:free",
+    name: "qwen3-coder",
+    context: 2620000,
+    overview: `Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team. It is optimized for agentic coding tasks such as function calling, tool use, and long-context reasoning over repositories. The model features 480 billion total parameters, with 35 billion active per forward pass (8 out of 160 experts).\n\nPricing for the Alibaba endpoints varies by context length. Once a request is greater than 128k input tokens, the higher pricing is used.`,
     logo: QwenIcon,
-    overview: `Qwen3-14B is a dense 14.8B parameter causal language model from the Qwen3 series, designed for both complex reasoning and efficient dialogue. It supports seamless switching between a "thinking" mode for tasks like math, programming, and logical inference, and a "non-thinking" mode for general-purpose conversation.\n\nThe model is fine-tuned for instruction-following, agent tool use, creative writing, and multilingual tasks across 100+ languages and dialects. It natively handles 32K token contexts and can extend to 131K tokens using YaRN-based scaling.`,
+  },
+  deepseek: {
+    model: "deepseek/deepseek-r1-0528:free",
+    name: "deepseek-r1",
+    context: 163840,
+    overview:
+      "DeepSeek-V3 is the latest model from the DeepSeek team, building upon the instruction following and coding abilities of the previous versions. Pre-trained on nearly 15 trillion tokens, the reported evaluations reveal that the model outperforms other open-source models and rivals leading closed-source models.",
+    logo: DeepseekIcon,
   },
   nemotron: {
-    model: "nvidia/llama-3.3-nemotron-super-49b-v1:free",
-    name: "llama-3.1-nemotron",
+    model: "nvidia/nemotron-3-nano-30b-a3b:free",
+    name: "nemotron-3-nano",
     context: 131072,
+    overview: `NVIDIA Nemotron 3 Nano 30B A3B is a small language MoE model with highest compute efficiency and accuracy for developers to build specialized agentic AI systems.\n\nThe model is fully open with open-weights, datasets and recipes so developers can easily customize, optimize, and deploy the model on infrastructure for maximum privacy and security.`,
+    note: "Note: For the free endpoint, all prompts and output are logged to improve the provider's model and its product and services. Please do not upload any personal, confidential, or otherwise sensitive information.",
     logo: NvidiaIcon,
-    overview:
-      "Llama-3.3-Nemotron-Super-49B-v1 is a large language model (LLM) optimized for advanced reasoning, conversational interactions, retrieval-augmented generation (RAG), and tool-calling tasks.\n\nDerived from Meta's Llama-3.3-70B-Instruct, it employs a Neural Architecture Search (NAS) approach, significantly enhancing efficiency and reducing memory requirements. This allows the model to support a context length of up to 128K tokens and fit efficiently on single high-performance GPUs, such as NVIDIA H200.",
   },
-  cypher: {
-    model: "openrouter/cypher-alpha:free",
-    name: "cypher-alpha",
-    context: 1000000,
-    logo: GitPullRequestIcon,
+  llama: {
+    model: "meta-llama/llama-3.3-70b-instruct:free",
+    name: "llama-3.3",
+    context: 131000,
     overview:
-      "This is a cloaked model provided to the community to gather feedback. It's an all-purpose model supporting real-world, long-context tasks including code generation.",
+      "The Meta Llama 3.3 multilingual large language model (LLM) is a pretrained and instruction tuned generative model in 70B (text in/text out). The Llama 3.3 instruction tuned text only model is optimized for multilingual dialogue use cases and outperforms many of the available open source and closed chat models on common industry benchmarks.",
+    logo: MetaIcon,
   },
 };
 
@@ -176,80 +152,46 @@ export function getModelDetailsByTitle(key: Title): Details {
 export const sidemenuItems = [
   {
     title: "Gemini",
-    url: "/s/gemini",
     icon: GeminiIcon,
   },
   {
     title: "Gemma",
-    url: "/s/gemma",
     icon: GeminiIcon,
   },
   {
-    title: "Maverick",
-    url: "/s/maverick",
-    icon: MetaIcon,
-  },
-  {
-    title: "Scout",
-    url: "/s/scout",
-    icon: MetaIcon,
-  },
-  // {
-  //   title: "Meta/Llama-8b",
-  //   url: "/s/llama-8b",
-  //   icon: MetaIcon,
-  // },
-  // {
-  //   title: "Mistral/Llama",
-  //   url: "/s/mistral",
-  //   icon: MistralIcon,
-  // },
-  {
-    title: "Nemo",
-    url: "/s/nemo",
+    title: "GPT",
     icon: MistralIcon,
   },
   {
     title: "Devstral",
-    url: "/s/devstral",
     icon: MistralIcon,
   },
-  // {
-  //   title: "Deepseek/Chat",
-  //   url: "/s/deepseek",
-  //   icon: DeepseekIcon,
-  // },
   {
-    title: "Deepseek",
-    url: "/s/deepseek-v3",
-    icon: DeepseekIcon,
+    title: "Mistral",
+    icon: MistralIcon,
   },
   {
     title: "Qwen",
-    url: "/s/qwen",
     icon: QwenIcon,
   },
   {
+    title: "Deepseek",
+    icon: DeepseekIcon,
+  },
+  {
     title: "Nemotron",
-    url: "/s/nemotron",
     icon: NvidiaIcon,
   },
-  // {
-  //   title: "Cypher",
-  //   url: "/s/cypher",
-  //   icon: GitPullRequestIcon,
-  // },
 ];
 
 export const toolbarItems = [
   { name: "Gemini", icon: GeminiIcon },
   { name: "Gemma", icon: GeminiIcon },
-  { name: "Scout", icon: MetaIcon },
-  { name: "Maverick", icon: MetaIcon },
+  { name: "GPT", icon: MetaIcon },
   { name: "Devstral", icon: MistralIcon },
-  { name: "Nemo", icon: MistralIcon },
-  { name: "Deepseek-v3", icon: DeepseekIcon },
+  { name: "Mistral", icon: MistralIcon },
   { name: "Qwen", icon: QwenIcon },
+  { name: "Deepseek", icon: DeepseekIcon },
   { name: "Nemotron", icon: NvidiaIcon },
-  // { name: "Cypher", icon: GitPullRequestIcon },
+  { name: "Llama", icon: MetaIcon },
 ];

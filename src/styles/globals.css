@@ -162,6 +162,11 @@
     font-family: var(--font-geist-sans), Helvetica, sans-serif;
     color: var(--foreground);
     background-color: var(--background);
+
+    &::selection {
+      color: var(--color-white);
+      background-color: var(--color-indigo-500);
+    }
   }
 
   img {

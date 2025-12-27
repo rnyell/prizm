@@ -53,12 +53,8 @@ export function reducer(store: Store, action: Action): Store {
       return { ...store, messages };
     }
     case "multiple/stream-init": {
-      const initMessage = {
-        id: action.id,
-        model: action.model,
-        role: "system",
-        content: "",
-      } as Message;
+      const { id, model } = action;
+      const initMessage = { id, model, role: "system", content: "" } as Message;
       const messages = [...store.messages, initMessage];
       return { ...store, messages };
     }

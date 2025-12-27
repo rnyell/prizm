@@ -1,25 +1,21 @@
 "use client";
 
-import type { DataHTMLAttributes } from "react";
 import { useChatContext } from "@/providers";
 import { InputWrapper, InputField } from "@/components/input-field";
 import MessagesArea from "@/components/messages-area";
 import ChatHeader from "./chat-header";
 import type { Model } from "@/types";
 
-interface Props extends DataHTMLAttributes<HTMLDivElement> {
+interface Props {
   model: Model;
 }
 
-function ChatInterface({ model, ...props }: Props) {
+function ChatInterface({ model }: Props) {
   const { store } = useChatContext("multiple");
   const messages = store.messages.filter((msg) => msg.model === model);
 
   return (
-    <div
-      className="@container/interface pb-2 h-full overflow-hidden relative bg-background"
-      {...props}
-    >
+    <div className="@container/interface pb-2 h-full overflow-hidden relative bg-background">
       <ChatHeader model={model} />
       <MessagesArea messages={messages} />
       <InputWrapper length={messages.length}>

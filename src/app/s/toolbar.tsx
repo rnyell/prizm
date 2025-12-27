@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { useChatContext } from "@/providers";
-import { getModelDetailsByTitle } from "@/lib/utils";
+import { createMarkdown, getModelDetailsByTitle } from "@/lib/utils";
 import { TOOLBAR_HEIGHT } from "@/lib/constants";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import ModelDetails from "@/components/model-details";
@@ -15,20 +15,10 @@ function Toolbar() {
   const { store, dispatch } = useChatContext("single");
   const title = usePathname().substring(3) as Title;
   const details = getModelDetailsByTitle(title);
-  const messages = store.get(details.model) ?? [];
 
   function downloadChat() {
-    let content = "";
-    messages
-      .filter((msg) => msg.model === details.model)
-      .forEach((msg) => {
-        if (msg.role === "user") {
-          content += `${msg.content}\n\n`;
-        }
-        if (msg.role === "system") {
-          content += `${msg.content}\n\n---\n\n`;
-        }
-      });
+    const messages = store.history.get(details.model) ?? [];
+    const content = createMarkdown(messages, details.model);
     if (content.length < 5) {
       toast.warning(
         "The chat history is quite empty. Please start a conversation first.",

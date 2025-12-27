@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { ConfigProvider } from "./config";
 import { ThemeProvider } from "./theme";
 import { ChatProvider } from "./chat";
@@ -11,7 +10,7 @@ interface Props {
   sidebarOpenState?: boolean;
 }
 
-export function AppProvider({ children, sidebarOpenState }: Props) {
+export function AppProvider({ children }: Props) {
   return (
     <ConfigProvider>
       <ThemeProvider
@@ -19,11 +18,7 @@ export function AppProvider({ children, sidebarOpenState }: Props) {
         defaultTheme="dark"
         disableTransitionOnChange
       >
-        <ChatProvider>
-          <SidebarProvider className="h-svh" defaultOpen={sidebarOpenState}>
-            {children}
-          </SidebarProvider>
-        </ChatProvider>
+        <ChatProvider>{children}</ChatProvider>
       </ThemeProvider>
     </ConfigProvider>
   );

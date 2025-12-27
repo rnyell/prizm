@@ -166,7 +166,7 @@ export function SyncedInputField() {
       return;
     }
     if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-      toast.warning("Your input should have at least 2 characters.");
+      toast.warning("Your input should have at least 3 characters.");
       return;
     }
     appendInput();

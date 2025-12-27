@@ -24,6 +24,7 @@ yarn-error.log*
 .env*
 
 # misc
+certificates
 .DS_Store
 *.pem
 
@@ -38,4 +39,5 @@ next-env.d.ts
 # vercel
 .vercel
 
-certificates
+readme.local.md
+rstash.md
