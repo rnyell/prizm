@@ -2,11 +2,20 @@ import { Model } from "./models";
 
 export type ChatType = "single" | "multiple";
 
-export type Role = "system" | "user";
+export type Role = "assistant" | "user";
 
-export type Message = {
+type UserMessage = {
+  role: "user";
+  status?: "edited";
+};
+
+type SystemMessage = {
+  role: "assistant";
+  status?: "completed" | "canceled" | "hanged";
+};
+
+export type Message = (UserMessage | SystemMessage) & {
   id?: string;
   model: Model;
-  role: Role;
   content: string;
 };

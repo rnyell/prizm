@@ -41,7 +41,7 @@ interface Props {
   children: ReactNode;
 }
 
-async function RootLayout({ children }: Readonly<Props>) {
+async function RootLayout({ children }: Props) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`relative antialiased ${fontVariables}`}>

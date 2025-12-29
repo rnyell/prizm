@@ -7,7 +7,7 @@ import { CopyIcon, CopyCheckIcon } from "lucide-react";
 import styles from "@/styles/markdown.module.css";
 
 interface Props {
-  role: "user" | "system";
+  role: "user" | "assistant";
   content: string;
 }
 
@@ -38,7 +38,7 @@ function MessageBlob({ role, content }: Props) {
         </div>
       );
     }
-    case "system": {
+    case "assistant": {
       return (
         <div className="mt-6 mb-20 flex flex-col gap-2">
           <div className="p-2 max-w-chars-70">

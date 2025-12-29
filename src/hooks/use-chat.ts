@@ -1,168 +1,84 @@
 "use client";
 
 import { useTransition } from "react";
-import { readStreamableValue } from "@ai-sdk/rsc";
-import { toast } from "sonner";
-import { useConfig, useChatContext } from "@/providers";
-import { streamResponse } from "@/lib/actions";
 import { generateId } from "@/lib/utils";
-import { TEXTAREA_MIN_LENGTH } from "@/lib/constants";
-import type { ChatType, Model } from "@/types";
+import type { Model } from "@/types";
+import { useChatContext } from "@/providers";
 
-export const maxDuration = 45;
+export function useChat() {
+  // const [messages, setMessages] = useState<Message[]>([]);
+  const { dispatch } = useChatContext("multiple");
+  const [pending, startTransition] = useTransition(); // TODO reconsider using `startTransition`
 
-export function useChat(type: ChatType, model: Model) {
-  const { apiKey } = useConfig();
-  const [pending, startTransition] = useTransition();
-
-  switch (type) {
-    case "single": {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { dispatch, store } = useChatContext("single");
-
-      function appendInput(input: string) {
-        dispatch({
-          type: "single/append-input",
-          model: model,
-          content: input,
-        });
-      }
-
-      function appendResponse(input: string) {
-        dispatch({ type: "single/stream-init", model: model });
-        // TODO check
-        // fetch("/api/chat")
-        // return { response: result.toTextStreamResponse() };
-        startTransition(async () => {
-          const result = await streamResponse(model, input, { apiKey: apiKey! });
-          if (result.response) {
-            for await (const delta of readStreamableValue(result.response)) {
-              dispatch({
-                type: "single/stream-update",
-                model: model,
-                delta: delta ?? "",
-              });
-            }
-          }
-          if (result.error) {
-            dispatch({
-              type: "single/stream-update",
-              model: model,
-              delta: `Error occurred while generating response. Please try again.`,
-            });
-          }
-        });
-      }
-
-      function append(input: string) {
-        if (!apiKey) {
-          toast.error(
-            "You must provide your API_KEY in order to chat with models.",
-          );
-          return;
-        }
-        if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-          toast.warning("Your input should have at least 3 characters.");
-          return;
-        }
-        appendInput(input);
-        appendResponse(input);
-      }
-
-      return {
-        type,
-        store,
-        dispatch,
-        pending,
-        append,
-        appendInput,
-        appendResponse,
-      };
-    }
-    case "multiple": {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { store, dispatch } = useChatContext("multiple");
-
-      function appendInput(input: string) {
-        dispatch({
-          type: "multiple/append-input",
-          model: model,
-          content: input,
-        });
-      }
-
-      async function appendResponse(input: string) {
-        const id = generateId();
-        dispatch({ type: "multiple/stream-init", model, id });
-        try {
-          const result = await fetch("/api/chat", {
-            method: "POST",
-            body: JSON.stringify({ apiKey, model, prompt: input }),
-          });
-
-          const reader = result.body?.getReader();
-          const decoder = new TextDecoder();
-
-          if (!reader) return;
-
-          while (true) {
-            const { done, value } = await reader.read();
-
-            if (done) break;
-
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split("\n").filter((line) => line.trim());
-
-            for (const line of lines) {
-              if (line.startsWith("0:")) {
-                try {
-                  const delta = JSON.parse(line.slice(2));
-                  dispatch({ type: "multiple/stream-update", id, delta });
-                } catch (e) {
-                  console.error("Error parsing chunk:", e);
-                  dispatch({
-                    id: id,
-                    type: "multiple/stream-update",
-                    delta: `Error occurred while generating response. Please try again.`,
-                  });
-                }
-              }
-            }
-          }
-        } catch (e) {
-          console.error(e);
-          dispatch({
-            id: id,
-            type: "multiple/stream-update",
-            delta: `Error occurred while generating response. Please try again.`,
-          });
-        }
-      }
-
-      async function append(input: string) {
-        if (!apiKey) {
-          toast.error(
-            "You must provide your API_KEY in order to chat with models.",
-          );
-          return;
-        }
-        if (input.trim().length < TEXTAREA_MIN_LENGTH) {
-          toast.warning("Your input should have at least 3 characters.");
-          return;
-        }
-        appendInput(input);
-        await appendResponse(input);
-      }
-
-      return {
-        type,
-        store,
-        dispatch,
-        pending,
-        append,
-        appendInput,
-        appendResponse,
-      };
-    }
+  function addInput(prompt: string, model: Model) {
+    // const id = generateId();
+    // const message: Message = { id, model, content: prompt, role: "user" };
+    dispatch({ type: "multiple/append-input", model, content: prompt });
+    getResponse(prompt, model);
   }
+
+  function getResponse(prompt: string, model: Model) {
+    const id = generateId();
+    // const message: Message = { id, model, content: "", role: "assistant" };
+    dispatch({ type: "multiple/stream-init", id, model });
+    // setMessages((prev) => [...prev, message]);
+
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          body: JSON.stringify({ prompt, model }),
+        });
+
+        if (!res.ok) {
+          // TODO thorw error
+          return;
+        }
+
+        const reader = res.body?.getReader();
+
+        if (!reader) {
+          throw new Error("Response body not readable.");
+        }
+
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          dispatch({ type: "multiple/stream-update", id, delta: chunk });
+          // setMessages((prev) => {
+          //   const index = prev.findIndex((m) => m.id === id);
+          //   if (index === -1) {
+          //     // TODO better handling
+          //     return prev;
+          //   }
+          //   const next = [...prev];
+          //   next[index] = {
+          //     ...next[index],
+          //     content: next[index].content + chunk,
+          //   };
+          //   return next;
+          // });
+        }
+      } catch (e) {
+        console.log(e);
+        dispatch({
+          id,
+          type: "multiple/stream-update",
+          delta: `Error occurred while generating response. Please try again.`,
+        });
+        // TODO
+        // setMessages((prev) => {
+        //   const index = prev.findIndex((m) => m.id === id);
+        //   if (index !== -1) {
+        //     prev[index].content = null
+        //   }
+        // });
+      }
+    });
+  }
+
+  return { addInput, pending };
 }

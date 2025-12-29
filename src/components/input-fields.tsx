@@ -7,13 +7,11 @@ import type {
   KeyboardEvent,
   TextareaHTMLAttributes,
 } from "react";
-import { useEffect, useRef, useState, useTransition } from "react";
-import { readStreamableValue } from "@ai-sdk/rsc";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
-import { useChat, useIsMobile } from "@/hooks";
-import { streamResponse } from "@/lib/actions";
-import { cn, generateId } from "@/lib/utils";
+import { useIsMobile, useChat } from "@/hooks";
+import { cn } from "@/lib/utils";
 import { TEXTAREA_BASE_LENGTH, TEXTAREA_MIN_LENGTH } from "@/lib/constants";
 import { Button } from "./ui/button";
 import { ArrowUpIcon, SparklesIcon } from "lucide-react";
@@ -21,7 +19,6 @@ import type { Model } from "@/types";
 
 interface WrapperProps {
   children: ReactNode;
-  length: number;
   synced?: boolean;
 }
 
@@ -39,24 +36,17 @@ interface TextareaProps
   onChange: (value: string) => void | Dispatch<SetStateAction<string>>;
 }
 
-export function InputWrapper({
-  children,
-  length,
-  synced = false,
-}: WrapperProps) {
+export function InputWrapper({ children, synced = false }: WrapperProps) {
   const isMobile = useIsMobile();
 
   return (
     <div
       className={cn(
-        "w-4/5 z-10 left-1/2 -translate-x-1/2 data-[align=center]:bottom-1/2 data-[align=bottom]:bottom-4 @lg/interface:w-2/3 @lg/interface:max-w-2xl before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
+        "w-4/5 z-10 left-1/2 translate-x-[calc(-50%+2.5rem)] rounded-xl bottom-8 @lg/interface:w-2/3 @lg/interface:max-w-2xl before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
         "data-[input-type=separate]:absolute data-[input-type=separate]:bg-background",
         "data-[input-type=sync]:overflow-hidden data-[input-type=sync]:fixed data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[760px]",
-        isMobile
-          ? "data-[input-type=sync]:bottom-5"
-          : "data-[input-type=sync]:bottom-4 data-[input-type=sync]:4/5",
+        isMobile && "data-[input-type=sync]:bottom-6",
       )}
-      data-align={length === 0 ? "center" : "bottom"}
       data-input-type={synced ? "sync" : "separate"}
     >
       {children}
@@ -64,48 +54,56 @@ export function InputWrapper({
   );
 }
 
-export function InputField({ type, model }: FieldProps) {
+export function UnsyncedInput({ type, model }: FieldProps) {
+  const { apiKey } = useConfig();
+  const { addInput, pending } = useChat();
   const { appearance } = useConfig();
-  const { pending, append } = useChat(type, model);
-  const { input } = useChatContext("multiple");
   const [value, setValue] = useState("");
 
-  const usingSyncedInput = appearance.input === "sync" && type === "multiple";
+  const isSyncedInput = appearance.input === "sync" && type === "multiple";
 
-  function appendMessages() {
-    append(value);
+  function addUserInput() {
+    if (!apiKey) {
+      toast.error("You must provide your API_KEY in order to chat with models.");
+      return;
+    }
+    if (value.trim().length < TEXTAREA_MIN_LENGTH) {
+      toast.warning("Your input should have at least 3 characters.");
+      return;
+    }
+    addInput(value, model);
     setValue("");
   }
 
-  function handleChange(value: string) {
-    setValue(value);
+  function handleChange(str: string) {
+    setValue(str);
   }
 
-  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      appendMessages();
+      addUserInput();
     }
   }
 
   function handleClick() {
-    appendMessages();
+    addUserInput();
   }
 
   return (
     <div
       className={cn(
-        "p-2 w-full rounded-xl border-[1.5px] border-tertiary-500 dark:border-tertiary-300 bg-tertiary-100 max-sm:p-1.5 max-sm:border max-sm:border-tertiary-400 dark:max-sm:border-tertiary-200",
+        "p-2 w-full rounded-[inherit] border-[1.5px] border-tertiary-500 dark:border-tertiary-300 bg-tertiary-100 max-sm:p-1.5 max-sm:border max-sm:border-tertiary-400 dark:max-sm:border-tertiary-200",
         value.length <= TEXTAREA_BASE_LENGTH
           ? "flex items-center"
           : "grid grid-flow-row grid-rows-[1fr_auto]",
-        usingSyncedInput && "hidden",
+        isSyncedInput && "hidden",
       )}
     >
       <Textarea
-        value={usingSyncedInput ? input : value}
+        value={value}
         onChange={handleChange}
-        onKeyDown={onKeyDown}
+        onKeyDown={handleKeyDown}
       />
       <Button
         className={cn(
@@ -122,45 +120,12 @@ export function InputField({ type, model }: FieldProps) {
   );
 }
 
-export function SyncedInputField() {
+export function SyncedInput() {
   const { apiKey } = useConfig();
-  const { store, dispatch, input, setInput } = useChatContext("multiple");
-  const [pending, startTransition] = useTransition();
+  const { addInput, pending } = useChat();
+  const { store, input, setInput } = useChatContext("multiple");
 
-  function appendInput() {
-    store.models.forEach((model) => {
-      dispatch({ type: "multiple/append-input", content: input, model });
-    });
-  }
-
-  const ids: string[] = [];
-
-  function appendResponse() {
-    const results = store.models.map(async (model) => {
-      const id = generateId();
-      ids.push(id);
-      dispatch({ type: "multiple/stream-init", model, id });
-      const result = await streamResponse(model, input, { apiKey: apiKey! });
-      return result;
-    });
-    startTransition(async () => {
-      results.forEach(async (result, index) => {
-        const id = ids[index];
-        const { response, error } = await result;
-        if (response) {
-          for await (const delta of readStreamableValue(response)) {
-            dispatch({ type: "multiple/stream-update", delta: delta ?? "", id });
-          }
-        }
-        if (error) {
-          const delta = `Error occurred while generating response. Please try again.`;
-          dispatch({ type: "multiple/stream-update", id, delta });
-        }
-      });
-    });
-  }
-
-  function appendMessage() {
+  function addUserInputs() {
     if (!apiKey) {
       toast.error("You must provide your API_KEY in order to chat with models.");
       return;
@@ -169,20 +134,25 @@ export function SyncedInputField() {
       toast.warning("Your input should have at least 3 characters.");
       return;
     }
-    appendInput();
-    appendResponse();
+    store.models.forEach((model) => {
+      addInput(input, model);
+    });
     setInput("");
+  }
+
+  function handleChange(str: string) {
+    setInput(str);
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      appendMessage();
+      addUserInputs();
     }
   }
 
   function handleClick() {
-    appendMessage();
+    addUserInputs();
   }
 
   return (
@@ -194,7 +164,11 @@ export function SyncedInputField() {
           : "grid grid-flow-row grid-rows-[1fr_auto]",
       )}
     >
-      <Textarea value={input} onChange={setInput} onKeyDown={handleKeyDown} />
+      <Textarea
+        value={input}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+      />
       <Button
         className={cn(
           "ml-auto rounded-lg",
@@ -232,7 +206,7 @@ export function Textarea({ value, onChange, ...props }: TextareaProps) {
 
   return (
     <textarea
-      className="resize-none pt-1 pl-2 w-full min-h-9 max-h-80 focus:outline-0 max-sm:min-h-8 @max-xs/interface:text-sm @max-xs/interface:pt-1.5"
+      className="resize-none pt-1.5 pl-2 w-full min-h-9 max-h-80 focus:outline-0 max-sm:min-h-8 @max-xs/interface:text-sm @max-xs/interface:pt-2"
       ref={fieldRef}
       value={value}
       onChange={(e) => {

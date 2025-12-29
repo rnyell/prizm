@@ -40,21 +40,21 @@ export const PrismIcon = ({ className }: Props) => {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-      ></path>
+      />
       <path
         d="M8 10L22 7M8 10L21.4615 11.5M8 10L22 16"
         stroke="#000000"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-      ></path>
+      />
       <path
         d="M8 10L2 11"
         stroke="#000000"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-      ></path>
+      />
     </svg>
   );
 };

@@ -10,7 +10,9 @@ import {
 } from "@/components/icons";
 import type { Model, Title, Details, Models, Name, Message } from "@/types";
 
-export { generateId } from "ai";
+export function generateId() {
+  return Math.random().toString(34).split(".")[1];
+}
 
 export function createMarkdown(messages: Message[], model: Model) {
   let content = "";
@@ -20,7 +22,7 @@ export function createMarkdown(messages: Message[], model: Model) {
       if (msg.role === "user") {
         content += `${msg.content}\n\n`;
       }
-      if (msg.role === "system") {
+      if (msg.role === "assistant") {
         content += `${msg.content}\n\n---\n\n`;
       }
     });

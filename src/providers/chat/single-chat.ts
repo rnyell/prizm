@@ -12,13 +12,7 @@ export type Action =
   | { type: "single/clear-messages"; model: Model }
   | { type: "single/append-input"; model: Model; content: string }
   | { type: "single/stream-init"; model: Model }
-  | { type: "single/stream-update"; model: Model; delta: string }
-  | {
-      type: "single/add-response";
-      model: Model;
-      role: "system";
-      content: string;
-    };
+  | { type: "single/stream-update"; model: Model; delta: string };
 
 export const initialStore: Store = {
   history: new Map(),
@@ -38,19 +32,11 @@ export function reducer(store: Store, action: Action): Store {
       history.set(model, [...prevMessages, newMessage]);
       return { ...store, history };
     }
-    case "single/add-response": {
-      const history = new Map(store.history);
-      const { model, role, content } = action;
-      const prevMessages = history.get(model) ?? [];
-      const newMessage = { model, role, content };
-      history.set(model, [...prevMessages, newMessage]);
-      return { ...store, history };
-    }
     case "single/stream-init": {
       const history = new Map(store.history);
       const { model } = action;
       const messages = history.get(model) ?? [];
-      const initMessage = { model, role: "system", content: "" } as Message;
+      const initMessage = { model, role: "assistant", content: "" } as Message;
       history.set(model, [...messages, initMessage]);
       return { ...store, history };
     }

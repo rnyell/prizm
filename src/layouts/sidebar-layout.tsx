@@ -18,7 +18,7 @@ async function SidebarLayout({ children }: Props) {
         data-sidebar-layout
       >
         <Sidemenu />
-        <div>{children}</div>
+        {children}
       </div>
     </SidebarProvider>
   );

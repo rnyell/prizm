@@ -54,14 +54,19 @@ export function reducer(store: Store, action: Action): Store {
     }
     case "multiple/stream-init": {
       const { id, model } = action;
-      const initMessage = { id, model, role: "system", content: "" } as Message;
+      const initMessage = {
+        id,
+        model,
+        role: "assistant",
+        content: "",
+      } as Message;
       const messages = [...store.messages, initMessage];
       return { ...store, messages };
     }
     case "multiple/stream-update": {
       const { id, delta } = action;
       const current = store.messages.filter(
-        (message) => message.id === id && message.role === "system",
+        (message) => message.id === id && message.role === "assistant",
       )[0];
       current.content = current.content + delta;
       const messages = store.messages;

@@ -1,21 +1,35 @@
-import { streamText } from "ai";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { OpenRouter } from "@openrouter/sdk";
 
-export const maxDuration = 45;
+// openrouter.models.list;
 
 export async function POST(req: Request) {
-  const { model, prompt, apiKey } = await req.json();
+  // TODO TEMP => send apiKey over request by users
+  const apiKey = process.env.API_KEY;
+  const { model, prompt } = await req.json();
 
-  const openrouter = createOpenRouter({ apiKey });
+  const openrouter = new OpenRouter({ apiKey });
 
-  const result = streamText({
-    prompt,
-    model: openrouter(model),
-    temperature: 0.45,
-    onError: ({ error }) => {
-      console.error("Error occured while streaming.", error);
+  // TODO send all messages
+  const result = openrouter.callModel({
+    model,
+    input: [{ role: "user", content: prompt }],
+    reasoning: null,
+  });
+
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        for await (const delta of result.getTextStream()) {
+          controller.enqueue(encoder.encode(delta));
+        }
+        controller.close();
+      } catch (e) {
+        controller.error(e);
+      }
     },
   });
 
-  return result.toTextStreamResponse();
+  return new Response(stream);
 }

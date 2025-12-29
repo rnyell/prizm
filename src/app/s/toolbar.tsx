@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { useChatContext } from "@/providers";
 import { createMarkdown, getModelDetailsByTitle } from "@/lib/utils";
-import { TOOLBAR_HEIGHT } from "@/lib/constants";
+import { TOOLBAR_HEIGHT_REM } from "@/lib/constants";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import ModelDetails from "@/components/model-details";
 import ThemeToggle from "@/components/theme-toggle";
@@ -43,7 +43,7 @@ function Toolbar() {
   return (
     <div
       className="pl-4 py-2 sticky z-10 top-0 flex items-center border-b bg-tertiary-100"
-      style={{ height: TOOLBAR_HEIGHT }}
+      style={{ height: TOOLBAR_HEIGHT_REM }}
     >
       <SidebarTrigger />
       <ModelDetails details={details} className="grow" size="lg" />

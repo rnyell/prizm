@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { useChatContext, useConfig } from "@/providers";
 import { cn, getModelByTitle, toolbarItems } from "@/lib/utils";
-import { TOOLBAR_HEIGHT } from "@/lib/constants";
+import { TOOLBAR_HEIGHT_REM } from "@/lib/constants";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +24,7 @@ export function Toolbar() {
   return (
     <div
       className="px-4 py-2 sticky z-10 top-0 flex items-center gap-5 text-[0.8rem] border-b bg-tertiary-100 max-md:gap-4 max-sm:gap-3"
-      style={{ height: TOOLBAR_HEIGHT }}
+      style={{ height: TOOLBAR_HEIGHT_REM }}
     >
       <SidebarTrigger />
       <div>

@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { useChatContext } from "@/providers";
 import { createMarkdown, getModelDetails } from "@/lib/utils";
-import { CHAT_HEADER_HEIGHT } from "@/lib/constants";
+import { CHAT_HEADER_HEIGHT_REM } from "@/lib/constants";
 import ModelDetails from "@/components/model-details";
 import { DownloadIcon, MaximizeIcon, XIcon } from "lucide-react";
 import type { Model } from "@/types";
@@ -49,7 +49,7 @@ function ChatHeader({ model }: Props) {
   return (
     <div
       className="p-1 flex items-center border-b bg-background"
-      style={{ height: CHAT_HEADER_HEIGHT }}
+      style={{ height: CHAT_HEADER_HEIGHT_REM }}
     >
       <div className="grow flex-x-center gap-4">
         {details.logo && <details.logo className="size-3.5 fill-tertiary-700" />}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useChatContext } from "@/providers";
-import { InputWrapper, InputField } from "@/components/input-field";
+import { InputWrapper, UnsyncedInput } from "@/components/input-fields";
 import MessagesArea from "@/components/messages-area";
 import type { Model } from "@/types";
 
@@ -16,8 +16,8 @@ function ChatInterface({ model }: Props) {
   return (
     <div className="@container/interface pb-10 h-full relative bg-background">
       <MessagesArea messages={messages} />
-      <InputWrapper length={messages.length}>
-        <InputField type="single" model={model} />
+      <InputWrapper>
+        <UnsyncedInput type="single" model={model} />
       </InputWrapper>
     </div>
   );
