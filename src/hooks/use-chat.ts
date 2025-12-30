@@ -1,33 +1,29 @@
 "use client";
 
 import { useTransition } from "react";
+import { useChatContext } from "@/providers";
 import { generateId } from "@/lib/utils";
 import type { Model } from "@/types";
-import { useChatContext } from "@/providers";
 
 export function useChat() {
-  // const [messages, setMessages] = useState<Message[]>([]);
-  const { dispatch } = useChatContext("multiple");
+  const { dispatch } = useChatContext();
   const [pending, startTransition] = useTransition(); // TODO reconsider using `startTransition`
 
-  function addInput(prompt: string, model: Model) {
-    // const id = generateId();
-    // const message: Message = { id, model, content: prompt, role: "user" };
-    dispatch({ type: "multiple/append-input", model, content: prompt });
-    getResponse(prompt, model);
+  function addInput(prompt: string, model: Model, apiKey: string) {
+    const id = generateId();
+    dispatch({ type: "multiple/add-input", id, model, content: prompt });
+    getResponse(prompt, model, apiKey);
   }
 
-  function getResponse(prompt: string, model: Model) {
+  function getResponse(prompt: string, model: Model, apiKey: string) {
     const id = generateId();
-    // const message: Message = { id, model, content: "", role: "assistant" };
-    dispatch({ type: "multiple/stream-init", id, model });
-    // setMessages((prev) => [...prev, message]);
+    dispatch({ type: "multiple/res-init", id, model });
 
     startTransition(async () => {
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
-          body: JSON.stringify({ prompt, model }),
+          body: JSON.stringify({ prompt, model, apiKey }),
         });
 
         if (!res.ok) {
@@ -47,35 +43,15 @@ export function useChat() {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value);
-          dispatch({ type: "multiple/stream-update", id, delta: chunk });
-          // setMessages((prev) => {
-          //   const index = prev.findIndex((m) => m.id === id);
-          //   if (index === -1) {
-          //     // TODO better handling
-          //     return prev;
-          //   }
-          //   const next = [...prev];
-          //   next[index] = {
-          //     ...next[index],
-          //     content: next[index].content + chunk,
-          //   };
-          //   return next;
-          // });
+          dispatch({ type: "multiple/res-update", id, delta: chunk });
         }
       } catch (e) {
         console.log(e);
         dispatch({
           id,
-          type: "multiple/stream-update",
+          type: "multiple/res-update",
           delta: `Error occurred while generating response. Please try again.`,
         });
-        // TODO
-        // setMessages((prev) => {
-        //   const index = prev.findIndex((m) => m.id === id);
-        //   if (index !== -1) {
-        //     prev[index].content = null
-        //   }
-        // });
       }
     });
   }

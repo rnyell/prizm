@@ -44,7 +44,7 @@ export function Toolbar() {
 }
 
 export function AddModelPopover({ defaultOpen = false }) {
-  const { store, dispatch } = useChatContext("multiple");
+  const { store, dispatch } = useChatContext();
   const { models } = store;
 
   function handleModelSelection(model: Model) {

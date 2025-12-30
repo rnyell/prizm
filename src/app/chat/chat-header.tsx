@@ -13,7 +13,7 @@ interface Props {
 }
 
 function ChatHeader({ model }: Props) {
-  const { store, dispatch } = useChatContext("multiple");
+  const { store, dispatch } = useChatContext();
   const details = getModelDetails(model);
 
   function downloadChat() {

@@ -18,7 +18,7 @@ import { MinimizeIcon } from "lucide-react";
 function ChatsContainer() {
   const [open, setOpen] = useState(false);
   const { appearance } = useConfig();
-  const { store, dispatch } = useChatContext("multiple");
+  const { store, dispatch } = useChatContext();
   const { messages, models, maximizedModel } = store;
   const maximizedMessages = messages.filter((m) => m.model === maximizedModel);
   const isMobile = useIsMobile();

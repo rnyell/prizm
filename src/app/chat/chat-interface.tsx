@@ -12,7 +12,7 @@ interface Props {
 }
 
 function ChatInterface({ model, isScrollItem }: Props) {
-  const { store } = useChatContext("multiple");
+  const { store } = useChatContext();
   const messages = store.messages.filter((msg) => msg.model === model);
 
   return (

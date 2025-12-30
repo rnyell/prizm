@@ -42,9 +42,9 @@ export function InputWrapper({ children, synced = false }: WrapperProps) {
   return (
     <div
       className={cn(
-        "w-4/5 z-10 left-1/2 translate-x-[calc(-50%+2.5rem)] rounded-xl bottom-8 @lg/interface:w-2/3 @lg/interface:max-w-2xl before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
-        "data-[input-type=separate]:absolute data-[input-type=separate]:bg-background",
-        "data-[input-type=sync]:overflow-hidden data-[input-type=sync]:fixed data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[760px]",
+        "w-4/5 z-10 left-1/2 rounded-xl bottom-8 @lg/interface:w-2/3 @lg/interface:max-w-2xl before:content-[''] before:absolute before:-z-10 before:inset-x-0 before:top-0 before:-bottom-1/2 before:bg-background",
+        "data-[input-type=separate]:absolute data-[input-type=separate]:-translate-x-1/2 data-[input-type=separate]:bg-background",
+        "data-[input-type=sync]:overflow-hidden data-[input-type=sync]:fixed data-[input-type=sync]:translate-x-[calc(-50%+2.5rem)] data-[input-type=sync]:@md/interfaces:w-4/5 data-[input-type=sync]:@lg/interfaces:w-7/10 data-[input-type=sync]:@lg/interfaces:max-w-[720px] data-[input-type=sync]:@xl/interfaces:max-w-[760px]",
         isMobile && "data-[input-type=sync]:bottom-6",
       )}
       data-input-type={synced ? "sync" : "separate"}
@@ -71,7 +71,7 @@ export function UnsyncedInput({ type, model }: FieldProps) {
       toast.warning("Your input should have at least 3 characters.");
       return;
     }
-    addInput(value, model);
+    addInput(value, model, apiKey);
     setValue("");
   }
 
@@ -123,7 +123,7 @@ export function UnsyncedInput({ type, model }: FieldProps) {
 export function SyncedInput() {
   const { apiKey } = useConfig();
   const { addInput, pending } = useChat();
-  const { store, input, setInput } = useChatContext("multiple");
+  const { store, input, setInput } = useChatContext();
 
   function addUserInputs() {
     if (!apiKey) {
@@ -135,7 +135,7 @@ export function SyncedInput() {
       return;
     }
     store.models.forEach((model) => {
-      addInput(input, model);
+      addInput(input, model, apiKey);
     });
     setInput("");
   }

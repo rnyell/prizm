@@ -3,13 +3,12 @@ import { OpenRouter } from "@openrouter/sdk";
 // openrouter.models.list;
 
 export async function POST(req: Request) {
-  // TODO TEMP => send apiKey over request by users
-  const apiKey = process.env.API_KEY;
-  const { model, prompt } = await req.json();
+  // TODO get apiKey from `db.json` ?
+  const { model, prompt, apiKey } = await req.json();
 
   const openrouter = new OpenRouter({ apiKey });
 
-  // TODO send all messages
+  // TODO send all messages to make it context-aware
   const result = openrouter.callModel({
     model,
     input: [{ role: "user", content: prompt }],
@@ -18,6 +17,7 @@ export async function POST(req: Request) {
 
   const encoder = new TextEncoder();
 
+  // TODO handle images
   const stream = new ReadableStream({
     async start(controller) {
       try {

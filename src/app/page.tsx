@@ -51,7 +51,7 @@ function Page() {
         <div className="p-8 row-start-4 col-start-2 max-sm:justify-self-center max-sm:row-start-2 max-sm:col-start-1">
           <Link
             className="px-6 py-2.5 inline-block rounded-md font-semibold bg-neutral-200 text-neutral-900 cursor-pointer hover:bg-neutral-400"
-            href="/m"
+            href="/chat"
           >
             Get Started
           </Link>
